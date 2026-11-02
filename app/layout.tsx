@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import NavLinks from "@/components/NavLinks";
+import SearchShortcut from "@/components/SearchShortcut";
+import { getLatest } from "@/lib/content";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body>
+        <SearchShortcut />
         <a className="skip" href="#content">
           跳到内容
         </a>
@@ -30,7 +33,7 @@ export default function RootLayout({
               <span className="long">每日三词</span>
               <span className="short">三词</span>
             </Link>
-            <NavLinks />
+            <NavLinks latestDate={getLatest() ?? undefined} />
           </div>
         </header>
         <main id="content" tabIndex={-1}>

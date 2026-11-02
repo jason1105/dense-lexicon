@@ -226,6 +226,170 @@ nav a[aria-current="page"] {
   color: var(--accent);
 }
 
+/* ---- day head（日期 h1 用小号 mono 元信息样式，与原型一致） ---- */
+.dayhead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 24px;
+}
+.dayhead h1 {
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 400;
+  color: var(--fg-subtle);
+}
+.dayhead .nth {
+  display: none;
+}
+@media (min-width: 640px) {
+  .dayhead .nth {
+    display: inline;
+  }
+}
+
+/* ---- cards ---- */
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 20px 4px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+  scroll-margin-top: 16px;
+}
+@media (min-width: 640px) {
+  .card {
+    padding: 24px 24px 8px;
+  }
+}
+@media (hover: hover) {
+  .card:hover {
+    border-color: var(--fg-subtle);
+  }
+}
+.card-head {
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 640px) {
+  .card-head {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+  }
+  .card-head .zh {
+    color: var(--fg-muted);
+    text-align: right;
+    flex-shrink: 0;
+  }
+}
+.tag {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--fg-subtle);
+  font-size: 12px;
+  line-height: 20px;
+}
+.def {
+  margin-top: 12px;
+}
+/* 展开区：grid-rows 0fr→1fr 过渡；负外边距在卡片内左右通栏 */
+.more {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.15s ease;
+  margin: 0 -20px;
+}
+@media (min-width: 640px) {
+  .more {
+    margin: 0 -24px;
+  }
+}
+.more > div {
+  overflow: hidden;
+}
+.more.open {
+  grid-template-rows: 1fr;
+}
+.more-inner {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin-top: 16px;
+  padding: 20px;
+}
+@media (min-width: 640px) {
+  .more-inner {
+    margin-top: 20px;
+    padding: 24px;
+  }
+}
+.sec + .sec {
+  margin-top: 20px;
+}
+.sec .t-label {
+  margin-bottom: 6px;
+}
+.sec p,
+.sec li {
+  color: var(--fg-muted);
+}
+.sec ul {
+  padding-left: 1.1em;
+}
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.actions button,
+.actions a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  line-height: 20px;
+}
+.actions button {
+  color: var(--fg-subtle);
+}
+.actions button:hover {
+  color: var(--fg);
+}
+.daynav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 32px;
+  font-size: 13px;
+  line-height: 20px;
+}
+.daynav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+}
+
+/* ---- 空状态 ---- */
+.center {
+  text-align: center;
+  padding: 48px 0;
+}
+.center p {
+  margin-top: 12px;
+  color: var(--fg-muted);
+}
+
 /* ---- main / footer ---- */
 main {
   flex: 1;
