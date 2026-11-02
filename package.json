@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "validate": "node scripts/validate.mjs",
+    "build-index": "node scripts/build-index.mjs",
+    "prebuild": "npm run validate && npm run build-index",
+    "predev": "npm run build-index",
     "dev": "next dev",
     "build": "next build",
     "lint": "eslint ."

@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dense-lexicon.vercel.app/schema/day.schema.json",
+  "title": "Dense Lexicon Day",
+  "description": "每日三词：单日内容文件 content/days/YYYY-MM-DD.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["date", "words"],
+  "properties": {
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$",
+      "format": "date",
+      "description": "Asia/Shanghai 日期，必须与文件名一致"
+    },
+    "words": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "$ref": "#/$defs/word" }
+    }
+  },
+  "$defs": {
+    "word": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "term", "termZh", "domain", "definition", "compresses", "scene", "misconception"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "maxLength": 64,
+          "description": "term 的 kebab-case，全库唯一"
+        },
+        "term": { "type": "string", "minLength": 2, "maxLength": 60, "pattern": "^[A-Za-z0-9][A-Za-z0-9 .+/'()-]*$" },
+        "termZh": { "type": "string", "minLength": 2, "maxLength": 40 },
+        "domain": {
+          "type": "string",
+          "enum": [
+            "architecture",
+            "distributed-systems",
+            "data",
+            "testing",
+            "devops",
+            "observability",
+            "security",
+            "ai-engineering",
+            "frontend",
+            "process"
+          ]
+        },
+        "definition": { "type": "string", "minLength": 20, "maxLength": 200 },
+        "compresses": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 2, "maxLength": 40 }
+        },
+        "scene": { "type": "string", "minLength": 20, "maxLength": 200 },
+        "misconception": { "type": "string", "minLength": 20, "maxLength": 200 }
+      }
+    }
+  }
+}
