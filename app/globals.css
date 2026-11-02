@@ -189,6 +189,9 @@ header .wrap {
   font-size: 16px;
   line-height: 24px;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 .brand:hover {
   text-decoration: none;
@@ -302,6 +305,7 @@ nav a[aria-current="page"] {
 }
 .def {
   margin-top: 12px;
+  max-width: 34em;
 }
 /* 展开区：grid-rows 0fr→1fr 过渡；负外边距在卡片内左右通栏 */
 .more {
@@ -343,6 +347,7 @@ nav a[aria-current="page"] {
 .sec p,
 .sec li {
   color: var(--fg-muted);
+  max-width: 34em;
 }
 .sec ul {
   padding-left: 1.1em;
@@ -362,6 +367,7 @@ nav a[aria-current="page"] {
 }
 .actions button {
   color: var(--fg-subtle);
+  min-width: 44px;
 }
 .actions button:hover {
   color: var(--fg);
@@ -442,7 +448,7 @@ nav a[aria-current="page"] {
   font-size: 13px;
   line-height: 20px;
   display: inline-flex;
-  min-height: 32px;
+  min-height: 44px;
   align-items: center;
 }
 .group ul {
@@ -473,9 +479,6 @@ nav a[aria-current="page"] {
     display: grid;
     grid-template-columns: 120px 1fr;
   }
-  .group .gdate {
-    min-height: 44px;
-  }
 }
 
 /* ---- word page ---- */
@@ -494,6 +497,7 @@ nav a[aria-current="page"] {
 }
 .wdef {
   margin-top: 24px;
+  max-width: 34em;
 }
 .wsecs {
   margin-top: 32px;
@@ -605,6 +609,13 @@ mark {
 }
 .prose p {
   color: var(--fg-muted);
+  max-width: 34em;
+}
+.prose a {
+  /* 段内链接：常显下划线（不只靠颜色区分）+ ≥44px 触控区（纵向 padding 不撑行距） */
+  padding-block: 12px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 .prose h1 {
   margin-bottom: 20px;
@@ -632,6 +643,8 @@ footer .wrap {
 }
 footer a {
   color: var(--fg-subtle);
+  /* 触控区 ≥44px：inline 元素的纵向 padding 不影响行高（13px 字号自然高 ~18px，补 2×13px） */
+  padding-block: 13px;
 }
 
 @media (prefers-reduced-motion: reduce) {
