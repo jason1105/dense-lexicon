@@ -1,0 +1,258 @@
+@import "tailwindcss";
+
+/* ---- design tokens（与原型一致；深色跟随系统，无手动开关） ---- */
+:root {
+  --bg: #ffffff;
+  --surface: #fafafa;
+  --border: #e4e4e7;
+  --fg: #18181b;
+  --fg-muted: #52525b;
+  --fg-subtle: #71717a;
+  --accent: #2563eb;
+  --accent-soft: #eff6ff;
+  --sans: ui-sans-serif, -apple-system, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --pad-x: 20px;
+  --maxw: 680px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b0b0c;
+    --surface: #141416;
+    --border: #27272a;
+    --fg: #f4f4f5;
+    --fg-muted: #a1a1aa;
+    --fg-subtle: #8a8a93;
+    --accent: #60a5fa;
+    --accent-soft: #172554;
+  }
+}
+@media (min-width: 640px) {
+  :root {
+    --pad-x: 32px;
+  }
+}
+
+/* 映射进 Tailwind 主题：bg-bg / text-fg-muted / border-border / font-mono 等可用 */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --font-sans: var(--sans);
+  --font-mono: var(--mono);
+}
+
+/* ---- base ---- */
+* {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 28px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+h1,
+h2,
+h3,
+p,
+ul {
+  margin: 0;
+}
+
+.wrap {
+  max-width: calc(var(--maxw) + 2 * var(--pad-x));
+  margin: 0 auto;
+  padding: 0 var(--pad-x);
+  width: 100%;
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+  top: 8px;
+  background: var(--bg);
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  z-index: 10;
+}
+.skip:focus {
+  left: 8px;
+}
+
+/* ---- type scale ---- */
+.t-display {
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+@media (min-width: 640px) {
+  .t-display {
+    font-size: 32px;
+    line-height: 40px;
+  }
+}
+.t-title {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 600;
+}
+.t-subtitle {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+}
+.t-body {
+  font-size: 16px;
+  line-height: 28px;
+}
+.t-meta {
+  font-size: 13px;
+  line-height: 20px;
+}
+.t-label {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--fg-subtle);
+}
+.mono {
+  font-family: var(--mono);
+}
+.muted {
+  color: var(--fg-muted);
+}
+.subtle {
+  color: var(--fg-subtle);
+}
+.vh {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---- header ---- */
+header {
+  border-bottom: 1px solid var(--border);
+}
+header .wrap {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.brand {
+  color: var(--fg);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  white-space: nowrap;
+}
+.brand:hover {
+  text-decoration: none;
+}
+.brand .long {
+  display: none;
+}
+@media (min-width: 640px) {
+  .brand .long {
+    display: inline;
+  }
+  .brand .short {
+    display: none;
+  }
+}
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 4px;
+  padding: 0;
+}
+nav a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 8px;
+  color: var(--fg-muted);
+  font-size: 14px;
+}
+nav a:hover {
+  color: var(--fg);
+  text-decoration: none;
+}
+nav a[aria-current="page"] {
+  color: var(--accent);
+}
+
+/* ---- main / footer ---- */
+main {
+  flex: 1;
+  padding-top: 32px;
+  padding-bottom: 48px;
+}
+@media (min-width: 640px) {
+  main {
+    padding-top: 48px;
+    padding-bottom: 64px;
+  }
+}
+footer {
+  border-top: 1px solid var(--border);
+}
+footer .wrap {
+  padding-top: 24px;
+  padding-bottom: 32px;
+  color: var(--fg-subtle);
+}
+footer a {
+  color: var(--fg-subtle);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
