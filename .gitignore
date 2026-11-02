@@ -6,3 +6,4 @@ content/index.json
 next-env.d.ts
 .DS_Store
 .playwright-mcp/
+.claude/
