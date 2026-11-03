@@ -439,6 +439,20 @@ nav a[aria-current="page"] {
   color: var(--accent);
   border-color: transparent;
 }
+/* 第二行标签胶囊紧接第一行（首行底距 24px − 16px = 行间 8px） */
+.chips + .chips {
+  margin-top: -16px;
+}
+/* 选中标签的 meta 行：链接到标签页；触控区 ≥44px（纵向 padding 不撑行距） */
+.filtermeta {
+  margin: -16px 0 24px;
+}
+.filtermeta a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  padding-block: 12px;
+}
 .group {
   padding: 16px 0;
   border-top: 1px solid var(--border);
