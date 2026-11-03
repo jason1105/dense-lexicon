@@ -15,7 +15,7 @@ function StaticSearch() {
         <input
           id="q"
           type="search"
-          placeholder="搜索术语、中文、定义…"
+          placeholder="搜索术语、中文、标签、定义…"
           autoComplete="off"
           enterKeyHint="search"
         />

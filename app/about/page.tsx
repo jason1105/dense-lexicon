@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = { title: "关于" };
 
@@ -12,6 +13,11 @@ export default function AboutPage() {
       </p>
       <p>
         每天 09:00–09:30（北京时间）更新。每个词包含：定义、它压缩了什么、一个真实场景、一个常见误解。
+      </p>
+      <p>
+        每个词还带五个维度的标签——学科、工程、认知、场景、层级——刻画它来自哪里、落在哪种工程和场景、属于哪一层（定律、模式、实践……）。在
+        <Link href="/tags">标签页</Link>
+        可以按维度浏览全部词条。
       </p>
       <p>
         内容由 Jason
