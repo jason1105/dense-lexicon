@@ -1,29 +1,51 @@
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { CONTENT_DIR, domainOrder, listDayFiles, readDayFile } from "./lib.mjs";
+import {
+  CONTENT_DIR,
+  domainOrder,
+  listDayFiles,
+  readDayFile,
+  readTagsFile,
+} from "./lib.mjs";
 
 const toMs = (s) => Date.parse(`${s}T00:00:00Z`);
+
+/* 标签词表：name → slug（按维度），词表顺序即输出顺序 */
+const vocab = readTagsFile();
+const tagNameToSlug = new Map(); // `${dimension}:${name}` -> slug
+for (const dim of vocab.dimensions) {
+  for (const t of dim.tags) tagNameToSlug.set(`${dim.key}:${t.name}`, t.slug);
+}
 
 const asc = listDayFiles().map((name) => readDayFile(name)); // 日期升序
 const desc = [...asc].reverse();
 
-/* words：日期倒序，同一天内保持文件顺序 */
+/* words：日期倒序，同一天内保持文件顺序；tags 每维度给 [{slug, name}] */
 const words = [];
 for (const day of desc) {
   for (const w of day.words) {
+    const tags = {};
+    for (const dim of vocab.dimensions) {
+      tags[dim.key] = w.tags[dim.key].map((name) => ({
+        slug: tagNameToSlug.get(`${dim.key}:${name}`),
+        name,
+      }));
+    }
     words.push({
       id: w.id,
       term: w.term,
       termZh: w.termZh,
       domain: w.domain,
       date: day.date,
+      hook: w.hook,
       definition: w.definition,
       compresses: w.compresses,
+      tags,
     });
   }
 }
 
-/* related：同领域其他词，按日期差绝对值升序，再按 id 升序，取前 3 */
+/* 同领域推荐：同 domain 其他词，按日期差绝对值升序，再按 id 升序，取前 3 */
 for (const w of words) {
   w.related = words
     .filter((c) => c.domain === w.domain && c.id !== w.id)
@@ -37,16 +59,40 @@ for (const w of words) {
 const counts = new Map();
 for (const w of words) counts.set(w.domain, (counts.get(w.domain) ?? 0) + 1);
 
+/* tags：只列被使用的（count>0），维度按词表顺序、维度内按词表顺序 */
+const tagCounts = new Map(); // `${dimension}:${slug}` -> count
+for (const w of words) {
+  for (const dim of vocab.dimensions) {
+    for (const t of w.tags[dim.key]) {
+      const key = `${dim.key}:${t.slug}`;
+      tagCounts.set(key, (tagCounts.get(key) ?? 0) + 1);
+    }
+  }
+}
+const tags = vocab.dimensions.flatMap((dim) =>
+  dim.tags
+    .filter((t) => (tagCounts.get(`${dim.key}:${t.slug}`) ?? 0) > 0)
+    .map((t) => ({
+      dimension: dim.key,
+      slug: t.slug,
+      name: t.name,
+      count: tagCounts.get(`${dim.key}:${t.slug}`),
+    })),
+);
+
 const index = {
-  version: 1,
+  version: 2,
   latest: desc[0]?.date ?? null,
   days: desc.map((d) => ({ date: d.date, ids: d.words.map((w) => w.id) })),
   words,
   domains: domainOrder()
     .filter((domain) => (counts.get(domain) ?? 0) > 0)
     .map((domain) => ({ domain, count: counts.get(domain) })),
+  tags,
 };
 
 /* 确定性输出：同样输入 → 字节级相同，不含时间戳 */
 writeFileSync(join(CONTENT_DIR, "index.json"), `${JSON.stringify(index, null, 2)}\n`);
-console.log(`✓ content/index.json：${index.days.length} 天 ${index.words.length} 词`);
+console.log(
+  `✓ content/index.json：${index.days.length} 天 ${index.words.length} 词 ${index.tags.length} 个标签`,
+);
