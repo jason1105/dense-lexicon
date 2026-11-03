@@ -5,7 +5,6 @@
       "id": "strangler-fig-pattern",
       "term": "Strangler Fig Pattern",
       "termZh": "绞杀者模式",
-      "domain": "architecture",
       "hook": "新系统像绞杀榕，沿着旧系统长，最后取而代之。",
       "definition": "一种渐进替换遗留系统的迁移策略：在旧系统前放一个可控的拦截点（路由、网关或外壳），把功能按切片逐块交给新实现，真实流量逐步切到新系统，直到旧系统可以下线。名字来自绞杀榕：它沿宿主树生长，最终取而代之。",
       "tags": {
@@ -90,7 +89,6 @@
       "id": "flaky-test",
       "term": "Flaky Test",
       "termZh": "不稳定测试",
-      "domain": "testing",
       "hook": "时灵时不灵的测试，比没有测试更伤信任。",
       "definition": "代码和环境都没变，多次运行却时而通过、时而失败的测试。常见根因：依赖当前时间、并发竞态、测试之间共享状态、依赖外部服务或网络、随机数、依赖执行顺序。",
       "tags": {
@@ -179,7 +177,6 @@
       "id": "context-engineering",
       "term": "Context Engineering",
       "termZh": "上下文工程",
-      "domain": "ai-engineering",
       "hook": "模型只知道你放进窗口的东西。",
       "definition": "为大模型或 AI 智能体设计每次调用时进入上下文窗口的全部信息：系统指令、检索到的资料、工具定义与调用结果、记忆和对话历史。目标是在有限窗口里给模型完成任务所需、且尽量精简的信息。",
       "tags": {

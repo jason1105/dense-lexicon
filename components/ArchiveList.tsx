@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { resolveArchiveQuery } from "@/lib/archive-query";
 import ArchiveView, {
   type ArchDay,
   type ArchDim,
@@ -8,8 +9,8 @@ import ArchiveView, {
 } from "./ArchiveView";
 
 /**
- * 档案列表的客户端外壳：读 ?dim= / ?tag=（非法 dim 按“全部”，tag 不在该维度
- * 已用标签里按该维度“全部”，忽略旧 ?domain=），筛选同步回 URL。
+ * 档案列表的客户端外壳：读 ?dim= / ?tag=（规则与旧 ?domain= 映射见
+ * lib/archive-query.ts），筛选同步回 URL。
  * 静态 HTML 由 Suspense fallback 提供完整“全部”视图。
  */
 export default function ArchiveList({
@@ -24,13 +25,7 @@ export default function ArchiveList({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const rawDim = searchParams.get("dim") ?? "";
-  const dim = dims.some((d) => d.key === rawDim) ? rawDim : "";
-  const rawTag = dim ? (searchParams.get("tag") ?? "") : "";
-  const tag =
-    dim && tags.some((t) => t.dimension === dim && t.slug === rawTag)
-      ? rawTag
-      : "";
+  const { dim, tag } = resolveArchiveQuery((k) => searchParams.get(k), dims, tags);
 
   const select = (nextDim: string, nextTag: string) => {
     const qs = new URLSearchParams();

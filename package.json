@@ -9,7 +9,8 @@
     "predev": "npm run build-index",
     "dev": "next dev",
     "build": "next build",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "node --test scripts/*.test.mjs"
   },
   "dependencies": {
     "next": "16.4.3",

@@ -57,7 +57,7 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "id", "term", "termZh", "domain", "hook", "definition", "tags",
+        "id", "term", "termZh", "hook", "definition", "tags",
         "background", "problem", "actors", "evolution",
         "compresses", "scene", "misconception", "relations", "sources"
       ],
@@ -70,22 +70,6 @@
         },
         "term": { "$ref": "#/$defs/term" },
         "termZh": { "type": "string", "minLength": 2, "maxLength": 40 },
-        "domain": {
-          "type": "string",
-          "description": "主领域（导航用的一级分类），细分见 tags.engineering",
-          "enum": [
-            "architecture",
-            "distributed-systems",
-            "data",
-            "testing",
-            "devops",
-            "observability",
-            "security",
-            "ai-engineering",
-            "frontend",
-            "process"
-          ]
-        },
         "hook": { "type": "string", "minLength": 6, "maxLength": 40, "description": "一句话记忆钩子" },
         "definition": { "type": "string", "minLength": 20, "maxLength": 200 },
         "tags": {

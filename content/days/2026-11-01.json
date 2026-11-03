@@ -5,7 +5,6 @@
       "id": "anti-corruption-layer",
       "term": "Anti-Corruption Layer",
       "termZh": "防腐层",
-      "domain": "architecture",
       "hook": "外面的概念进门之前，先翻译成我们的话。",
       "definition": "领域驱动设计中的集成模式：在自己的系统和外部或遗留系统之间放一层翻译层，把对方的模型、术语和协议转换成本方的领域模型，防止外部模型的概念和缺陷渗进自己的核心代码。",
       "tags": {
@@ -89,7 +88,6 @@
       "id": "circuit-breaker",
       "term": "Circuit Breaker",
       "termZh": "熔断器",
-      "domain": "distributed-systems",
       "hook": "下游一着火，先拉闸，别跟着烧。",
       "definition": "保护调用方的容错模式：对下游依赖的调用失败率或超时超过阈值时进入“断开”状态，一段时间内直接快速失败或走降级逻辑；冷却后进入“半开”状态，放少量请求试探，成功则恢复“闭合”。",
       "tags": {
@@ -179,7 +177,6 @@
       "id": "outbox-pattern",
       "term": "Outbox Pattern",
       "termZh": "发件箱模式",
-      "domain": "distributed-systems",
       "hook": "消息先写进自己的数据库，再慢慢寄出去。",
       "definition": "解决“写数据库”和“发消息”双写不一致的模式：在同一个本地事务里，既写业务数据，也把待发事件写进 outbox 表；再由独立的转发进程（轮询或 CDC）读取 outbox，投递到消息中间件后标记为已发送。",
       "tags": {

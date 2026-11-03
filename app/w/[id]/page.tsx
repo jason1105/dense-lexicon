@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Chip from "@/components/Chip";
 import { notFound } from "next/navigation";
 import {
   getIndex,
@@ -112,9 +113,7 @@ export default async function WordPage({
               <ul className="tagcloud">
                 {indexed.tags[dim.key].map((t) => (
                   <li key={t.slug}>
-                    <Link className="chip" href={`/tag/${dim.key}/${t.slug}`}>
-                      <span>{t.name}</span>
-                    </Link>
+                    <Chip href={`/tag/${dim.key}/${t.slug}`} label={t.name} />
                   </li>
                 ))}
               </ul>

@@ -1,13 +1,20 @@
 import Link from "next/link";
+import Chip from "./Chip";
 
 export type ArchWord = { id: string; term: string; termZh: string; t: string[] };
 export type ArchDay = { date: string; words: ArchWord[] };
 export type ArchDim = { key: string; name: string };
-export type ArchTag = { dimension: string; slug: string; name: string; count: number };
+export type ArchTag = {
+  dimension: string;
+  slug: string;
+  name: string;
+  description: string;
+  count: number;
+};
 
 /**
  * 档案的展示视图：维度/标签两级胶囊 + 日期分组列表。
- * 选维度出第二行标签胶囊（带词数）；选中标签后按 "dimension:slug" 过滤，整天无命中则隐藏。
+ * 选维度出第二行标签胶囊（带词数）；选中标签后显示其一句话说明；选中标签后按 "dimension:slug" 过滤，整天无命中则隐藏。
  * onSelect 缺省时为纯静态渲染（用作 Suspense fallback，服务端可完整输出“全部”视图）。
  */
 export default function ArchiveView({
@@ -40,49 +47,28 @@ export default function ArchiveView({
   return (
     <>
       <div className="chips" role="group" aria-label="按标签维度筛选">
-        <button
-          className="chip"
-          type="button"
-          aria-pressed={dim === ""}
-          onClick={onSelect ? () => onSelect("", "") : undefined}
-        >
-          <span>全部</span>
-        </button>
+        <Chip label="全部" pressed={dim === ""} onClick={onSelect && (() => onSelect("", ""))} />
         {dims.map((d) => (
-          <button
+          <Chip
             key={d.key}
-            className="chip"
-            type="button"
-            aria-pressed={dim === d.key}
-            onClick={onSelect ? () => onSelect(d.key, "") : undefined}
-          >
-            <span>{d.name}</span>
-          </button>
+            label={d.name}
+            pressed={dim === d.key}
+            onClick={onSelect && (() => onSelect(d.key, ""))}
+          />
         ))}
       </div>
       {dim && (
         <div className="chips" role="group" aria-label="按标签筛选">
-          <button
-            className="chip"
-            type="button"
-            aria-pressed={tag === ""}
-            onClick={onSelect ? () => onSelect(dim, "") : undefined}
-          >
-            <span>全部</span>
-          </button>
+          <Chip label="全部" pressed={tag === ""} onClick={onSelect && (() => onSelect(dim, ""))} />
           {dimTags.map((t) => (
-            <button
+            <Chip
               key={t.slug}
-              className="chip"
-              type="button"
-              aria-pressed={tag === t.slug}
-              onClick={onSelect ? () => onSelect(dim, t.slug) : undefined}
-            >
-              <span>
-                {t.name}
-                <span className="tcount">{t.count}</span>
-              </span>
-            </button>
+              label={t.name}
+              count={t.count}
+              title={t.description}
+              pressed={tag === t.slug}
+              onClick={onSelect && (() => onSelect(dim, t.slug))}
+            />
           ))}
         </div>
       )}
@@ -92,6 +78,7 @@ export default function ArchiveView({
             {dimName}：{selTag.name}
           </Link>
           <span className="subtle"> · {selTag.count} 个词</span>
+          <span className="filterdesc">{selTag.description}</span>
         </p>
       )}
       {groups.length > 0 ? (
