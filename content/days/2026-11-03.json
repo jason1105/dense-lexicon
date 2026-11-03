@@ -1,0 +1,35 @@
+{
+  "date": "2026-11-03",
+  "words": [
+    {
+      "id": "conway-s-law",
+      "term": "Conway's Law",
+      "termZh": "康威定律",
+      "domain": "architecture",
+      "definition": "Melvin Conway 在 1967 年提出的观察：设计系统的组织，产出的系统结构会复制这个组织的沟通结构。团队之间怎么分工、怎么沟通，模块和接口最后就怎么切。",
+      "compresses": ["系统结构映射组织沟通结构", "团队边界变成模块与接口边界", "跨团队沟通贵的地方耦合别扭", "逆康威：按目标架构组建团队"],
+      "scene": "B/S 改 C/S 时，JavaFX 壳和前端页面分属两个组，JCEF 里 JS 与 Java 之间的桥接接口就成了扯皮最多、最难改的地方。想让这层接口稳定，先让一个团队对它端到端负责。",
+      "misconception": "把它当成一句吐槽“组织烂所以代码烂”。它其实能用来指导分工：想要什么架构，就先按那个架构划团队。边界划不清，往往先是组织问题，然后才是技术问题。"
+    },
+    {
+      "id": "n-1-query-problem",
+      "term": "N+1 Query Problem",
+      "termZh": "N+1 查询问题",
+      "domain": "data",
+      "definition": "先用 1 次查询拿到 N 条记录，再为每条记录各发 1 次查询加载关联数据，一共发出 N+1 条 SQL。多见于 ORM 的懒加载：代码看起来只是访问一个属性，背后却是一次数据库往返。",
+      "compresses": ["1 次主查询加 N 次关联查询", "懒加载的便利换来往返次数", "join fetch、批量 IN、DTO 投影的取舍", "开发环境数据少，暴露不出来"],
+      "scene": "报告组件列出 200 张报表，每张都懒加载“创建人”，Hibernate 悄悄发了 201 条 SQL，页面在生产环境变慢。用 JOIN FETCH、@BatchSize 或 @EntityGraph 把关联数据一次或分批取回。",
+      "misconception": "以为遇到就一律改成 join fetch。同时抓取多个集合关联会产生笛卡尔积，行数暴涨，分页也会失效（Hibernate 甚至改在内存里分页）。这种情况下用 @BatchSize 批量查询更合适。"
+    },
+    {
+      "id": "same-origin-policy",
+      "term": "Same-Origin Policy",
+      "termZh": "同源策略",
+      "domain": "security",
+      "definition": "浏览器的基础安全规则：只有协议、域名、端口三者都相同的页面脚本，才能互相读取数据。它是 Web 安全的地基，防止恶意网站借用户的登录态读取其他站点的内容。",
+      "compresses": ["协议 + 域名 + 端口都相同才算同源", "限制的是跨源读取，不是发请求", "CORS、postMessage 是受控开口", "Cookie 作用域、CSRF、iframe 隔离都与之相关"],
+      "scene": "老系统改成“本地 Firefox 加本地 server”后，页面在 http://localhost:8080，接口在远端域名，立刻碰到跨域报错。JCEF 里用 file:// 加载页面，origin 常为 null，请求也会被拦下。",
+      "misconception": "图省事直接关掉浏览器的 web security，或者配 Access-Control-Allow-Origin: * 还想带凭证（浏览器会拒绝）。这等于拆地基。正确做法是自定义 scheme、本地代理，或精确的 CORS 白名单。"
+    }
+  ]
+}
