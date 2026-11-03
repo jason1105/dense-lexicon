@@ -85,11 +85,6 @@ export interface DayRef {
   ids: string[];
 }
 
-export interface DomainCount {
-  domain: Domain;
-  count: number;
-}
-
 /** index 顶层 tags：一个被使用的标签及其词数 */
 export interface TagCount {
   dimension: TagDimension;
@@ -124,6 +119,5 @@ export interface IndexFile {
   latest: string | null;
   days: DayRef[];
   words: IndexedWord[];
-  domains: DomainCount[];
   tags: TagCount[];
 }

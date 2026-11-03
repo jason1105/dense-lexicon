@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { Word } from "@/lib/types";
-import DomainTag from "./DomainTag";
 
 /**
  * 词条卡片：默认收起，展开后显示 记忆钩子 / 压缩了什么 / 场景 / 常见误解。
@@ -24,7 +23,6 @@ export default function WordCard({
         </h2>
         <span className="t-subtitle zh">{word.termZh}</span>
       </div>
-      <DomainTag domain={word.domain} />
       <p className="t-body def">{word.definition}</p>
       <div className={`more${open ? " open" : ""}`} id={moreId}>
         <div>

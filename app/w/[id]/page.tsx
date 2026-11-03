@@ -8,7 +8,6 @@ import {
   getTagVocab,
   relationWordId,
 } from "@/lib/content";
-import { domainLabel } from "@/lib/domains";
 import type { Relation } from "@/lib/types";
 
 export const dynamicParams = false;
@@ -101,10 +100,7 @@ export default async function WordPage({
       <h1 className="t-display" lang="en">
         {word.term}
       </h1>
-      <p className="t-subtitle wmeta">
-        {word.termZh} ·{" "}
-        <span className="subtle">{domainLabel(word.domain)}</span>
-      </p>
+      <p className="t-subtitle wmeta">{word.termZh}</p>
       <p className="whook">{word.hook}</p>
       <p className="t-body wdef">{word.definition}</p>
       <div className="wsecs">

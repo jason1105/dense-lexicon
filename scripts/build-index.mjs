@@ -2,7 +2,6 @@ import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   CONTENT_DIR,
-  domainOrder,
   listDayFiles,
   readDayFile,
   readTagsFile,
@@ -55,10 +54,6 @@ for (const w of words) {
     .map((c) => c.id);
 }
 
-/* domains：只列 count>0，按 schema 枚举顺序 */
-const counts = new Map();
-for (const w of words) counts.set(w.domain, (counts.get(w.domain) ?? 0) + 1);
-
 /* tags：只列被使用的（count>0），维度按词表顺序、维度内按词表顺序 */
 const tagCounts = new Map(); // `${dimension}:${slug}` -> count
 for (const w of words) {
@@ -85,9 +80,6 @@ const index = {
   latest: desc[0]?.date ?? null,
   days: desc.map((d) => ({ date: d.date, ids: d.words.map((w) => w.id) })),
   words,
-  domains: domainOrder()
-    .filter((domain) => (counts.get(domain) ?? 0) > 0)
-    .map((domain) => ({ domain, count: counts.get(domain) })),
   tags,
 };
 
