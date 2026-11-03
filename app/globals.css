@@ -686,6 +686,30 @@ mark {
   padding: 0 1px;
 }
 
+/* ---- tags index / tag page ---- */
+.tagdim {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.tagdim:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+  margin-top: 24px;
+}
+.tagdim h2 {
+  margin-bottom: 8px;
+}
+.tcount {
+  margin-left: 4px;
+  color: var(--fg-subtle);
+}
+.tagdesc {
+  color: var(--fg-muted);
+  max-width: 34em;
+  margin-bottom: 16px;
+}
+
 /* ---- about ---- */
 .prose p + p {
   margin-top: 16px;

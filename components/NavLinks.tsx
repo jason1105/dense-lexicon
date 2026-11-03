@@ -15,6 +15,7 @@ export default function NavLinks({ latestDate }: { latestDate?: string }) {
   const items = [
     { href: "/", label: "今日", active: homeActive },
     { href: "/archive", label: "档案", active: pathname === "/archive" },
+    { href: "/tags", label: "标签", active: pathname === "/tags" },
     { href: "/search", label: "搜索", active: pathname === "/search" },
     { href: "/about", label: "关于", active: pathname === "/about" },
   ];
