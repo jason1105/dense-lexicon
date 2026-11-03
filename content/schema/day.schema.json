@@ -98,7 +98,7 @@
             "engineering": { "$ref": "#/$defs/tagList", "description": "工程" },
             "cognitive": { "$ref": "#/$defs/tagList", "description": "认知" },
             "scenario": { "$ref": "#/$defs/tagList", "description": "场景" },
-            "level": { "$ref": "#/$defs/tagList", "maxItems": 2, "description": "层级" }
+            "level": { "$ref": "#/$defs/tagList", "type": "array", "maxItems": 2, "description": "层级" }
           }
         },
         "background": { "type": "string", "minLength": 20, "maxLength": 240, "description": "背景：在什么年代、什么环境下出现" },
