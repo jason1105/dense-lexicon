@@ -7,55 +7,68 @@
       "tags": [
         {
           "slug": "decision-science",
-          "name": "决策科学"
+          "name": "决策科学",
+          "description": "研究人和组织如何在不确定中做出更好选择的学科"
         },
         {
           "slug": "military-science",
-          "name": "军事学"
+          "name": "军事学",
+          "description": "研究战争、作战与对抗策略的学科"
         },
         {
           "slug": "information-security",
-          "name": "信息安全"
+          "name": "信息安全",
+          "description": "研究如何保护信息的机密性、完整性和可用性"
         },
         {
           "slug": "cognitive-psychology",
-          "name": "认知心理学"
+          "name": "认知心理学",
+          "description": "研究感知、记忆、判断等心智过程及其偏差"
         },
         {
           "slug": "game-theory",
-          "name": "博弈论"
+          "name": "博弈论",
+          "description": "研究多方在相互影响下如何决策的数学理论"
         },
         {
           "slug": "software-engineering",
-          "name": "软件工程"
+          "name": "软件工程",
+          "description": "用系统化方法设计、构建和维护软件的学科"
         },
         {
           "slug": "artificial-intelligence",
-          "name": "人工智能"
+          "name": "人工智能",
+          "description": "让机器完成感知、推理、生成等智能任务的学科"
         },
         {
           "slug": "distributed-systems",
-          "name": "分布式系统"
+          "name": "分布式系统",
+          "description": "研究多台机器经网络协作、应对部分失败的学科"
         },
         {
           "slug": "database-theory",
-          "name": "数据库理论"
+          "name": "数据库理论",
+          "description": "研究数据建模、查询、事务与一致性的理论"
         },
         {
           "slug": "mathematics",
-          "name": "数学"
+          "name": "数学",
+          "description": "提供抽象概念与严格推理的基础学科"
         },
         {
           "slug": "control-theory",
-          "name": "控制论"
+          "name": "控制论",
+          "description": "研究系统如何借助反馈保持稳定、达成目标"
         },
         {
           "slug": "organizational-behavior",
-          "name": "组织行为学"
+          "name": "组织行为学",
+          "description": "研究组织中的个人与团队如何沟通、协作和决策"
         },
         {
           "slug": "web-technology",
-          "name": "Web 技术"
+          "name": "Web 技术",
+          "description": "浏览器、HTTP 与 Web 平台的技术和标准"
         }
       ]
     },
@@ -65,71 +78,88 @@
       "tags": [
         {
           "slug": "security",
-          "name": "安全"
+          "name": "安全",
+          "description": "防止系统被未授权访问、篡改或滥用"
         },
         {
           "slug": "risk-analysis",
-          "name": "风险分析"
+          "name": "风险分析",
+          "description": "找出可能出错的地方，评估概率和影响"
         },
         {
           "slug": "engineering-management",
-          "name": "研发管理"
+          "name": "研发管理",
+          "description": "研发团队的组织、协作、计划与决策"
         },
         {
           "slug": "reliability",
-          "name": "可靠性"
+          "name": "可靠性",
+          "description": "出现故障和异常时，仍能持续正确地提供服务"
         },
         {
           "slug": "architecture",
-          "name": "架构"
+          "name": "架构",
+          "description": "系统的整体结构、模块边界与依赖关系"
         },
         {
           "slug": "migration",
-          "name": "系统迁移"
+          "name": "系统迁移",
+          "description": "把功能或数据从旧系统逐步迁到新系统"
         },
         {
           "slug": "testing",
-          "name": "测试"
+          "name": "测试",
+          "description": "用自动或手工检查确认软件行为符合预期"
         },
         {
           "slug": "continuous-delivery",
-          "name": "持续交付"
+          "name": "持续交付",
+          "description": "让代码随时能安全、快速地发布到生产"
         },
         {
           "slug": "ai-engineering",
-          "name": "AI 工程"
+          "name": "AI 工程",
+          "description": "用大模型构建可靠应用的工程实践"
         },
         {
           "slug": "integration",
-          "name": "系统集成"
+          "name": "系统集成",
+          "description": "让不同系统可靠地连接、交换数据"
         },
         {
           "slug": "data-consistency",
-          "name": "数据一致性"
+          "name": "数据一致性",
+          "description": "多个副本或系统之间的数据保持一致、不冲突"
         },
         {
           "slug": "messaging",
-          "name": "消息"
+          "name": "消息",
+          "description": "系统之间通过消息异步通信"
         },
         {
           "slug": "api-design",
-          "name": "接口设计"
+          "name": "接口设计",
+          "description": "设计清晰、稳定、易用的服务接口"
         },
         {
           "slug": "observability",
-          "name": "可观测"
+          "name": "可观测",
+          "description": "借助日志、指标和链路追踪，从外部理解系统内部状态"
         },
         {
           "slug": "data-access",
-          "name": "数据访问"
+          "name": "数据访问",
+          "description": "应用读写数据库的方式及其效率"
         },
         {
           "slug": "performance",
-          "name": "性能"
+          "name": "性能",
+          "description": "系统的响应速度、吞吐量与资源消耗"
         },
         {
           "slug": "frontend",
-          "name": "前端"
+          "name": "前端",
+          "description": "运行在浏览器里、直接面向用户的部分"
         }
       ]
     },
@@ -139,75 +169,93 @@
       "tags": [
         {
           "slug": "adversarial-thinking",
-          "name": "对抗性思维"
+          "name": "对抗性思维",
+          "description": "站在对手的角度找漏洞和攻击路径"
         },
         {
           "slug": "decision-quality",
-          "name": "决策质量"
+          "name": "决策质量",
+          "description": "判断决定的好坏要看过程，而不只看结果"
         },
         {
           "slug": "risk-anticipation",
-          "name": "风险预判"
+          "name": "风险预判",
+          "description": "在问题发生之前设想它会怎样发生"
         },
         {
           "slug": "cognitive-bias",
-          "name": "认知偏差"
+          "name": "认知偏差",
+          "description": "系统性偏离理性判断的思维倾向"
         },
         {
           "slug": "systems-thinking",
-          "name": "系统思维"
+          "name": "系统思维",
+          "description": "从整体、关联和反馈的角度看问题"
         },
         {
           "slug": "incremental-thinking",
-          "name": "渐进思维"
+          "name": "渐进思维",
+          "description": "小步替换、持续验证，而不是一次推倒重来"
         },
         {
           "slug": "risk-control",
-          "name": "风险控制"
+          "name": "风险控制",
+          "description": "限制失败的范围和代价"
         },
         {
           "slug": "reproducibility",
-          "name": "可重复性"
+          "name": "可重复性",
+          "description": "同样的输入和环境应该得到同样的结果"
         },
         {
           "slug": "signal-and-noise",
-          "name": "信号与噪声"
+          "name": "信号与噪声",
+          "description": "从大量信息里分辨出真正有用的部分"
         },
         {
           "slug": "information-selection",
-          "name": "信息取舍"
+          "name": "信息取舍",
+          "description": "决定哪些信息该放进来、哪些该拿掉"
         },
         {
           "slug": "trade-off-thinking",
-          "name": "权衡思维"
+          "name": "权衡思维",
+          "description": "承认每个选择都有代价，并说清为什么值得"
         },
         {
           "slug": "boundary-thinking",
-          "name": "边界思维"
+          "name": "边界思维",
+          "description": "划清职责与依赖的边界，把变化隔离在边界内"
         },
         {
           "slug": "failure-isolation",
-          "name": "失败隔离"
+          "name": "失败隔离",
+          "description": "不让局部故障扩散成全局故障"
         },
         {
           "slug": "feedback-loop",
-          "name": "反馈闭环"
+          "name": "反馈闭环",
+          "description": "观察结果、据此调整，形成持续改进的回路"
         },
         {
           "slug": "invariant-thinking",
-          "name": "不变量思维"
+          "name": "不变量思维",
+          "description": "找出无论怎样变化都必须成立的性质"
         },
         {
           "slug": "dependency-direction",
-          "name": "依赖方向"
+          "name": "依赖方向",
+          "description": "让易变的部分依赖稳定的部分，而不是反过来"
         },
         {
           "slug": "hidden-cost",
-          "name": "隐性成本"
+          "name": "隐性成本",
+          "description": "不直接显现、却会持续累积的代价"
         },
         {
           "slug": "least-privilege",
-          "name": "最小权限"
+          "name": "最小权限",
+          "description": "只授予完成任务所必需的最少权限"
         }
       ]
     },
@@ -217,91 +265,113 @@
       "tags": [
         {
           "slug": "design-review",
-          "name": "设计评审"
+          "name": "设计评审",
+          "description": "方案落地前，团队审查设计是否合理"
         },
         {
           "slug": "pre-launch",
-          "name": "上线前"
+          "name": "上线前",
+          "description": "新功能或系统发布前的检查与准备"
         },
         {
           "slug": "strategic-planning",
-          "name": "战略规划"
+          "name": "战略规划",
+          "description": "制定中长期方向和关键取舍"
         },
         {
           "slug": "project-kickoff",
-          "name": "项目启动"
+          "name": "项目启动",
+          "description": "项目开始时对齐目标、范围和风险"
         },
         {
           "slug": "incident-drill",
-          "name": "应急演练"
+          "name": "应急演练",
+          "description": "模拟故障或攻击，检验团队的应对能力"
         },
         {
           "slug": "legacy-modernization",
-          "name": "遗留系统改造"
+          "name": "遗留系统改造",
+          "description": "在不中断业务的前提下逐步更新老系统"
         },
         {
           "slug": "architecture-review",
-          "name": "架构评审"
+          "name": "架构评审",
+          "description": "审查系统结构、边界和关键技术决策"
         },
         {
           "slug": "ci-troubleshooting",
-          "name": "CI 排障"
+          "name": "CI 排障",
+          "description": "排查持续集成里失败或时好时坏的构建与测试"
         },
         {
           "slug": "code-review",
-          "name": "代码评审"
+          "name": "代码评审",
+          "description": "合并前由他人审阅代码变更"
         },
         {
           "slug": "ai-assisted-coding",
-          "name": "AI 辅助编码"
+          "name": "AI 辅助编码",
+          "description": "借助 AI 编程助手写代码、改代码"
         },
         {
           "slug": "agent-design",
-          "name": "智能体设计"
+          "name": "智能体设计",
+          "description": "设计能调用工具、自主完成任务的 AI 智能体"
         },
         {
           "slug": "system-integration",
-          "name": "系统集成"
+          "name": "系统集成",
+          "description": "对接第三方系统或遗留系统"
         },
         {
           "slug": "dependency-governance",
-          "name": "依赖治理"
+          "name": "依赖治理",
+          "description": "管控模块之间以及对外部的依赖"
         },
         {
           "slug": "performance-troubleshooting",
-          "name": "性能排查"
+          "name": "性能排查",
+          "description": "定位并解决响应慢、资源占用高的问题"
         },
         {
           "slug": "event-driven-design",
-          "name": "事件驱动设计"
+          "name": "事件驱动设计",
+          "description": "用事件在服务之间传递状态变化"
         },
         {
           "slug": "api-design",
-          "name": "接口设计"
+          "name": "接口设计",
+          "description": "定义或修改对外暴露的接口"
         },
         {
           "slug": "message-consumption",
-          "name": "消息消费"
+          "name": "消息消费",
+          "description": "处理消息队列里的消息，包括重试与去重"
         },
         {
           "slug": "production-debugging",
-          "name": "线上排障"
+          "name": "线上排障",
+          "description": "在生产环境定位和修复故障"
         },
         {
           "slug": "incident-review",
-          "name": "事故复盘"
+          "name": "事故复盘",
+          "description": "故障之后回顾原因、提炼改进"
         },
         {
           "slug": "team-design",
-          "name": "团队划分"
+          "name": "团队划分",
+          "description": "决定团队怎么拆分、各自负责什么"
         },
         {
           "slug": "cross-origin-integration",
-          "name": "跨域集成"
+          "name": "跨域集成",
+          "description": "让不同源的页面与服务安全地交互"
         },
         {
           "slug": "security-review",
-          "name": "安全评审"
+          "name": "安全评审",
+          "description": "审查系统设计或代码的安全风险"
         }
       ]
     },

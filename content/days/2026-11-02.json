@@ -5,7 +5,6 @@
       "id": "idempotency",
       "term": "Idempotency",
       "termZh": "幂等性",
-      "domain": "distributed-systems",
       "hook": "按一次和按十次，结果一样。",
       "definition": "同一个操作执行一次和执行多次，对系统状态产生的效果相同。分布式系统里超时和重试不可避免，幂等让重复请求变得安全。常见实现：幂等键（请求 ID）去重、数据库唯一约束、基于状态或版本号的条件更新。",
       "tags": {
@@ -98,7 +97,6 @@
       "id": "hexagonal-architecture",
       "term": "Hexagonal Architecture",
       "termZh": "六边形架构",
-      "domain": "architecture",
       "hook": "核心在中间，技术都是可插拔的插头。",
       "definition": "Alistair Cockburn 提出的架构风格，又称“端口与适配器”。应用核心（领域与用例）居中，通过“端口”接口定义与外界的交互；UI、数据库、消息、外部服务都作为“适配器”从外部接入，依赖方向始终指向核心。",
       "tags": {
@@ -185,7 +183,6 @@
       "id": "observability",
       "term": "Observability",
       "termZh": "可观测性",
-      "domain": "observability",
       "hook": "不改代码，也能问清系统里发生了什么。",
       "definition": "通过系统对外输出的遥测数据（日志、指标、链路追踪等）推断其内部状态的能力，概念源自控制论。它强调能回答事先没想到的问题：不改代码、不临时加日志，也能排查未知故障。",
       "tags": {

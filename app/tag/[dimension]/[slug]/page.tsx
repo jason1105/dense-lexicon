@@ -32,7 +32,7 @@ export async function generateMetadata({
   const { dimension, slug } = await params;
   const r = resolve(dimension, slug);
   if (!r) return {};
-  return { title: `${r.dim.name}：${r.tag.name}` };
+  return { title: `${r.dim.name}：${r.tag.name}`, description: r.tag.description };
 }
 
 /** 标签页：标题“维度：标签”，词列表（term / termZh / hook / 所属日期），日期倒序 */
@@ -56,7 +56,7 @@ export default async function TagPage({
         {r.dim.name}：{r.tag.name}
       </h1>
       <p className="t-meta subtle tagmeta">{words.length} 个词</p>
-      {r.tag.description && <p className="tagdesc">{r.tag.description}</p>}
+      <p className="tagdesc">{r.tag.description}</p>
       <ul className="results">
         {words.map((w) => (
           <li key={w.id}>

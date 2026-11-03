@@ -34,7 +34,6 @@ for (const day of desc) {
       id: w.id,
       term: w.term,
       termZh: w.termZh,
-      domain: w.domain,
       date: day.date,
       hook: w.hook,
       definition: w.definition,
@@ -94,12 +93,13 @@ const tags = vocab.dimensions.flatMap((dim) =>
       dimension: dim.key,
       slug: t.slug,
       name: t.name,
+      description: t.description,
       count: tagCounts.get(`${dim.key}:${t.slug}`),
     })),
 );
 
 const index = {
-  version: 3,
+  version: 4,
   latest: desc[0]?.date ?? null,
   days: desc.map((d) => ({ date: d.date, ids: d.words.map((w) => w.id) })),
   words,

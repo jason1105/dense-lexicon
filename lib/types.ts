@@ -1,15 +1,3 @@
-export type Domain =
-  | "architecture"
-  | "distributed-systems"
-  | "data"
-  | "testing"
-  | "devops"
-  | "observability"
-  | "security"
-  | "ai-engineering"
-  | "frontend"
-  | "process";
-
 /** 标签的五个维度（与 content/schema/tags.schema.json 的 key 枚举一致） */
 export type TagDimension =
   | "discipline"
@@ -45,7 +33,6 @@ export interface Word {
   id: string;
   term: string;
   termZh: string;
-  domain: Domain;
   hook: string;
   definition: string;
   tags: WordTags;
@@ -71,7 +58,6 @@ export interface IndexedWord {
   id: string;
   term: string;
   termZh: string;
-  domain: Domain;
   date: string;
   hook: string;
   definition: string;
@@ -90,6 +76,7 @@ export interface TagCount {
   dimension: TagDimension;
   slug: string;
   name: string;
+  description: string;
   count: number;
 }
 
@@ -97,7 +84,7 @@ export interface TagCount {
 export interface VocabTag {
   slug: string;
   name: string;
-  description?: string;
+  description: string;
 }
 
 /** content/tags.json 里的一个维度 */
@@ -115,7 +102,7 @@ export interface TagVocab {
 
 /** content/index.json（构建产物，scripts/build-index.mjs 生成） */
 export interface IndexFile {
-  version: 3;
+  version: 4;
   latest: string | null;
   days: DayRef[];
   words: IndexedWord[];

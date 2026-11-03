@@ -5,7 +5,6 @@
       "id": "conway-s-law",
       "term": "Conway's Law",
       "termZh": "康威定律",
-      "domain": "architecture",
       "hook": "组织怎么说话，系统就怎么长。",
       "definition": "Melvin Conway 1968 年发表的观察：设计系统的组织，产出的系统结构会复制这个组织的沟通结构。团队之间怎么分工、怎么沟通，模块和接口最后就怎么切。",
       "tags": {
@@ -91,7 +90,6 @@
       "id": "n-1-query-problem",
       "term": "N+1 Query Problem",
       "termZh": "N+1 查询问题",
-      "domain": "data",
       "hook": "看着是读个属性，背后是一次数据库往返。",
       "definition": "先用 1 次查询拿到 N 条记录，再为每条记录各发 1 次查询加载关联数据，一共发出 N+1 条 SQL。多见于 ORM 的懒加载：代码看起来只是访问一个属性，背后却是一次数据库往返。",
       "tags": {
@@ -180,7 +178,6 @@
       "id": "same-origin-policy",
       "term": "Same-Origin Policy",
       "termZh": "同源策略",
-      "domain": "security",
       "hook": "不同源的脚本，看得见请求，读不到回应。",
       "definition": "浏览器的基础安全规则：只有协议、域名、端口三者都相同的页面脚本，才能互相读取数据。它是 Web 安全的地基，防止恶意网站借用户的登录态读取其他站点的内容。",
       "tags": {

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Chip from "@/components/Chip";
 import { getIndex, getTagVocab } from "@/lib/content";
 import type { TagCount, TagDimension } from "@/lib/types";
 
 export const metadata: Metadata = { title: "标签" };
 
-/** 标签索引：五个维度分组，只列被使用的标签（含词数），点击进入标签页 */
+/** 标签索引：五个维度分组，只列被使用的标签（含词数，悬停显示一句话说明），点击进入标签页 */
 export default function TagsPage() {
   const index = getIndex();
   const vocab = getTagVocab();
@@ -33,12 +33,12 @@ export default function TagsPage() {
             <ul className="tagcloud">
               {(byDim.get(d.key) ?? []).map((t) => (
                 <li key={t.slug}>
-                  <Link className="chip" href={`/tag/${d.key}/${t.slug}`}>
-                    <span>
-                      {t.name}
-                      <span className="tcount">{t.count}</span>
-                    </span>
-                  </Link>
+                  <Chip
+                    href={`/tag/${d.key}/${t.slug}`}
+                    label={t.name}
+                    count={t.count}
+                    title={t.description}
+                  />
                 </li>
               ))}
             </ul>

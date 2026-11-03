@@ -394,26 +394,24 @@ nav a[aria-current="page"] {
 .page-h1 {
   margin-bottom: 20px;
 }
+/* 标签胶囊（components/Chip.tsx，全站共用：档案两行、/tags、词条页）
+   单行“名称 词数”；外层 .chip 撑 ≥44px 点击区，可见胶囊 .pill 紧凑；行可换行 */
 .chips {
   display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  margin: 0 calc(-1 * var(--pad-x)) 24px;
-  padding: 0 var(--pad-x);
-  scrollbar-width: none;
-}
-.chips::-webkit-scrollbar {
-  display: none;
+  flex-wrap: wrap;
+  column-gap: 8px;
+  margin-bottom: 16px;
 }
 .chip {
   min-height: 44px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  flex-shrink: 0;
 }
-.chip span {
-  display: block;
-  padding: 4px 12px;
+.pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 3px 10px;
   border: 1px solid var(--border);
   border-radius: 999px;
   font-size: 13px;
@@ -421,21 +419,35 @@ nav a[aria-current="page"] {
   color: var(--fg-muted);
   white-space: nowrap;
 }
-.chip:hover span {
+.chip:hover .pill {
   border-color: var(--fg-subtle);
 }
-.chip[aria-pressed="true"] span {
+.chip[aria-pressed="true"] .pill {
   background: var(--accent-soft);
   color: var(--accent);
   border-color: transparent;
 }
-/* 第二行标签胶囊紧接第一行（首行底距 24px − 16px = 行间 8px） */
+.tcount {
+  color: var(--fg-subtle);
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.chip[aria-pressed="true"] .tcount {
+  color: inherit;
+}
+/* 第二行标签胶囊紧接第一行（行间与换行间距一致） */
 .chips + .chips {
   margin-top: -16px;
 }
 /* 选中标签的 meta 行：链接到标签页；触控区 ≥44px（纵向 padding 不撑行距） */
 .filtermeta {
-  margin: -16px 0 24px;
+  margin: -8px 0 24px;
+}
+.filterdesc {
+  display: block;
+  color: var(--fg-muted);
+  max-width: 34em;
 }
 .filtermeta a {
   display: inline-flex;
@@ -535,7 +547,7 @@ nav a[aria-current="page"] {
 .tagcloud {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  column-gap: 8px;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -707,10 +719,6 @@ mark {
 /* 标签页 h1 下的词数 meta */
 .tagmeta {
   margin-bottom: 16px;
-}
-.tcount {
-  margin-left: 4px;
-  color: var(--fg-subtle);
 }
 .tagdesc {
   color: var(--fg-muted);
