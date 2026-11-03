@@ -77,7 +77,7 @@ export interface IndexedWord {
   definition: string;
   compresses: string[];
   tags: IndexedTags;
-  related: string[];
+  similar: string[];
 }
 
 export interface DayRef {
@@ -115,7 +115,7 @@ export interface TagVocab {
 
 /** content/index.json（构建产物，scripts/build-index.mjs 生成） */
 export interface IndexFile {
-  version: 2;
+  version: 3;
   latest: string | null;
   days: DayRef[];
   words: IndexedWord[];

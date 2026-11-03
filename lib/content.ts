@@ -92,12 +92,12 @@ export function weekdayZh(date: string): string {
   return WEEK[new Date(`${date}T00:00:00Z`).getUTCDay()] ?? "";
 }
 
-/** 相关词（index 已排好序，直接按 id 取） */
-export function getRelatedWords(id: string): IndexedWord[] {
+/** 标签相近的词（index 已排好序，直接按 id 取） */
+export function getSimilarWords(id: string): IndexedWord[] {
   const w = getWord(id);
   if (!w) return [];
-  return w.related
-    .map((rid) => getWord(rid))
+  return w.similar
+    .map((sid) => getWord(sid))
     .filter((x): x is IndexedWord => x !== null);
 }
 

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import {
   getIndex,
   getFullWord,
-  getRelatedWords,
+  getSimilarWords,
   getTagVocab,
   relationWordId,
 } from "@/lib/content";
@@ -89,7 +89,7 @@ export default async function WordPage({
   if (!full) notFound();
   const { word, date } = full;
   const indexed = getIndex().words.find((w) => w.id === id)!; // getFullWord 已确认存在
-  const related = getRelatedWords(id); // 同领域推荐，为空时整节隐藏
+  const similar = getSimilarWords(id); // 标签相近推荐，为空时整节隐藏
   const vocab = getTagVocab();
 
   return (
@@ -188,17 +188,17 @@ export default async function WordPage({
           </ul>
         </section>
       </div>
-      {related.length > 0 && (
+      {similar.length > 0 && (
         <section className="related">
-          <h2 className="t-label">同领域</h2>
+          <h2 className="t-label">标签相近</h2>
           <ul>
-            {related.map((r) => (
-              <li key={r.id}>
-                <Link className="wline" href={`/w/${r.id}`}>
+            {similar.map((s) => (
+              <li key={s.id}>
+                <Link className="wline" href={`/w/${s.id}`}>
                   <span className="en" lang="en">
-                    {r.term}
+                    {s.term}
                   </span>
-                  <span className="zh">{r.termZh}</span>
+                  <span className="zh">{s.termZh}</span>
                 </Link>
               </li>
             ))}
