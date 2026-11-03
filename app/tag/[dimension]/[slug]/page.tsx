@@ -55,6 +55,7 @@ export default async function TagPage({
       <h1 className="t-title page-h1">
         {r.dim.name}：{r.tag.name}
       </h1>
+      <p className="t-meta subtle tagmeta">{words.length} 个词</p>
       {r.tag.description && <p className="tagdesc">{r.tag.description}</p>}
       <ul className="results">
         {words.map((w) => (
