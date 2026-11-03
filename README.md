@@ -107,7 +107,6 @@ npm run build        # 生产构建（自动先跑校验与索引生成）
 
 - 标签的取值必须在 [`content/tags.json`](content/tags.json) 对应维度的词表里——词表是标签的单一来源
 - 新增标签时在 `tags.json` 对应维度追加 `{ "slug", "name", "description" }`：`slug` 为 ASCII kebab-case（用于 URL），`description` 必填，是一句话中文说明（单行，2–60 字符），会显示在标签页与档案筛选里
-- v1 的 `domain` 字段已在 v2.2 删除，词条里不要再写；旧链接 `/archive?domain=<x>` 由客户端映射到对应标签（见 `lib/archive-query.ts`）
 - `id` 必须是 `term` 的 kebab-case（小写、非字母数字连续段替换为 `-`），且全库唯一
 - `relations` 里的 `term` 经 kebab-case 后命中已收录词条时，页面自动生成链接；不能指向词条自己
 - `sources` 必须是真实可访问的 http(s) 链接

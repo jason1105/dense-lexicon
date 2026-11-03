@@ -9,8 +9,8 @@ import ArchiveView, {
 } from "./ArchiveView";
 
 /**
- * 档案列表的客户端外壳：读 ?dim= / ?tag=（规则与旧 ?domain= 映射见
- * lib/archive-query.ts），筛选同步回 URL。
+ * 档案列表的客户端外壳：读 ?dim= / ?tag=（规则见 lib/archive-query.ts），
+ * 筛选同步回 URL。
  * 静态 HTML 由 Suspense fallback 提供完整“全部”视图。
  */
 export default function ArchiveList({
