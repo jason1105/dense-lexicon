@@ -3,8 +3,8 @@ import type { Word } from "@/lib/types";
 import DomainTag from "./DomainTag";
 
 /**
- * 词条卡片：默认收起，展开后显示 压缩了什么 / 场景 / 常见误解。
- * 展开区在卡片内左右通栏（.more 负外边距抵消卡片内边距）。
+ * 词条卡片：默认收起，展开后显示 记忆钩子 / 压缩了什么 / 场景 / 常见误解。
+ * 完整介绍在词条页，卡片保持轻量。展开区在卡片内左右通栏（.more 负外边距抵消卡片内边距）。
  */
 export default function WordCard({
   word,
@@ -29,6 +29,10 @@ export default function WordCard({
       <div className={`more${open ? " open" : ""}`} id={moreId}>
         <div>
           <div className="more-inner">
+            <section className="sec">
+              <h3 className="t-label">记忆钩子</h3>
+              <p className="hookline">{word.hook}</p>
+            </section>
             <section className="sec">
               <h3 className="t-label">压缩了什么</h3>
               <ul>
@@ -57,7 +61,7 @@ export default function WordCard({
         >
           {open ? "收起 ▴" : "展开 ▾"}
         </button>
-        <Link href={`/w/${word.id}`}>详情 →</Link>
+        <Link href={`/w/${word.id}`}>完整介绍 →</Link>
       </div>
     </article>
   );

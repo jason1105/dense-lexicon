@@ -1,6 +1,15 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import type { Day, IndexedWord, IndexFile, Word } from "./types";
+import { kebab } from "./kebab";
+import type {
+  Day,
+  IndexedWord,
+  IndexFile,
+  TagDimension,
+  TagVocab,
+  VocabDimension,
+  Word,
+} from "./types";
 
 const CONTENT_DIR = join(process.cwd(), "content");
 
@@ -90,4 +99,42 @@ export function getRelatedWords(id: string): IndexedWord[] {
   return w.related
     .map((rid) => getWord(rid))
     .filter((x): x is IndexedWord => x !== null);
+}
+
+/* ---- 标签词表（content/tags.json，构建期直接读盘） ---- */
+
+let vocabCache: TagVocab | null = null;
+
+/** 受控标签词表；维度顺序即 tags.json 里的顺序 */
+export function getTagVocab(): TagVocab {
+  if (!vocabCache) {
+    vocabCache = JSON.parse(
+      readFileSync(join(CONTENT_DIR, "tags.json"), "utf8"),
+    ) as TagVocab;
+  }
+  return vocabCache;
+}
+
+/** 按维度 key 取词表维度；未知 key 为 null */
+export function getTagDimension(key: string): VocabDimension | null {
+  return getTagVocab().dimensions.find((d) => d.key === key) ?? null;
+}
+
+/** 该标签下的词，日期倒序（index.words 本身已按日期倒序） */
+export function getWordsByTag(
+  dimension: TagDimension,
+  slug: string,
+): IndexedWord[] {
+  return getIndex().words.filter((w) =>
+    w.tags[dimension].some((t) => t.slug === slug),
+  );
+}
+
+/**
+ * relations 自动链接：kebab(term) 命中现有词条 id 时返回该 id（链接到 /w/<id>），
+ * 否则 null（纯文本展示）。
+ */
+export function relationWordId(term: string): string | null {
+  const id = kebab(term);
+  return getWord(id) !== null ? id : null;
 }

@@ -25,7 +25,7 @@ type Snippet = {
   mark: boolean;
 };
 
-/** 结果摘要：定义命中取窗口；否则命中条目行；否则定义开头 */
+/** 结果摘要：定义命中取窗口；否则命中条目行；否则钩子；否则定义开头 */
 function snippetOf(w: IndexedWord, q: string): Snippet {
   const lq = q.toLowerCase();
   const d = w.definition;
@@ -41,6 +41,9 @@ function snippetOf(w: IndexedWord, q: string): Snippet {
   }
   const c = w.compresses.find((x) => x.toLowerCase().includes(lq));
   if (c) return { prefix: "压缩了什么：", text: c, mark: true };
+  if (w.hook.toLowerCase().includes(lq)) {
+    return { text: w.hook, mark: true };
+  }
   return {
     text: d.slice(0, 60),
     suffix: d.length > 60 ? "…" : "",
@@ -49,8 +52,9 @@ function snippetOf(w: IndexedWord, q: string): Snippet {
 }
 
 /**
- * 搜索：term / termZh / definition / compresses 大小写不敏感子串匹配；
- * term 或 termZh 命中优先，再按日期倒序；输入去抖 120ms 并同步 ?q=。
+ * 搜索：term / termZh / definition / compresses / hook / 标签名
+ * 大小写不敏感子串匹配；term 或 termZh 命中优先，再按日期倒序；
+ * 输入去抖 120ms 并同步 ?q=。
  */
 export default function SearchBox() {
   const searchParams = useSearchParams();
@@ -113,7 +117,11 @@ export default function SearchBox() {
         const body =
           head ||
           w.definition.toLowerCase().includes(lq) ||
-          w.compresses.some((c) => c.toLowerCase().includes(lq));
+          w.hook.toLowerCase().includes(lq) ||
+          w.compresses.some((c) => c.toLowerCase().includes(lq)) ||
+          Object.values(w.tags).some((list) =>
+            list.some((t) => t.name.toLowerCase().includes(lq)),
+          );
         return body ? { w, rank: head ? 0 : 1 } : null;
       })
       .filter((x): x is { w: IndexedWord; rank: number } => x !== null)
@@ -130,7 +138,7 @@ export default function SearchBox() {
           id="q"
           ref={inputRef}
           type="search"
-          placeholder="搜索术语、中文、定义…"
+          placeholder="搜索术语、中文、标签、定义…"
           value={q}
           autoComplete="off"
           enterKeyHint="search"

@@ -6,30 +6,282 @@
       "term": "Red Teaming",
       "termZh": "红队",
       "domain": "process",
+      "hook": "站到对手那边，给自己的方案找死穴。",
       "definition": "源自军事推演和安全领域的做法：专门安排一方扮演对手，以攻击者视角主动寻找方案、系统或模型的漏洞与盲点。在安全领域是模拟真实攻击的对抗演练；在 AI 领域指用对抗性输入诱导大模型越狱、泄露数据或输出有害内容。",
-      "compresses": ["扮演对手，专挑毛病", "攻击者视角，而非作者视角", "独立于方案作者", "安全演练与 AI 模型红队测试"],
+      "tags": {
+        "discipline": [
+          "决策科学",
+          "军事学",
+          "信息安全"
+        ],
+        "engineering": [
+          "安全",
+          "风险分析"
+        ],
+        "cognitive": [
+          "对抗性思维",
+          "决策质量"
+        ],
+        "scenario": [
+          "设计评审",
+          "上线前",
+          "战略规划"
+        ],
+        "level": [
+          "方法"
+        ]
+      },
+      "background": "冷战时期，兰德公司（RAND）为美军做模拟推演，用“红方”代表苏联、“蓝方”代表己方，专门有人站在对手立场思考。之后情报、网络安全和企业战略都借用了这一做法，近年又成为大模型发布前安全评估的标准环节。",
+      "problem": "方案作者和组织天然有盲区，容易陷入群体思维：只从己方视角检验方案，看不到真实对手会怎么利用弱点。",
+      "actors": [
+        "兰德公司与美军：1960 年代初在冷战推演中以红方模拟苏联",
+        "美国陆军：2004 年设立首个军种级红队机构",
+        "英国国防部：发布《Red Teaming Handbook》",
+        "OpenAI、Anthropic 等：把红队测试纳入大模型发布前评估"
+      ],
+      "evolution": [
+        "1960s：兰德公司为美军做冷战推演，红方扮演对手",
+        "1990s：网络安全领域出现红队渗透演练，与负责防守的蓝队对抗",
+        "2004：美国陆军设立 Army Directed Studies Office，之后由 UFMCS 培训红队",
+        "2023：美国 AI 行政令（EO 14110）要求前沿模型报告红队测试结果",
+        "2020s：AI 红队成为大模型安全评估的常规环节"
+      ],
+      "compresses": [
+        "扮演对手，专挑毛病",
+        "攻击者视角，而非作者视角",
+        "独立于方案作者",
+        "安全演练与 AI 模型红队测试"
+      ],
       "scene": "评审“自动化脚本每天直接推内容到 main”的方案时，让 AI 当红队：“假设你想搞坏这个站，列出你能利用的漏洞。”它指出坏 JSON 可能绕过校验、令牌泄露后能改任意文件，于是方案改成 main 分支保护、走 PR 且 CI 必过。",
-      "misconception": "以为红队就是更严格的代码评审，或者为反对而反对。评审检查方案是否合乎规范；红队要站在对手立场，给出具体、可复现的攻击路径。只挑毛病却落不到可验证的攻击，或者由方案作者自己兼任红队，都会让它失去意义。"
+      "misconception": "以为红队就是更严格的代码评审，或者为反对而反对。评审检查方案是否合乎规范；红队要站在对手立场，给出具体、可复现的攻击路径。只挑毛病却落不到可验证的攻击，或者由方案作者自己兼任红队，都会让它失去意义。",
+      "relations": {
+        "related": [
+          {
+            "term": "Wargaming",
+            "termZh": "兵棋推演",
+            "note": "红队通常是推演中的对手一方"
+          },
+          {
+            "term": "Pre-mortem",
+            "termZh": "事前验尸",
+            "note": "同样在投入前主动找失败方式"
+          },
+          {
+            "term": "Threat Modeling",
+            "termZh": "威胁建模",
+            "note": "系统化列出攻击面，红队去验证"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Blue Team",
+            "termZh": "蓝队",
+            "note": "防守方：检测与响应攻击"
+          },
+          {
+            "term": "Groupthink",
+            "termZh": "群体思维",
+            "note": "红队要打破的状态"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "UK MoD: Red Teaming Handbook",
+          "url": "https://www.gov.uk/government/publications/a-guide-to-red-teaming"
+        },
+        {
+          "title": "NIST Glossary: Red Team",
+          "url": "https://csrc.nist.gov/glossary/term/red_team"
+        },
+        {
+          "title": "Wikipedia: Red team",
+          "url": "https://en.wikipedia.org/wiki/Red_team"
+        }
+      ]
     },
     {
       "id": "pre-mortem",
       "term": "Pre-mortem",
       "termZh": "事前验尸",
       "domain": "process",
+      "hook": "先宣布它已经死了，再问是怎么死的。",
       "definition": "心理学家 Gary Klein 提出的决策方法：项目启动前，先假设它已经彻底失败，再让每个人独立写下“它是怎么失败的”，汇总成需要提前应对的原因。借助事后回看的视角，绕开团队的乐观偏差和不敢唱反调的压力。",
-      "compresses": ["先假设已经失败", "倒推失败原因", "用事后视角找盲区", "抵消乐观偏差与从众压力"],
+      "tags": {
+        "discipline": [
+          "决策科学",
+          "认知心理学"
+        ],
+        "engineering": [
+          "风险分析",
+          "研发管理"
+        ],
+        "cognitive": [
+          "风险预判",
+          "决策质量",
+          "认知偏差"
+        ],
+        "scenario": [
+          "项目启动",
+          "设计评审",
+          "战略规划"
+        ],
+        "level": [
+          "方法"
+        ]
+      },
+      "background": "心理学家 Gary Klein 长期研究消防员、军官等专家在真实压力下如何决策。他发现团队在立项时普遍过度自信、不愿唱反调，于是借用 1989 年“前瞻性后见之明”的研究结论，设计了事前验尸，2007 年在《哈佛商业评论》上推广。",
+      "problem": "计划阶段的乐观偏差、群体思维和“不好意思泼冷水”，让很多风险在投入前没人说出口，等到失败后复盘才被看见。",
+      "actors": [
+        "Gary Klein（美国心理学家）：提出方法，2007 年发表于《哈佛商业评论》",
+        "Deborah Mitchell、J. Edward Russo、Nancy Pennington：1989 年“前瞻性后见之明”研究",
+        "Daniel Kahneman：在《思考，快与慢》中推荐，使其广为人知"
+      ],
+      "evolution": [
+        "1989：Mitchell 等发现，先假设事件已经发生，人能想出更多原因",
+        "2007：Klein 发表《Performing a Project Premortem》",
+        "2011：Kahneman《思考，快与慢》推荐，进入管理和投资界",
+        "2020s：被用在 AI 提示里：先让模型假设方案失败，再列原因"
+      ],
+      "compresses": [
+        "先假设已经失败",
+        "倒推失败原因",
+        "用事后视角找盲区",
+        "抵消乐观偏差与从众压力"
+      ],
       "scene": "决定把团队从 VS Code 迁到 Cursor 之前，对 AI 说：“假设三个月后这次迁移彻底失败了，写出最可能的五个原因。”它给出扩展不兼容、快捷键冲突、团队配置没同步等具体剧本，每一条都能转成迁移清单里的检查项。",
-      "misconception": "以为事前验尸就是列一张风险清单，或者和事后复盘是一回事。风险清单问“可能出什么问题”，容易流于泛泛；事前验尸先断定“已经失败了”，逼人讲出具体的失败故事。事后复盘发生在失败之后，事前验尸在投入之前。"
+      "misconception": "以为事前验尸就是列一张风险清单，或者和事后复盘是一回事。风险清单问“可能出什么问题”，容易流于泛泛；事前验尸先断定“已经失败了”，逼人讲出具体的失败故事。事后复盘发生在失败之后，事前验尸在投入之前。",
+      "relations": {
+        "related": [
+          {
+            "term": "Red Teaming",
+            "termZh": "红队",
+            "note": "都在投入前主动找失败方式"
+          },
+          {
+            "term": "Wargaming",
+            "termZh": "兵棋推演",
+            "note": "把失败剧本放进多方推演里验证"
+          },
+          {
+            "term": "Planning Fallacy",
+            "termZh": "规划谬误",
+            "note": "事前验尸要对冲的乐观偏差"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Post-mortem",
+            "termZh": "事后复盘",
+            "note": "失败之后回看，事前验尸发生在投入之前"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Gary Klein: Performing a Project Premortem (HBR, 2007)",
+          "url": "https://hbr.org/2007/09/performing-a-project-premortem"
+        },
+        {
+          "title": "Wikipedia: Pre-mortem",
+          "url": "https://en.wikipedia.org/wiki/Pre-mortem"
+        }
+      ]
     },
     {
       "id": "wargaming",
       "term": "Wargaming",
       "termZh": "兵棋推演",
       "domain": "process",
+      "hook": "真打之前，先在桌上把仗打一遍。",
       "definition": "源自军事、后被企业战略和网络安全借用的推演方法：在模拟环境中设定各参与方、目标和规则，让各方轮流行动与应对，推演不同走法下局面如何演变、后果如何。用来扫盲区、检验策略、预判走向，红队通常是其中扮演对手的一方。",
-      "compresses": ["多方、多回合推演", "各种走法与后果", "扫盲区、检验策略、推演走向", "红队是其中的对手一方"],
+      "tags": {
+        "discipline": [
+          "军事学",
+          "决策科学",
+          "博弈论"
+        ],
+        "engineering": [
+          "风险分析",
+          "可靠性"
+        ],
+        "cognitive": [
+          "系统思维",
+          "对抗性思维",
+          "决策质量"
+        ],
+        "scenario": [
+          "战略规划",
+          "上线前",
+          "应急演练"
+        ],
+        "level": [
+          "方法"
+        ]
+      },
+      "background": "19 世纪初，普鲁士军官冯·莱斯维茨父子发明了用地图、棋子和规则推演作战的 Kriegsspiel，被普鲁士陆军用来训练军官。冷战时，美国兰德公司和海军战争学院用兵棋研究核战略，后来企业战略和网络安全演练也借用了这套方法。",
+      "problem": "真实战争和重大决策无法彩排。需要一个低成本的环境，让各方按规则轮流行动，提前暴露计划漏洞和意想不到的连锁后果。",
+      "actors": [
+        "冯·莱斯维茨父子（普鲁士）：1812–1824 年发明 Kriegsspiel",
+        "普鲁士总参谋部：把兵棋用于军官训练和作战计划",
+        "美国海军战争学院：两次大战之间反复推演对日作战",
+        "兰德公司（RAND）：冷战时期用政治—军事兵棋研究核战略"
+      ],
+      "evolution": [
+        "1812：老莱斯维茨制作兵棋原型",
+        "1824：小莱斯维茨出版 Kriegsspiel 规则，普鲁士陆军推广",
+        "1920s–30s：美国海军战争学院反复推演太平洋战争",
+        "1950s–60s：兰德公司开展政治—军事兵棋，红方对蓝方",
+        "2000s 后：企业战略兵棋、网络安全桌面推演普及"
+      ],
+      "compresses": [
+        "多方、多回合推演",
+        "各种走法与后果",
+        "扫盲区、检验策略、推演走向",
+        "红队是其中的对手一方"
+      ],
       "scene": "把每日内容改成走 PR 自动更新前，让 AI 做一次兵棋推演：分别扮演内容生成脚本、CI、分支保护、Vercel 和维护者，逐回合推演“生成了坏内容”“CI 挂了”“连续三天没人合并”等走法，看系统每一步怎么反应、最后落到什么结果。",
-      "misconception": "以为兵棋推演就是红蓝对抗的另一种说法，或者是在预测未来。红蓝对抗只是其中一种对抗形式；兵棋推演看的是全局：多方参与、多种走法，以及每种走法的后果。它的产出是对局面和决策的理解，而不是一个准确的预测。"
+      "misconception": "以为兵棋推演就是红蓝对抗的另一种说法，或者是在预测未来。红蓝对抗只是其中一种对抗形式；兵棋推演看的是全局：多方参与、多种走法，以及每种走法的后果。它的产出是对局面和决策的理解，而不是一个准确的预测。",
+      "relations": {
+        "related": [
+          {
+            "term": "Red Teaming",
+            "termZh": "红队",
+            "note": "推演中扮演对手的一方"
+          },
+          {
+            "term": "Pre-mortem",
+            "termZh": "事前验尸",
+            "note": "先假设失败，再进推演里检验"
+          },
+          {
+            "term": "Chaos Engineering",
+            "termZh": "混沌工程",
+            "note": "在真实系统里注入故障，验证推演结论"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Point Forecast",
+            "termZh": "单点预测",
+            "note": "兵棋推演求对局面的理解，不求准确预言"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "UK MoD: Wargaming Handbook",
+          "url": "https://www.gov.uk/government/publications/defence-wargaming-handbook"
+        },
+        {
+          "title": "Wikipedia: Kriegsspiel",
+          "url": "https://en.wikipedia.org/wiki/Kriegsspiel"
+        },
+        {
+          "title": "Wikipedia: Wargame",
+          "url": "https://en.wikipedia.org/wiki/Wargame"
+        }
+      ]
     }
   ]
 }

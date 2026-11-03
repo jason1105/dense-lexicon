@@ -353,6 +353,9 @@ nav a[aria-current="page"] {
 .sec ul {
   padding-left: 1.1em;
 }
+.sec ol {
+  padding-left: 1.4em;
+}
 .actions {
   display: flex;
   justify-content: space-between;
@@ -500,6 +503,85 @@ nav a[aria-current="page"] {
   margin-top: 24px;
   max-width: 34em;
 }
+/* 记忆钩子：醒目但克制——左侧细线 + 中等字重 */
+.whook {
+  margin-top: 24px;
+  padding-left: 14px;
+  border-left: 3px solid var(--accent);
+  font-weight: 500;
+  max-width: 34em;
+}
+/* 卡片展开态里的钩子行（.sec p 的 muted 色之上强调） */
+.hookline {
+  color: var(--fg);
+  font-weight: 500;
+}
+/* 标签行：维度名 + chips（词条页） */
+.tagrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin-top: 12px;
+}
+.tagrow h3 {
+  flex-shrink: 0;
+  min-width: 3em;
+}
+.tagcloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+/* “前缀：”加粗（参与方/演化过程） */
+.lead strong {
+  font-weight: 600;
+  color: var(--fg);
+}
+/* 相关/对立 */
+.rels {
+  list-style: none;
+  padding: 0;
+}
+.rline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 8px;
+}
+.rterm {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+}
+.rterm.plain {
+  color: var(--fg);
+}
+.rzh {
+  color: var(--fg-muted);
+  font-size: 14px;
+}
+.rnote {
+  color: var(--fg-subtle);
+  font-size: 13px;
+  line-height: 20px;
+  margin-top: -6px;
+  max-width: 34em;
+}
+/* 出处：外链，触控区 ≥44px */
+.srcs {
+  list-style: none;
+  padding: 0;
+}
+.srcs a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  max-width: 34em;
+}
 .wsecs {
   margin-top: 32px;
 }
@@ -602,6 +684,30 @@ mark {
   color: inherit;
   border-radius: 2px;
   padding: 0 1px;
+}
+
+/* ---- tags index / tag page ---- */
+.tagdim {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.tagdim:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+  margin-top: 24px;
+}
+.tagdim h2 {
+  margin-bottom: 8px;
+}
+.tcount {
+  margin-left: 4px;
+  color: var(--fg-subtle);
+}
+.tagdesc {
+  color: var(--fg-muted);
+  max-width: 34em;
+  margin-bottom: 16px;
 }
 
 /* ---- about ---- */

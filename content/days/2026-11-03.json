@@ -6,30 +6,268 @@
       "term": "Conway's Law",
       "termZh": "康威定律",
       "domain": "architecture",
-      "definition": "Melvin Conway 在 1967 年提出的观察：设计系统的组织，产出的系统结构会复制这个组织的沟通结构。团队之间怎么分工、怎么沟通，模块和接口最后就怎么切。",
-      "compresses": ["系统结构映射组织沟通结构", "团队边界变成模块与接口边界", "跨团队沟通贵的地方耦合别扭", "逆康威：按目标架构组建团队"],
+      "hook": "组织怎么说话，系统就怎么长。",
+      "definition": "Melvin Conway 1968 年发表的观察：设计系统的组织，产出的系统结构会复制这个组织的沟通结构。团队之间怎么分工、怎么沟通，模块和接口最后就怎么切。",
+      "tags": {
+        "discipline": [
+          "组织行为学",
+          "软件工程"
+        ],
+        "engineering": [
+          "架构",
+          "研发管理"
+        ],
+        "cognitive": [
+          "系统思维",
+          "边界思维"
+        ],
+        "scenario": [
+          "团队划分",
+          "架构评审"
+        ],
+        "level": [
+          "定律"
+        ]
+      },
+      "background": "1967 年 Melvin Conway 把论文投给《哈佛商业评论》，被以“论证不足”为由拒稿，1968 年 4 月发表在 Datamation 上，题为《How Do Committees Invent?》。1975 年 Fred Brooks 在《人月神话》中引用，并称之为“康威定律”。",
+      "problem": "解释为什么系统结构总和组织结构相似：设计需要沟通，沟通受组织边界约束，于是模块和接口的边界复制了沟通的边界。",
+      "actors": [
+        "Melvin Conway（美国程序员）：1968 年发表原文",
+        "Fred Brooks：1975 年《人月神话》命名“康威定律”",
+        "ThoughtWorks 等微服务社区：提出“逆康威操作”",
+        "Matthew Skelton、Manuel Pais：2019 年《Team Topologies》"
+      ],
+      "evolution": [
+        "1968：Conway 在 Datamation 发表原文",
+        "1975：Brooks《人月神话》命名“康威定律”",
+        "2008 前后：哈佛商学院研究为“镜像假说”提供实证",
+        "2010s 中期：微服务社区提出“逆康威操作”",
+        "2019：《Team Topologies》把它用于团队设计"
+      ],
+      "compresses": [
+        "系统结构映射组织沟通结构",
+        "团队边界变成模块与接口边界",
+        "跨团队沟通贵的地方耦合别扭",
+        "逆康威：按目标架构组建团队"
+      ],
       "scene": "B/S 改 C/S 时，JavaFX 壳和前端页面分属两个组，JCEF 里 JS 与 Java 之间的桥接接口就成了扯皮最多、最难改的地方。想让这层接口稳定，先让一个团队对它端到端负责。",
-      "misconception": "把它当成一句吐槽“组织烂所以代码烂”。它其实能用来指导分工：想要什么架构，就先按那个架构划团队。边界划不清，往往先是组织问题，然后才是技术问题。"
+      "misconception": "把它当成一句吐槽“组织烂所以代码烂”。它其实能用来指导分工：想要什么架构，就先按那个架构划团队。边界划不清，往往先是组织问题，然后才是技术问题。",
+      "relations": {
+        "related": [
+          {
+            "term": "Inverse Conway Maneuver",
+            "termZh": "逆康威操作",
+            "note": "按目标架构反过来组建团队"
+          },
+          {
+            "term": "Bounded Context",
+            "termZh": "限界上下文",
+            "note": "团队边界和模型边界最好一致"
+          },
+          {
+            "term": "Microservices",
+            "termZh": "微服务",
+            "note": "服务边界常对应团队边界"
+          }
+        ],
+        "opposite": []
+      },
+      "sources": [
+        {
+          "title": "Melvin Conway: How Do Committees Invent? (1968)",
+          "url": "https://www.melconway.com/Home/Committees_Paper.html"
+        },
+        {
+          "title": "Martin Fowler: Conway's Law",
+          "url": "https://martinfowler.com/bliki/ConwaysLaw.html"
+        },
+        {
+          "title": "Team Topologies: Key concepts",
+          "url": "https://teamtopologies.com/key-concepts"
+        }
+      ]
     },
     {
       "id": "n-1-query-problem",
       "term": "N+1 Query Problem",
       "termZh": "N+1 查询问题",
       "domain": "data",
+      "hook": "看着是读个属性，背后是一次数据库往返。",
       "definition": "先用 1 次查询拿到 N 条记录，再为每条记录各发 1 次查询加载关联数据，一共发出 N+1 条 SQL。多见于 ORM 的懒加载：代码看起来只是访问一个属性，背后却是一次数据库往返。",
-      "compresses": ["1 次主查询加 N 次关联查询", "懒加载的便利换来往返次数", "join fetch、批量 IN、DTO 投影的取舍", "开发环境数据少，暴露不出来"],
+      "tags": {
+        "discipline": [
+          "数据库理论"
+        ],
+        "engineering": [
+          "数据访问",
+          "性能"
+        ],
+        "cognitive": [
+          "隐性成本"
+        ],
+        "scenario": [
+          "性能排查",
+          "代码评审"
+        ],
+        "level": [
+          "反模式"
+        ]
+      },
+      "background": "Hibernate（2001）、Rails ActiveRecord（2004）等 ORM 用懒加载让开发者像访问对象属性一样访问关联数据，代价是每次属性访问都可能变成一条隐式 SQL。",
+      "problem": "列表页、报表等批量场景下，关联数据被逐条加载，数据库往返次数随记录数线性增长，带来延迟和数据库压力，而且开发环境数据少时很难发现。",
+      "actors": [
+        "Hibernate（Gavin King，2001）：懒加载与 fetch 策略的代表",
+        "Ruby on Rails ActiveRecord：用 includes / preload 提供预加载",
+        "Vlad Mihalcea：系统整理 JPA/Hibernate 下的检测与修复",
+        "Facebook：2015 年开源 DataLoader，解决 GraphQL 中的 N+1"
+      ],
+      "evolution": [
+        "2001：Hibernate 发布，懒加载成为 ORM 的常见默认",
+        "2000s：ORM 普及，N+1 成为最常见的性能反模式之一",
+        "2010s：Bullet、Hibernate 统计等工具在开发期自动检测",
+        "2015：GraphQL 让 N+1 在解析器层重现，DataLoader 用批量加载应对"
+      ],
+      "compresses": [
+        "1 次主查询加 N 次关联查询",
+        "懒加载的便利换来往返次数",
+        "join fetch、批量 IN、DTO 投影的取舍",
+        "开发环境数据少，暴露不出来"
+      ],
       "scene": "报告组件列出 200 张报表，每张都懒加载“创建人”，Hibernate 悄悄发了 201 条 SQL，页面在生产环境变慢。用 JOIN FETCH、@BatchSize 或 @EntityGraph 把关联数据一次或分批取回。",
-      "misconception": "以为遇到就一律改成 join fetch。同时抓取多个集合关联会产生笛卡尔积，行数暴涨，分页也会失效（Hibernate 甚至改在内存里分页）。这种情况下用 @BatchSize 批量查询更合适。"
+      "misconception": "以为遇到就一律改成 join fetch。同时抓取多个集合关联会产生笛卡尔积，行数暴涨，分页也会失效（Hibernate 甚至改在内存里分页）。这种情况下用 @BatchSize 批量查询更合适。",
+      "relations": {
+        "related": [
+          {
+            "term": "Lazy Loading",
+            "termZh": "懒加载",
+            "note": "N+1 最常见的成因"
+          },
+          {
+            "term": "Leaky Abstraction",
+            "termZh": "抽象泄漏",
+            "note": "ORM 藏起了 SQL 的真实代价"
+          },
+          {
+            "term": "DataLoader",
+            "termZh": "DataLoader 批量加载",
+            "note": "把同一轮的逐条查询合并成一次"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Eager Loading",
+            "termZh": "预加载",
+            "note": "一次或分批取回关联数据"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Vlad Mihalcea: N+1 query problem with JPA and Hibernate",
+          "url": "https://vladmihalcea.com/n-plus-1-query-problem/"
+        },
+        {
+          "title": "Hibernate ORM User Guide: Fetching",
+          "url": "https://docs.jboss.org/hibernate/orm/6.6/userguide/html_single/Hibernate_User_Guide.html#fetching"
+        },
+        {
+          "title": "Rails Guides: Eager Loading Associations",
+          "url": "https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations"
+        }
+      ]
     },
     {
       "id": "same-origin-policy",
       "term": "Same-Origin Policy",
       "termZh": "同源策略",
       "domain": "security",
+      "hook": "不同源的脚本，看得见请求，读不到回应。",
       "definition": "浏览器的基础安全规则：只有协议、域名、端口三者都相同的页面脚本，才能互相读取数据。它是 Web 安全的地基，防止恶意网站借用户的登录态读取其他站点的内容。",
-      "compresses": ["协议 + 域名 + 端口都相同才算同源", "限制的是跨源读取，不是发请求", "CORS、postMessage 是受控开口", "Cookie 作用域、CSRF、iframe 隔离都与之相关"],
+      "tags": {
+        "discipline": [
+          "信息安全",
+          "Web 技术"
+        ],
+        "engineering": [
+          "安全",
+          "前端"
+        ],
+        "cognitive": [
+          "边界思维",
+          "最小权限"
+        ],
+        "scenario": [
+          "跨域集成",
+          "安全评审"
+        ],
+        "level": [
+          "机制",
+          "原则"
+        ]
+      },
+      "background": "1995 年 Netscape 推出 JavaScript 后不久，在 Navigator 2.02 中引入同源策略，防止一个页面的脚本读取另一个站点的数据。各浏览器随后沿用，2011 年 RFC 6454 正式定义了“源”（origin）。",
+      "problem": "浏览器会自动带上用户在各个站点的 Cookie。如果没有隔离，任何恶意页面都能借用户的登录态，读取网银、邮箱等其他站点的内容。",
+      "actors": [
+        "Netscape：1995 年在 Navigator 2.02 中首先引入",
+        "Adam Barth：2011 年起草 RFC 6454《The Web Origin Concept》",
+        "W3C、WHATWG：制定 CORS，后并入 Fetch 标准",
+        "各浏览器厂商：在实现中不断收紧和细化规则"
+      ],
+      "evolution": [
+        "1995：Netscape Navigator 2.02 引入同源策略",
+        "2000s：AJAX 普及，JSONP 等绕过手段流行",
+        "2009 前后：主流浏览器开始支持 CORS",
+        "2011：RFC 6454 正式定义 Web Origin",
+        "2014：CORS 成为 W3C 推荐标准，后并入 WHATWG Fetch 标准"
+      ],
+      "compresses": [
+        "协议 + 域名 + 端口都相同才算同源",
+        "限制的是跨源读取，不是发请求",
+        "CORS、postMessage 是受控开口",
+        "Cookie 作用域、CSRF、iframe 隔离都与之相关"
+      ],
       "scene": "老系统改成“本地 Firefox 加本地 server”后，页面在 http://localhost:8080，接口在远端域名，立刻碰到跨域报错。JCEF 里用 file:// 加载页面，origin 常为 null，请求也会被拦下。",
-      "misconception": "图省事直接关掉浏览器的 web security，或者配 Access-Control-Allow-Origin: * 还想带凭证（浏览器会拒绝）。这等于拆地基。正确做法是自定义 scheme、本地代理，或精确的 CORS 白名单。"
+      "misconception": "图省事直接关掉浏览器的 web security，或者配 Access-Control-Allow-Origin: * 还想带凭证（浏览器会拒绝）。这等于拆地基。正确做法是自定义 scheme、本地代理，或精确的 CORS 白名单。",
+      "relations": {
+        "related": [
+          {
+            "term": "CORS",
+            "termZh": "跨源资源共享",
+            "note": "服务端声明的受控开口"
+          },
+          {
+            "term": "Cross-Site Request Forgery",
+            "termZh": "跨站请求伪造",
+            "note": "同源策略不拦“发请求”，所以需要另外防护"
+          },
+          {
+            "term": "Content Security Policy",
+            "termZh": "内容安全策略",
+            "note": "再收紧页面能加载什么"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "JSONP",
+            "termZh": "JSONP",
+            "note": "借 script 标签绕过同源的旧技巧"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "MDN: Same-origin policy",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy"
+        },
+        {
+          "title": "RFC 6454: The Web Origin Concept",
+          "url": "https://www.rfc-editor.org/rfc/rfc6454"
+        },
+        {
+          "title": "WHATWG Fetch Standard (CORS)",
+          "url": "https://fetch.spec.whatwg.org/"
+        }
+      ]
     }
   ]
 }
