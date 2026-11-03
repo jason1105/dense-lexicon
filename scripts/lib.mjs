@@ -5,6 +5,8 @@ export const ROOT = process.cwd();
 export const CONTENT_DIR = join(ROOT, "content");
 export const DAYS_DIR = join(CONTENT_DIR, "days");
 export const SCHEMA_PATH = join(CONTENT_DIR, "schema", "day.schema.json");
+export const TAGS_SCHEMA_PATH = join(CONTENT_DIR, "schema", "tags.schema.json");
+export const TAGS_PATH = join(CONTENT_DIR, "tags.json");
 
 /** 合法内容文件名：YYYY-MM-DD.json */
 export const DAY_FILE_RE = /^\d{4}-\d{2}-\d{2}\.json$/;
@@ -32,6 +34,11 @@ export function listDayFiles() {
 
 export function readDayFile(name) {
   return JSON.parse(readFileSync(join(DAYS_DIR, name), "utf8"));
+}
+
+/** 受控标签词表 content/tags.json */
+export function readTagsFile() {
+  return JSON.parse(readFileSync(TAGS_PATH, "utf8"));
 }
 
 /** 领域枚举顺序，单一来源：schema 的 $defs.word.properties.domain.enum */
