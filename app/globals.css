@@ -294,16 +294,6 @@ nav a[aria-current="page"] {
     flex-shrink: 0;
   }
 }
-.tag {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 0 8px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  color: var(--fg-subtle);
-  font-size: 12px;
-  line-height: 20px;
-}
 .def {
   margin-top: 12px;
   max-width: 34em;
@@ -438,6 +428,20 @@ nav a[aria-current="page"] {
   background: var(--accent-soft);
   color: var(--accent);
   border-color: transparent;
+}
+/* 第二行标签胶囊紧接第一行（首行底距 24px − 16px = 行间 8px） */
+.chips + .chips {
+  margin-top: -16px;
+}
+/* 选中标签的 meta 行：链接到标签页；触控区 ≥44px（纵向 padding 不撑行距） */
+.filtermeta {
+  margin: -16px 0 24px;
+}
+.filtermeta a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  padding-block: 12px;
 }
 .group {
   padding: 16px 0;
@@ -699,6 +703,10 @@ mark {
 }
 .tagdim h2 {
   margin-bottom: 8px;
+}
+/* 标签页 h1 下的词数 meta */
+.tagmeta {
+  margin-bottom: 16px;
 }
 .tcount {
   margin-left: 4px;

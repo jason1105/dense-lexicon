@@ -6,7 +6,6 @@ import {
   getTagDimension,
   getWordsByTag,
 } from "@/lib/content";
-import { domainLabel } from "@/lib/domains";
 
 export const dynamicParams = false;
 
@@ -36,7 +35,7 @@ export async function generateMetadata({
   return { title: `${r.dim.name}：${r.tag.name}` };
 }
 
-/** 标签页：标题“维度：标签”，词列表（term / termZh / hook / domain），日期倒序 */
+/** 标签页：标题“维度：标签”，词列表（term / termZh / hook / 所属日期），日期倒序 */
 export default async function TagPage({
   params,
 }: {
@@ -56,6 +55,7 @@ export default async function TagPage({
       <h1 className="t-title page-h1">
         {r.dim.name}：{r.tag.name}
       </h1>
+      <p className="t-meta subtle tagmeta">{words.length} 个词</p>
       {r.tag.description && <p className="tagdesc">{r.tag.description}</p>}
       <ul className="results">
         {words.map((w) => (
@@ -65,7 +65,7 @@ export default async function TagPage({
                 {w.term}
               </span>{" "}
               <span className="muted">{w.termZh}</span>{" "}
-              <span className="subtle t-meta">· {domainLabel(w.domain)}</span>
+              <span className="subtle t-meta">· {w.date}</span>
               <span className="snip">{w.hook}</span>
             </Link>
           </li>

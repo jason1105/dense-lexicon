@@ -2,7 +2,6 @@ import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   CONTENT_DIR,
-  domainOrder,
   listDayFiles,
   readDayFile,
   readTagsFile,
@@ -45,19 +44,38 @@ for (const day of desc) {
   }
 }
 
-/* 同领域推荐：同 domain 其他词，按日期差绝对值升序，再按 id 升序，取前 3 */
+/* 标签相近：共享 (dimension,slug) 标签数 ≥ 2 的其他词，
+   按共享数降序 → 日期差绝对值升序 → id 升序，取前 3 */
+const tagSets = new Map(
+  words.map((w) => [
+    w.id,
+    new Set(
+      vocab.dimensions.flatMap((dim) =>
+        w.tags[dim.key].map((t) => `${dim.key}:${t.slug}`),
+      ),
+    ),
+  ]),
+);
 for (const w of words) {
-  w.related = words
-    .filter((c) => c.domain === w.domain && c.id !== w.id)
-    .map((c) => ({ id: c.id, diff: Math.abs(toMs(c.date) - toMs(w.date)) }))
-    .sort((a, b) => a.diff - b.diff || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+  const mine = tagSets.get(w.id);
+  w.similar = words
+    .filter((c) => c.id !== w.id)
+    .map((c) => {
+      const theirs = tagSets.get(c.id);
+      let shared = 0;
+      for (const k of mine) if (theirs.has(k)) shared++;
+      return { id: c.id, shared, diff: Math.abs(toMs(c.date) - toMs(w.date)) };
+    })
+    .filter((c) => c.shared >= 2)
+    .sort(
+      (a, b) =>
+        b.shared - a.shared ||
+        a.diff - b.diff ||
+        (a.id < b.id ? -1 : a.id > b.id ? 1 : 0),
+    )
     .slice(0, 3)
     .map((c) => c.id);
 }
-
-/* domains：只列 count>0，按 schema 枚举顺序 */
-const counts = new Map();
-for (const w of words) counts.set(w.domain, (counts.get(w.domain) ?? 0) + 1);
 
 /* tags：只列被使用的（count>0），维度按词表顺序、维度内按词表顺序 */
 const tagCounts = new Map(); // `${dimension}:${slug}` -> count
@@ -81,13 +99,10 @@ const tags = vocab.dimensions.flatMap((dim) =>
 );
 
 const index = {
-  version: 2,
+  version: 3,
   latest: desc[0]?.date ?? null,
   days: desc.map((d) => ({ date: d.date, ids: d.words.map((w) => w.id) })),
   words,
-  domains: domainOrder()
-    .filter((domain) => (counts.get(domain) ?? 0) > 0)
-    .map((domain) => ({ domain, count: counts.get(domain) })),
   tags,
 };
 

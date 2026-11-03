@@ -10,12 +10,14 @@ export default function TagsPage() {
   const index = getIndex();
   const vocab = getTagVocab();
 
+  /* 维度内按词数降序；同数保持词表顺序（sort 稳定） */
   const byDim = new Map<TagDimension, TagCount[]>();
   for (const t of index.tags) {
     const list = byDim.get(t.dimension) ?? [];
     list.push(t);
     byDim.set(t.dimension, list);
   }
+  for (const [dim, list] of byDim) byDim.set(dim, [...list].sort((a, b) => b.count - a.count));
 
   return (
     <>

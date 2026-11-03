@@ -40,9 +40,3 @@ export function readDayFile(name) {
 export function readTagsFile() {
   return JSON.parse(readFileSync(TAGS_PATH, "utf8"));
 }
-
-/** 领域枚举顺序，单一来源：schema 的 $defs.word.properties.domain.enum */
-export function domainOrder() {
-  const schema = JSON.parse(readFileSync(SCHEMA_PATH, "utf8"));
-  return schema.$defs.word.properties.domain.enum;
-}

@@ -77,17 +77,12 @@ export interface IndexedWord {
   definition: string;
   compresses: string[];
   tags: IndexedTags;
-  related: string[];
+  similar: string[];
 }
 
 export interface DayRef {
   date: string;
   ids: string[];
-}
-
-export interface DomainCount {
-  domain: Domain;
-  count: number;
 }
 
 /** index 顶层 tags：一个被使用的标签及其词数 */
@@ -120,10 +115,9 @@ export interface TagVocab {
 
 /** content/index.json（构建产物，scripts/build-index.mjs 生成） */
 export interface IndexFile {
-  version: 2;
+  version: 3;
   latest: string | null;
   days: DayRef[];
   words: IndexedWord[];
-  domains: DomainCount[];
   tags: TagCount[];
 }

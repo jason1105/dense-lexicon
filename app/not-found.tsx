@@ -9,10 +9,12 @@ export default function NotFound() {
       <div className="big" aria-hidden="true">
         404
       </div>
-      <h1 className="t-subtitle">这个词还没收录。</h1>
+      <h1 className="t-subtitle">这里没有内容。</h1>
+      <p>可能是词还没收录，或者链接写错了。</p>
       <div className="links">
         <Link href="/">回到今日</Link>
         <Link href="/archive">看档案</Link>
+        <Link href="/tags">看标签</Link>
       </div>
     </div>
   );

@@ -2,27 +2,45 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import ArchiveList from "@/components/ArchiveList";
 import ArchiveView from "@/components/ArchiveView";
-import { getIndex } from "@/lib/content";
-import { DOMAIN_LABELS } from "@/lib/domains";
+import { getIndex, getTagVocab } from "@/lib/content";
 
 export const metadata: Metadata = { title: "档案" };
 
 export default function ArchivePage() {
   const index = getIndex();
-  const byId = new Map(index.words.map((w) => [w.id, w]));
+  const vocab = getTagVocab();
 
+  /* 客户端只拿最小数据：词 {id, term, termZh, t}（t 为 "dimension:slug" 列表） */
+  const byId = new Map(index.words.map((w) => [w.id, w]));
   const days = index.days.map((d) => ({
     date: d.date,
     words: d.ids
       .map((id) => byId.get(id))
       .filter((w): w is NonNullable<typeof w> => w !== undefined)
-      .map(({ id, term, termZh, domain }) => ({ id, term, termZh, domain })),
+      .map((w) => ({
+        id: w.id,
+        term: w.term,
+        termZh: w.termZh,
+        t: vocab.dimensions.flatMap((dim) =>
+          w.tags[dim.key].map((t) => `${dim.key}:${t.slug}`),
+        ),
+      })),
   }));
 
-  const domains = index.domains.map((d) => ({
-    domain: d.domain,
-    label: DOMAIN_LABELS[d.domain],
-  }));
+  /* 每维度被使用的标签：词数降序，同数按词表顺序（index.tags 维度内已是词表序） */
+  const vocabOrder = new Map(
+    vocab.dimensions.flatMap((d) =>
+      d.tags.map((t, i) => [`${d.key}:${t.slug}`, i] as const),
+    ),
+  );
+  const tags = [...index.tags].sort(
+    (a, b) =>
+      b.count - a.count ||
+      (vocabOrder.get(`${a.dimension}:${a.slug}`) ?? 0) -
+        (vocabOrder.get(`${b.dimension}:${b.slug}`) ?? 0),
+  );
+
+  const dims = vocab.dimensions.map((d) => ({ key: d.key, name: d.name }));
 
   return (
     <>
@@ -33,9 +51,9 @@ export default function ArchivePage() {
         <p className="hint">还没有内容。明天 09:00 见。</p>
       ) : (
         <Suspense
-          fallback={<ArchiveView days={days} domains={domains} selected="" />}
+          fallback={<ArchiveView days={days} dims={dims} tags={tags} dim="" tag="" />}
         >
-          <ArchiveList days={days} domains={domains} />
+          <ArchiveList days={days} dims={dims} tags={tags} />
         </Suspense>
       )}
     </>
