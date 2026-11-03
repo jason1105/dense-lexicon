@@ -1,0 +1,360 @@
+{
+  "version": 1,
+  "dimensions": [
+    {
+      "key": "discipline",
+      "name": "学科",
+      "tags": [
+        {
+          "slug": "decision-science",
+          "name": "决策科学"
+        },
+        {
+          "slug": "military-science",
+          "name": "军事学"
+        },
+        {
+          "slug": "information-security",
+          "name": "信息安全"
+        },
+        {
+          "slug": "cognitive-psychology",
+          "name": "认知心理学"
+        },
+        {
+          "slug": "game-theory",
+          "name": "博弈论"
+        },
+        {
+          "slug": "software-engineering",
+          "name": "软件工程"
+        },
+        {
+          "slug": "artificial-intelligence",
+          "name": "人工智能"
+        },
+        {
+          "slug": "distributed-systems",
+          "name": "分布式系统"
+        },
+        {
+          "slug": "database-theory",
+          "name": "数据库理论"
+        },
+        {
+          "slug": "mathematics",
+          "name": "数学"
+        },
+        {
+          "slug": "control-theory",
+          "name": "控制论"
+        },
+        {
+          "slug": "organizational-behavior",
+          "name": "组织行为学"
+        },
+        {
+          "slug": "web-technology",
+          "name": "Web 技术"
+        }
+      ]
+    },
+    {
+      "key": "engineering",
+      "name": "工程",
+      "tags": [
+        {
+          "slug": "security",
+          "name": "安全"
+        },
+        {
+          "slug": "risk-analysis",
+          "name": "风险分析"
+        },
+        {
+          "slug": "engineering-management",
+          "name": "研发管理"
+        },
+        {
+          "slug": "reliability",
+          "name": "可靠性"
+        },
+        {
+          "slug": "architecture",
+          "name": "架构"
+        },
+        {
+          "slug": "migration",
+          "name": "系统迁移"
+        },
+        {
+          "slug": "testing",
+          "name": "测试"
+        },
+        {
+          "slug": "continuous-delivery",
+          "name": "持续交付"
+        },
+        {
+          "slug": "ai-engineering",
+          "name": "AI 工程"
+        },
+        {
+          "slug": "integration",
+          "name": "系统集成"
+        },
+        {
+          "slug": "data-consistency",
+          "name": "数据一致性"
+        },
+        {
+          "slug": "messaging",
+          "name": "消息"
+        },
+        {
+          "slug": "api-design",
+          "name": "接口设计"
+        },
+        {
+          "slug": "observability",
+          "name": "可观测"
+        },
+        {
+          "slug": "data-access",
+          "name": "数据访问"
+        },
+        {
+          "slug": "performance",
+          "name": "性能"
+        },
+        {
+          "slug": "frontend",
+          "name": "前端"
+        }
+      ]
+    },
+    {
+      "key": "cognitive",
+      "name": "认知",
+      "tags": [
+        {
+          "slug": "adversarial-thinking",
+          "name": "对抗性思维"
+        },
+        {
+          "slug": "decision-quality",
+          "name": "决策质量"
+        },
+        {
+          "slug": "risk-anticipation",
+          "name": "风险预判"
+        },
+        {
+          "slug": "cognitive-bias",
+          "name": "认知偏差"
+        },
+        {
+          "slug": "systems-thinking",
+          "name": "系统思维"
+        },
+        {
+          "slug": "incremental-thinking",
+          "name": "渐进思维"
+        },
+        {
+          "slug": "risk-control",
+          "name": "风险控制"
+        },
+        {
+          "slug": "reproducibility",
+          "name": "可重复性"
+        },
+        {
+          "slug": "signal-and-noise",
+          "name": "信号与噪声"
+        },
+        {
+          "slug": "information-selection",
+          "name": "信息取舍"
+        },
+        {
+          "slug": "trade-off-thinking",
+          "name": "权衡思维"
+        },
+        {
+          "slug": "boundary-thinking",
+          "name": "边界思维"
+        },
+        {
+          "slug": "failure-isolation",
+          "name": "失败隔离"
+        },
+        {
+          "slug": "feedback-loop",
+          "name": "反馈闭环"
+        },
+        {
+          "slug": "invariant-thinking",
+          "name": "不变量思维"
+        },
+        {
+          "slug": "dependency-direction",
+          "name": "依赖方向"
+        },
+        {
+          "slug": "hidden-cost",
+          "name": "隐性成本"
+        },
+        {
+          "slug": "least-privilege",
+          "name": "最小权限"
+        }
+      ]
+    },
+    {
+      "key": "scenario",
+      "name": "场景",
+      "tags": [
+        {
+          "slug": "design-review",
+          "name": "设计评审"
+        },
+        {
+          "slug": "pre-launch",
+          "name": "上线前"
+        },
+        {
+          "slug": "strategic-planning",
+          "name": "战略规划"
+        },
+        {
+          "slug": "project-kickoff",
+          "name": "项目启动"
+        },
+        {
+          "slug": "incident-drill",
+          "name": "应急演练"
+        },
+        {
+          "slug": "legacy-modernization",
+          "name": "遗留系统改造"
+        },
+        {
+          "slug": "architecture-review",
+          "name": "架构评审"
+        },
+        {
+          "slug": "ci-troubleshooting",
+          "name": "CI 排障"
+        },
+        {
+          "slug": "code-review",
+          "name": "代码评审"
+        },
+        {
+          "slug": "ai-assisted-coding",
+          "name": "AI 辅助编码"
+        },
+        {
+          "slug": "agent-design",
+          "name": "智能体设计"
+        },
+        {
+          "slug": "system-integration",
+          "name": "系统集成"
+        },
+        {
+          "slug": "dependency-governance",
+          "name": "依赖治理"
+        },
+        {
+          "slug": "performance-troubleshooting",
+          "name": "性能排查"
+        },
+        {
+          "slug": "event-driven-design",
+          "name": "事件驱动设计"
+        },
+        {
+          "slug": "api-design",
+          "name": "接口设计"
+        },
+        {
+          "slug": "message-consumption",
+          "name": "消息消费"
+        },
+        {
+          "slug": "production-debugging",
+          "name": "线上排障"
+        },
+        {
+          "slug": "incident-review",
+          "name": "事故复盘"
+        },
+        {
+          "slug": "team-design",
+          "name": "团队划分"
+        },
+        {
+          "slug": "cross-origin-integration",
+          "name": "跨域集成"
+        },
+        {
+          "slug": "security-review",
+          "name": "安全评审"
+        }
+      ]
+    },
+    {
+      "key": "level",
+      "name": "层级",
+      "tags": [
+        {
+          "slug": "principle",
+          "name": "原则",
+          "description": "指导判断的普遍准则"
+        },
+        {
+          "slug": "law",
+          "name": "定律",
+          "description": "被反复观察到的规律"
+        },
+        {
+          "slug": "pattern",
+          "name": "模式",
+          "description": "针对反复出现问题的可复用解法"
+        },
+        {
+          "slug": "practice",
+          "name": "实践",
+          "description": "团队日常采用的具体做法"
+        },
+        {
+          "slug": "method",
+          "name": "方法",
+          "description": "有步骤可执行的思考或分析流程"
+        },
+        {
+          "slug": "anti-pattern",
+          "name": "反模式",
+          "description": "看似合理、实则有害的常见做法"
+        },
+        {
+          "slug": "problem",
+          "name": "问题",
+          "description": "需要识别和治理的现象"
+        },
+        {
+          "slug": "property",
+          "name": "属性",
+          "description": "系统应具备的性质"
+        },
+        {
+          "slug": "mechanism",
+          "name": "机制",
+          "description": "由平台或协议强制执行的规则"
+        }
+      ]
+    }
+  ]
+}

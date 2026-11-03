@@ -6,30 +6,254 @@
       "term": "Strangler Fig Pattern",
       "termZh": "绞杀者模式",
       "domain": "architecture",
+      "hook": "新系统像绞杀榕，沿着旧系统长，最后取而代之。",
       "definition": "一种渐进替换遗留系统的迁移策略：在旧系统前放一个可控的拦截点（路由、网关或外壳），把功能按切片逐块交给新实现，真实流量逐步切到新系统，直到旧系统可以下线。名字来自绞杀榕：它沿宿主树生长，最终取而代之。",
-      "compresses": ["渐进替换而非一次性重写", "前置拦截点负责路由", "按功能切片迁移、可回退", "新旧系统并行一段时间"],
+      "tags": {
+        "discipline": [
+          "软件工程"
+        ],
+        "engineering": [
+          "架构",
+          "系统迁移"
+        ],
+        "cognitive": [
+          "渐进思维",
+          "风险控制"
+        ],
+        "scenario": [
+          "遗留系统改造",
+          "架构评审"
+        ],
+        "level": [
+          "模式"
+        ]
+      },
+      "background": "2004 年，Martin Fowler 在澳大利亚度假时看到绞杀榕：它从宿主树上方发芽，沿树干扎根，最终取代宿主。当时大型系统“推倒重写”的项目频繁延期甚至失败，他用这个意象描述一种渐进替换遗留系统的方法。",
+      "problem": "一次性重写遗留系统风险极高：周期长，期间业务不能停，新系统迟迟拿不到真实流量的检验，最后的切换往往变成一场豪赌。",
+      "actors": [
+        "Martin Fowler（ThoughtWorks）：2004 年提出并命名",
+        "Sam Newman：《Monolith to Microservices》中作为拆分单体的首选模式",
+        "微软 Azure 架构中心：收录为云迁移的标准设计模式"
+      ],
+      "evolution": [
+        "2004：Fowler 发表“Strangler Application”短文",
+        "2010s：微服务兴起，成为拆分单体的主流做法",
+        "后来：Fowler 改名为 Strangler Fig，强调植物本义而非“绞杀”",
+        "2024：Fowler 重写该文，补充过渡架构等实践"
+      ],
+      "compresses": [
+        "渐进替换而非一次性重写",
+        "前置拦截点负责路由",
+        "按功能切片迁移、可回退",
+        "新旧系统并行一段时间"
+      ],
       "scene": "B/S 迁 C/S 项目里，先用 JavaFX + JCEF 外壳把原 Web 页面整体嵌进来跑通，再按模块把高频页面换成原生实现，由外壳按模块决定走旧页面还是新界面。每迁一块都能单独验收和回滚，不必等全部重写完再一次切换。",
-      "misconception": "以为绞杀者模式就是“另起炉灶写新系统，写完再切”。关键是有一个可控的拦截点，按切片逐步转移真实流量，每一步都能回退。没有拦截点的并行重写，只是推迟了的大爆炸式切换。"
+      "misconception": "以为绞杀者模式就是“另起炉灶写新系统，写完再切”。关键是有一个可控的拦截点，按切片逐步转移真实流量，每一步都能回退。没有拦截点的并行重写，只是推迟了的大爆炸式切换。",
+      "relations": {
+        "related": [
+          {
+            "term": "Anti-Corruption Layer",
+            "termZh": "防腐层",
+            "note": "新旧系统之间的翻译层，常与绞杀者模式搭配"
+          },
+          {
+            "term": "Branch by Abstraction",
+            "termZh": "抽象分支",
+            "note": "在代码内部渐进替换实现"
+          },
+          {
+            "term": "Feature Toggle",
+            "termZh": "特性开关",
+            "note": "按开关把流量切到新实现，可随时回退"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Big Bang Rewrite",
+            "termZh": "大爆炸式重写",
+            "note": "推倒重写、一次切换"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Martin Fowler: Strangler Fig",
+          "url": "https://martinfowler.com/bliki/StranglerFigApplication.html"
+        },
+        {
+          "title": "Microsoft Azure: Strangler Fig pattern",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/strangler-fig"
+        }
+      ]
     },
     {
       "id": "flaky-test",
       "term": "Flaky Test",
       "termZh": "不稳定测试",
       "domain": "testing",
+      "hook": "时灵时不灵的测试，比没有测试更伤信任。",
       "definition": "代码和环境都没变，多次运行却时而通过、时而失败的测试。常见根因：依赖当前时间、并发竞态、测试之间共享状态、依赖外部服务或网络、随机数、依赖执行顺序。",
-      "compresses": ["结果不确定", "根因：时间、并发、共享状态、外部依赖", "侵蚀团队对测试的信任", "要隔离和修复，而非重跑了事"],
+      "tags": {
+        "discipline": [
+          "软件工程"
+        ],
+        "engineering": [
+          "测试",
+          "持续交付"
+        ],
+        "cognitive": [
+          "可重复性",
+          "信号与噪声"
+        ],
+        "scenario": [
+          "CI 排障",
+          "代码评审"
+        ],
+        "level": [
+          "问题"
+        ]
+      },
+      "background": "持续集成普及后，团队的自动化测试动辄上万条，“偶发红”从个别现象变成常态。Google 在 2016 年披露：约 1.5% 的测试运行结果不稳定，近 16% 的测试有一定程度的不稳定。",
+      "problem": "不稳定测试让红灯失去意义：团队习惯性重跑、忽略失败，真正的回归被掩盖，CI 时间和排查人力被大量浪费。",
+      "actors": [
+        "Google：2016 年公开内部不稳定测试统计与缓解做法",
+        "Martin Fowler：2011 年《Eradicating Non-Determinism in Tests》归纳根因",
+        "Qingzhou Luo 等（UIUC）：2014 年发表首个大规模实证研究"
+      ],
+      "evolution": [
+        "2000s：持续集成普及，“偶发红”开始被当作独立问题",
+        "2011：Fowler 归纳非确定性根因，提出隔离区做法",
+        "2014：学界首个实证研究：异步等待、并发、顺序依赖居前三",
+        "2016 后：Google 等在 CI 中自动识别、隔离不稳定测试"
+      ],
+      "compresses": [
+        "结果不确定",
+        "根因：时间、并发、共享状态、外部依赖",
+        "侵蚀团队对测试的信任",
+        "要隔离和修复，而非重跑了事"
+      ],
       "scene": "广州交易监测框架里，规则引擎的集成测试直接读系统时间来判断交易时段，临近收盘或跨日运行时偶发失败。把时钟抽象成可注入的 Clock，测试里固定时间后，问题消失。",
-      "misconception": "以为加上自动重试就解决了。重试只是把失败信号藏起来，竞态或顺序依赖仍在，甚至可能是生产环境里真实存在的 bug。重试最多是隔离期间的临时手段。"
+      "misconception": "以为加上自动重试就解决了。重试只是把失败信号藏起来，竞态或顺序依赖仍在，甚至可能是生产环境里真实存在的 bug。重试最多是隔离期间的临时手段。",
+      "relations": {
+        "related": [
+          {
+            "term": "Test Quarantine",
+            "termZh": "测试隔离区",
+            "note": "先隔离不稳定测试，限期修复"
+          },
+          {
+            "term": "Test Pyramid",
+            "termZh": "测试金字塔",
+            "note": "上层端到端测试更容易不稳定"
+          },
+          {
+            "term": "Idempotency",
+            "termZh": "幂等性",
+            "note": "测试可重复运行的前提之一"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Deterministic Test",
+            "termZh": "确定性测试",
+            "note": "同样输入永远同样结果"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Google Testing Blog: Flaky Tests at Google and How We Mitigate Them (2016)",
+          "url": "https://testing.googleblog.com/2016/05/flaky-tests-at-google-and-how-we.html"
+        },
+        {
+          "title": "Martin Fowler: Eradicating Non-Determinism in Tests (2011)",
+          "url": "https://martinfowler.com/articles/nonDeterminism.html"
+        },
+        {
+          "title": "Luo et al.: An Empirical Analysis of Flaky Tests (FSE 2014)",
+          "url": "https://dl.acm.org/doi/10.1145/2635868.2635920"
+        }
+      ]
     },
     {
       "id": "context-engineering",
       "term": "Context Engineering",
       "termZh": "上下文工程",
       "domain": "ai-engineering",
+      "hook": "模型只知道你放进窗口的东西。",
       "definition": "为大模型或 AI 智能体设计每次调用时进入上下文窗口的全部信息：系统指令、检索到的资料、工具定义与调用结果、记忆和对话历史。目标是在有限窗口里给模型完成任务所需、且尽量精简的信息。",
-      "compresses": ["上下文窗口是稀缺资源", "检索、压缩、裁剪、排序", "工具与记忆也是输入", "提示词只是上下文的一部分"],
+      "tags": {
+        "discipline": [
+          "人工智能"
+        ],
+        "engineering": [
+          "AI 工程"
+        ],
+        "cognitive": [
+          "信息取舍",
+          "权衡思维"
+        ],
+        "scenario": [
+          "AI 辅助编码",
+          "智能体设计"
+        ],
+        "level": [
+          "实践"
+        ]
+      },
+      "background": "2023–2024 年，大模型应用从单轮问答走向多步执行的智能体，检索结果、工具定义与输出、记忆和对话历史占据了上下文窗口的大部分，提示词只是其中一小块。2025 年 6 月，Shopify CEO Tobi Lütke、Andrej Karpathy 等人公开主张用“上下文工程”取代“提示词工程”。",
+      "problem": "上下文窗口有限，模型的注意力也会被稀释。信息给少了、给多了或互相冲突，都会让模型出错，所以要有意识地设计每一步给模型看什么。",
+      "actors": [
+        "Tobi Lütke（Shopify）、Andrej Karpathy：2025 年 6 月推广这个说法",
+        "LangChain（Harrison Chase）：2025 年 6 月撰文系统阐述",
+        "Anthropic：2025 年 9 月发布智能体上下文工程指南",
+        "Cognition（Walden Yan）：提出多智能体之间共享上下文的原则"
+      ],
+      "evolution": [
+        "2020–2022：GPT-3 时代以提示词工程为主，靠措辞和少样本示例",
+        "2023：检索增强生成（RAG）普及，检索结果成为上下文主体",
+        "2024：工具调用、MCP 和智能体框架让工具定义和结果进入上下文",
+        "2025：“上下文工程”取代“提示词工程”成为主流说法"
+      ],
+      "compresses": [
+        "上下文窗口是稀缺资源",
+        "检索、压缩、裁剪、排序",
+        "工具与记忆也是输入",
+        "提示词只是上下文的一部分"
+      ],
       "scene": "让 Claude Code 改报告组件 DataReport 时，与其把整个仓库塞进对话，不如给它 CLAUDE.md 里的约定、相关模块的接口、一个现有报表的实现示例，再写清验收标准。上下文越聚焦，生成的代码越贴合既有风格。",
-      "misconception": "以为上下文工程就是把提示词写长、信息塞得越多越好。上下文过多会稀释注意力、增加成本，还会引入互相冲突的信息。目标是“恰好足够”，不是“尽可能多”。"
+      "misconception": "以为上下文工程就是把提示词写长、信息塞得越多越好。上下文过多会稀释注意力、增加成本，还会引入互相冲突的信息。目标是“恰好足够”，不是“尽可能多”。",
+      "relations": {
+        "related": [
+          {
+            "term": "Prompt Engineering",
+            "termZh": "提示词工程",
+            "note": "上下文工程的一个子集"
+          },
+          {
+            "term": "Retrieval-Augmented Generation",
+            "termZh": "检索增强生成",
+            "note": "按需检索资料放进上下文"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Context Stuffing",
+            "termZh": "上下文堆砌",
+            "note": "把所有资料一股脑塞进窗口"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Anthropic: Effective context engineering for AI agents (2025)",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        },
+        {
+          "title": "LangChain: The rise of \"context engineering\" (2025)",
+          "url": "https://blog.langchain.com/the-rise-of-context-engineering/"
+        }
+      ]
     }
   ]
 }
