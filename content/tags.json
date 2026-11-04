@@ -372,6 +372,11 @@
           "slug": "security-review",
           "name": "安全评审",
           "description": "审查系统设计或代码的安全风险"
+        },
+        {
+          "slug": "test-strategy",
+          "name": "测试策略",
+          "description": "规划各层测试的分工、比例与运行时机"
         }
       ]
     },
