@@ -1,0 +1,156 @@
+{
+  "date": "2026-11-04",
+  "words": [
+    {
+      "id": "backpressure",
+      "term": "Backpressure",
+      "termZh": "背压",
+      "hook": "下游喊“慢点”，上游得听得见。",
+      "definition": "数据流中，消费方把自己还能处理多少反馈给生产方，生产方据此放慢、缓冲或丢弃，避免快的一方把慢的一方压垮。核心是让队列有界、让“处理不过来”这个信号能沿着链路往回传。",
+      "tags": {
+        "discipline": ["分布式系统", "控制论"],
+        "engineering": ["性能", "可靠性", "消息"],
+        "cognitive": ["反馈闭环", "失败隔离"],
+        "scenario": ["消息消费", "性能排查"],
+        "level": ["机制"]
+      },
+      "background": "流量控制早在 TCP 滑动窗口里就有：接收方通过窗口大小告诉发送方还能收多少。2010 年代异步、非阻塞编程在 JVM 上普及，RxJava、Akka、Reactor 各自遇到“生产比消费快、无界队列撑爆内存”的问题，于是要在库之间统一背压协议。",
+      "problem": "异步边界两侧速度不一致时，要么无界缓冲导致内存溢出，要么阻塞线程失去异步的好处。背压让消费方按需拉取，把负载控制在可承受范围内，而且不必阻塞。",
+      "actors": [
+        "Netflix（Ben Christensen 等）：RxJava 团队，2013 年探索背压",
+        "Typesafe/Lightbend（Viktor Klang、Roland Kuhn）：发起 Reactive Streams",
+        "Pivotal（Stephane Maldini）：Project Reactor，后来支撑 Spring WebFlux",
+        "Oracle：JDK 9 把等价接口纳入 java.util.concurrent.Flow"
+      ],
+      "evolution": [
+        "1981：TCP（RFC 793）用滑动窗口做端到端流量控制",
+        "2013 年底：Netflix、Typesafe、Pivotal 工程师开始讨论统一背压",
+        "2014：Reactive Manifesto 2.0 把背压列为响应式系统要素",
+        "2015-04-30：Reactive Streams 1.0.0 for JVM 发布",
+        "2017：JDK 9 引入 java.util.concurrent.Flow，与之语义等价"
+      ],
+      "compresses": [
+        "队列必须有界",
+        "消费方按需请求 request(n)",
+        "慢的一方决定整体速度",
+        "缓冲、丢弃、采样、降速四种应对",
+        "阻塞是最粗暴的背压"
+      ],
+      "scene": "报告组件导出大报表时，后端用 Reactor 逐页查数据，前端 JCEF 页面渲染跟不上。若只是不停往 Sinks 里推，内存会涨到 OOM；改成按客户端 request(n) 拉取，或用 onBackpressureBuffer 设上限，内存就稳住了。",
+      "misconception": "以为加大缓冲区就解决了问题。缓冲只能吸收突发，持续的速度差迟早撑满它，还会拉长延迟。真正的背压要求“处理不过来”的信号能传回源头，让源头降速或丢弃。",
+      "relations": {
+        "related": [
+          { "term": "Reactive Streams", "termZh": "响应式流", "note": "JVM 上标准化非阻塞背压的规范" },
+          { "term": "Rate Limiting", "termZh": "限流", "note": "由服务方强制上限，不依赖消费方反馈" },
+          { "term": "Circuit Breaker", "termZh": "熔断器", "note": "下游失败时直接断开，而不是减速" }
+        ],
+        "opposite": [
+          { "term": "Unbounded Queue", "termZh": "无界队列", "note": "什么都接，直到内存耗尽" }
+        ]
+      },
+      "sources": [
+        { "title": "Reactive Streams", "url": "https://www.reactive-streams.org/" },
+        { "title": "Reactive Streams 1.0.0 is here!", "url": "https://www.reactive-streams.org/announce-1.0.0" },
+        { "title": "Viktor Klang: Reactive Streams 1.0.0 interview (2015)", "url": "https://medium.com/@viktorklang/reactive-streams-1-0-0-interview-faaca2c00bec" }
+      ]
+    },
+    {
+      "id": "test-pyramid",
+      "term": "Test Pyramid",
+      "termZh": "测试金字塔",
+      "hook": "底下多写快测试，顶上少写 E2E。",
+      "definition": "安排自动化测试组合的经验法则：大量快而稳定的单元测试打底，中间是适量的服务或集成测试，顶层只放少量慢而脆弱的端到端 UI 测试。越往上，数量越少、单条成本越高。",
+      "tags": {
+        "discipline": ["软件工程"],
+        "engineering": ["测试", "持续交付"],
+        "cognitive": ["权衡思维", "反馈闭环"],
+        "scenario": ["测试策略", "CI 排障"],
+        "level": ["原则"]
+      },
+      "background": "早年的测试自动化多靠录制回放工具驱动 GUI，测试慢、脆、难维护。敏捷和持续集成兴起后，团队需要几分钟内给出反馈的测试集，于是有了按粒度分层、控制各层比例的想法。",
+      "problem": "避免“冰淇淋筒”：测试大多堆在 UI 端到端层，构建越来越慢，偶发失败让人不再信任测试。金字塔给出分配原则：把检查尽量下沉到更快、定位更准的层级。",
+      "actors": [
+        "Mike Cohn：2009 年《Succeeding with Agile》提出“测试自动化金字塔”",
+        "Lisa Crispin：2003–04 年与 Cohn 讨论时画出雏形",
+        "Martin Fowler：2012 年撰文推广，并提出“冰淇淋筒”反例",
+        "Ham Vocke（Thoughtworks）：2018 年《The Practical Test Pyramid》"
+      ],
+      "evolution": [
+        "2003–04：Cohn 与 Lisa Crispin 交流中画出金字塔，2004 年公开讲述",
+        "2009：《Succeeding with Agile》正式写入，三层为单元、服务、UI",
+        "2012：Fowler 发表 TestPyramid，与“冰淇淋筒”对比",
+        "2018：Vocke 用 Spring Boot 示例把各层落到具体工具",
+        "2018：Kent C. Dodds 提出“测试奖杯”，强调集成测试"
+      ],
+      "compresses": [
+        "测试按粒度分层",
+        "越往上越少、越慢、越贵",
+        "高层失败先补一条低层测试",
+        "检查尽量往下沉",
+        "冰淇淋筒是反模式"
+      ],
+      "scene": "B/S 转 C/S 后，你们的 E2E 测试要拉起 JCEF 客户端点界面，一跑半小时还常偶发失败。把报告计算规则下沉到 JUnit 单元测试、Java 与 JS 桥接接口用契约或集成测试覆盖，E2E 只留几条核心用户路径。",
+      "misconception": "把它当成固定比例或“不要写 E2E”。它只说各层要有、上层要少，前提是上层测试贵；如果高层测试又快又稳，可以多写。层名也别死扣，团队内部定义一致更重要。",
+      "relations": {
+        "related": [
+          { "term": "Flaky Test", "termZh": "不稳定测试", "note": "顶层 E2E 最容易出现偶发失败" },
+          { "term": "Contract Testing", "termZh": "契约测试", "note": "用较低成本替代跨服务端到端测试" },
+          { "term": "Testing Trophy", "termZh": "测试奖杯", "note": "强调集成测试的另一种分层图" }
+        ],
+        "opposite": [
+          { "term": "Ice-Cream Cone", "termZh": "冰淇淋筒", "note": "UI 测试最多、单元测试最少的倒置形态" }
+        ]
+      },
+      "sources": [
+        { "title": "Martin Fowler: Test Pyramid (2012)", "url": "https://martinfowler.com/bliki/TestPyramid.html" },
+        { "title": "Ham Vocke: The Practical Test Pyramid (2018)", "url": "https://martinfowler.com/articles/practical-test-pyramid.html" }
+      ]
+    },
+    {
+      "id": "chesterton-s-fence",
+      "term": "Chesterton's Fence",
+      "termZh": "切斯特顿的篱笆",
+      "hook": "不知道篱笆为啥立，就别急着拆。",
+      "definition": "改革原则：看到一条规则、一段代码或一道流程觉得没用时，先弄清它当初为什么存在，再决定是否拆除。说不出它的用处，恰恰说明还没资格拆。",
+      "tags": {
+        "discipline": ["决策科学"],
+        "engineering": ["系统迁移", "研发管理"],
+        "cognitive": ["决策质量", "隐性成本"],
+        "scenario": ["遗留系统改造", "代码评审"],
+        "level": ["原则"]
+      },
+      "background": "英国作家 G. K. Chesterton 在 1929 年的文集《The Thing》“The Drift from Domesticity”一章中，用路上一道篱笆作比喻：现代改革者说“看不出用处，拆掉吧”，更明智的人会说“看不出用处，就更不许拆”。",
+      "problem": "防止把看不懂的东西当成没用的东西。旧规则、旧代码往往是为某个已被遗忘的问题而设，贸然删除会让那个问题重新出现。",
+      "actors": [
+        "G. K. Chesterton（英国作家）：1929 年《The Thing》提出原文",
+        "John F. Kennedy：1945 年笔记中转述此意，见 Bartlett 引语集",
+        "软件工程社区：用来讨论遗留代码、配置与流程的删改"
+      ],
+      "evolution": [
+        "1929：Chesterton 在《The Thing》中写下篱笆寓言",
+        "1945：肯尼迪笔记将其浓缩为“别拆你不知道为何而立的篱笆”",
+        "20 世纪后期：成为政策与改革讨论中的常用说法",
+        "2010s：随思维模型类文章在工程师群体中流行，用于重构与删代码"
+      ],
+      "compresses": [
+        "看不懂不等于没用",
+        "先考古，再拆除",
+        "删除前写下它防的是什么",
+        "把隐性理由显式化"
+      ],
+      "scene": "改造旧报告组件时看到一段在打印前 Thread.sleep(200) 的代码，想删。先查 git blame 和关联缺陷单，发现是绕过老版 JCEF 渲染未完成就截图的问题；确认升级后的版本已修复，再用 E2E 验证后删除。",
+      "misconception": "当成“永远别拆旧东西”的保守口号。它只要求先弄懂再拆；弄懂了确实已无必要，就该果断删除，并把原因记进提交说明，免得下一个人再考古一遍。",
+      "relations": {
+        "related": [
+          { "term": "Strangler Fig Pattern", "termZh": "绞杀者模式", "note": "渐进替换，边替换边理解旧行为" },
+          { "term": "Second-Order Thinking", "termZh": "二阶思维", "note": "多想一步：拆掉之后会发生什么" },
+          { "term": "Architecture Decision Record", "termZh": "架构决策记录", "note": "把立篱笆的理由当时就写下来" }
+        ],
+        "opposite": []
+      },
+      "sources": [
+        { "title": "The Society of G. K. Chesterton: Taking a Fence Down", "url": "https://www.chesterton.org/taking-a-fence-down/" }
+      ]
+    }
+  ]
+}
