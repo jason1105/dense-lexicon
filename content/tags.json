@@ -377,6 +377,11 @@
           "slug": "test-strategy",
           "name": "测试策略",
           "description": "规划各层测试的分工、比例与运行时机"
+        },
+        {
+          "slug": "concurrent-update",
+          "name": "并发更新",
+          "description": "多个用户或进程同时修改同一份数据"
         }
       ]
     },
