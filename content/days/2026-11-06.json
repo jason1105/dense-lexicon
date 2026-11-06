@@ -1,0 +1,262 @@
+{
+  "date": "2026-11-06",
+  "words": [
+    {
+      "id": "cap-theorem",
+      "term": "CAP Theorem",
+      "termZh": "CAP 定理",
+      "hook": "网络一断，一致性与可用性二选一。",
+      "definition": "分布式共享数据系统在出现网络分区时，无法同时保证线性一致性和可用性：要么拒绝部分请求以保住一致，要么继续服务但可能读到旧数据。常被概括为一致性、可用性、分区容错三者不可兼得。",
+      "tags": {
+        "discipline": [
+          "分布式系统",
+          "数据库理论"
+        ],
+        "engineering": [
+          "架构",
+          "数据一致性"
+        ],
+        "cognitive": [
+          "权衡思维",
+          "边界思维"
+        ],
+        "scenario": [
+          "架构评审",
+          "设计评审"
+        ],
+        "level": [
+          "定律"
+        ]
+      },
+      "background": "1990 年代末 Eric Brewer 在 Inktomi 与 Berkeley 做大规模集群服务时，常为可用性牺牲强一致。他在 1998–1999 年提出 CAP 论点，2000 年 PODC 主题演讲中作为猜想发表；2002 年 MIT 的 Gilbert 与 Lynch 给出形式化证明。",
+      "problem": "广域网和集群里分区不可避免。设计者需要一个清晰框架，说明在分区发生时，系统该优先保一致还是保可用，而不是假装三者都能同时拿到。",
+      "actors": [
+        "Eric Brewer（UC Berkeley / Inktomi）：提出 CAP 猜想",
+        "Seth Gilbert、Nancy Lynch（MIT）：2002 年给出形式化证明",
+        "NoSQL 与云原生社区：用它讨论一致与可用的取舍"
+      ],
+      "evolution": [
+        "1998–1999：Brewer 提出 CAP 原则与 BASE 对照 ACID",
+        "2000：PODC 主题演讲《Towards Robust Distributed Systems》",
+        "2002：Gilbert & Lynch 证明异步网络下的不可能结果",
+        "2012：Brewer 撰文澄清“三选二”被过度简化",
+        "此后：强调分区时显式降级，正常时尽量同时保 C 与 A"
+      ],
+      "compresses": [
+        "分区时 C 与 A 不可兼得",
+        "线性一致 vs 持续响应",
+        "超时即一次分区决策",
+        "按操作/数据细粒度取舍",
+        "分区模式与恢复补偿"
+      ],
+      "scene": "广州交易监测多机房部署时，机房间链路抖动。告警状态若强一致，分区侧可能写不进去；若优先可用，两边可能各写各的，恢复时要合并冲突。评审里先定：哪些键必须 CP，哪些可 AP 后再对账。",
+      "misconception": "以为日常只能永远选两个、第三个永久放弃。分区少见时系统多数时间可以又一致又可用；真正要做的是检测到分区后显式进入降级模式，并规划恢复时如何修不变量。也别把 CAP 的 C 当成 ACID 的 C。",
+      "relations": {
+        "related": [
+          {
+            "term": "Eventual Consistency",
+            "termZh": "最终一致性",
+            "note": "选 AP 时常落到的一致性模型"
+          },
+          {
+            "term": "Two-Phase Commit",
+            "termZh": "两阶段提交",
+            "note": "为保一致而牺牲可用性的经典协议"
+          },
+          {
+            "term": "Outbox Pattern",
+            "termZh": "发件箱模式",
+            "note": "用本地事务换跨系统一致，避开分布式事务"
+          }
+        ],
+        "opposite": []
+      },
+      "sources": [
+        {
+          "title": "Eric Brewer: Towards Robust Distributed Systems (PODC 2000)",
+          "url": "https://dl.acm.org/doi/10.1145/343477.343502"
+        },
+        {
+          "title": "Gilbert & Lynch: Brewer's Conjecture (ACM SIGACT News, 2002)",
+          "url": "https://dl.acm.org/doi/10.1145/564585.564601"
+        },
+        {
+          "title": "Eric Brewer: CAP Twelve Years Later (InfoQ / IEEE Computer, 2012)",
+          "url": "https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed/"
+        }
+      ]
+    },
+    {
+      "id": "technical-debt",
+      "term": "Technical Debt",
+      "termZh": "技术债",
+      "hook": "先欠一点，利息会在每次改动里催收。",
+      "definition": "Ward Cunningham 提出的隐喻：把尚未理顺的实现比作借款——能加快当下交付，但之后每次在这块代码上改功能，都要多付“利息”（额外工时）。还本就是重构，把结构理顺，降低后续改动成本。",
+      "tags": {
+        "discipline": [
+          "软件工程"
+        ],
+        "engineering": [
+          "研发管理",
+          "系统迁移"
+        ],
+        "cognitive": [
+          "隐性成本",
+          "权衡思维"
+        ],
+        "scenario": [
+          "遗留系统改造",
+          "代码评审"
+        ],
+        "level": [
+          "原则"
+        ]
+      },
+      "background": "1992 年 Ward Cunningham 在 OOPSLA 经验报告《The WyCash Portfolio Management System》里，把交付尚不成熟的代码比作举债：小额债务能加速开发，前提是尽快用重写还清。此后隐喻在业界扩散，Fowler 等把它系统化。",
+      "problem": "团队常把“先上线再说”当成免费加速。没有共同语言区分有意借款和乱写堆出来的腐化，债务会在高频改动区滚成复利，拖慢每一个新功能。",
+      "actors": [
+        "Ward Cunningham：1992 年提出债务隐喻",
+        "Martin Fowler：整理债务象限与利息/本金说法",
+        "Steve McConnell 等：讨论有意债务与无意债务"
+      ],
+      "evolution": [
+        "1992：Cunningham 在 OOPSLA 报告中提出债务隐喻",
+        "2000s：隐喻在敏捷与重构社区广泛传播",
+        "2009：Fowler 提出技术债象限（有意/无意 × 谨慎/鲁莽）",
+        "2019：Fowler 重写专文，强调利息发生在改代码之时"
+      ],
+      "compresses": [
+        "不成熟实现 ≈ 借款",
+        "利息 = 每次改动的额外成本",
+        "还本 = 重构理顺结构",
+        "高频改动区零容忍腐化",
+        "稳定冷代码可暂不还"
+      ],
+      "scene": "B/S 转 C/S 时，报告组件里为赶进度把 JCEF 桥接和业务规则揉在同一层。新加一种导出格式每次都要改三处、回归 E2E 半小时。评审时标成有意技术债，排进下个迭代抽端口，而不是继续在泥巴里堆功能。",
+      "misconception": "以为技术债就是代码丑、或者“有债就该立刻还清”。冷且稳定的烂代码几乎不产生利息，可以先放着；真正要命的是热路径上的腐化。也别用“我们在借技术债”给乱写开脱——鲁莽的无意债务往往还不起。",
+      "relations": {
+        "related": [
+          {
+            "term": "Chesterton's Fence",
+            "termZh": "切斯特顿的篱笆",
+            "note": "还债前先弄清当初为何这样写"
+          },
+          {
+            "term": "Strangler Fig Pattern",
+            "termZh": "绞杀者模式",
+            "note": "用渐进替换偿还遗留系统上的大债"
+          },
+          {
+            "term": "Refactoring",
+            "termZh": "重构",
+            "note": "偿还本金的主要手段"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Design Stamina",
+            "termZh": "设计耐力",
+            "note": "持续保持内部质量，少欠利息"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Ward Cunningham: The WyCash Portfolio Management System (OOPSLA 1992)",
+          "url": "https://dl.acm.org/doi/10.1145/157709.157715"
+        },
+        {
+          "title": "Martin Fowler: Technical Debt (2019 rewrite)",
+          "url": "https://martinfowler.com/bliki/TechnicalDebt.html"
+        },
+        {
+          "title": "Martin Fowler: Technical Debt Quadrant",
+          "url": "https://martinfowler.com/bliki/TechnicalDebtQuadrant.html"
+        }
+      ]
+    },
+    {
+      "id": "blue-green-deployment",
+      "term": "Blue-Green Deployment",
+      "termZh": "蓝绿部署",
+      "hook": "两套环境轮流上场，切换只是拨一下路由。",
+      "definition": "持续交付里的零停机发布手法：准备两套尽量相同的生产环境（蓝与绿），流量只打向其中一套；新版本先部署到空闲那套并验收，再把路由切过去。出问题就切回，回滚几乎是瞬时的。",
+      "tags": {
+        "discipline": [
+          "软件工程"
+        ],
+        "engineering": [
+          "持续交付",
+          "可靠性"
+        ],
+        "cognitive": [
+          "风险控制"
+        ],
+        "scenario": [
+          "上线前"
+        ],
+        "level": [
+          "实践"
+        ]
+      },
+      "background": "约 2005 年 ThoughtWorks 交付团队（Dan North、Jez Humble 等）为缩小测试环境与生产的差异，在同一批机器上并排部署“影子域”做冒烟，再用 Apache 切流。颜色命名是为了避免 A/B 带来的高低暗示。2010 年 Fowler 撰文，同年写入《Continuous Delivery》。",
+      "problem": "传统发布常要停机替换，回滚慢、风险集中在“切换那一刻”。需要一种能先在真实生产拓扑上验新版本、再瞬间切流、且可瞬间切回的做法。",
+      "actors": [
+        "Dan North、Jez Humble（ThoughtWorks）：约 2005 年命名并实践",
+        "Martin Fowler：2010 年 bliki 推广",
+        "Jez Humble、Dave Farley：《Continuous Delivery》系统化收录"
+      ],
+      "evolution": [
+        "约 2005：ThoughtWorks 项目上出现蓝/绿并排部署",
+        "2010：Fowler 发表 Blue Green Deployment",
+        "2010：《Continuous Delivery》将其作为标准发布模式",
+        "此后：云平台与容器编排把蓝绿、红黑做成一等能力"
+      ],
+      "compresses": [
+        "两套对等生产环境",
+        "空闲侧先部署再验收",
+        "路由切换即发布",
+        "出问题瞬时切回",
+        "数据库变更要向前兼容"
+      ],
+      "scene": "报告服务发新版本：绿环境拉起新包跑冒烟和关键 E2E，通过后把负载均衡从蓝切到绿。若 JCEF 客户端兼容性有问题，再切回蓝，用户几乎无感；库表变更必须先做成新旧应用都能读的扩展迁移。",
+      "misconception": "以为有两套环境就等于蓝绿。关键是流量切换与快速回滚；若发布时还要做不兼容的库变更、或切流后无法立刻退回，就只是换了个名字的停机发布。也别和金丝雀混淆：蓝绿是一次切全部（或按入口），金丝雀是按比例放量。",
+      "relations": {
+        "related": [
+          {
+            "term": "Feature Toggle",
+            "termZh": "功能开关",
+            "note": "部署与发布分离的另一条路"
+          },
+          {
+            "term": "Canary Release",
+            "termZh": "金丝雀发布",
+            "note": "按比例放量，而不是整环境切换"
+          },
+          {
+            "term": "Continuous Delivery",
+            "termZh": "持续交付",
+            "note": "蓝绿是其常见发布策略之一"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "In-Place Upgrade",
+            "termZh": "原地升级",
+            "note": "直接在现网替换，回滚慢"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Martin Fowler: Blue Green Deployment (2010)",
+          "url": "https://martinfowler.com/bliki/BlueGreenDeployment.html"
+        },
+        {
+          "title": "Jez Humble & Dave Farley: Continuous Delivery (book site)",
+          "url": "https://continuousdelivery.com/"
+        }
+      ]
+    }
+  ]
+}
