@@ -1,0 +1,275 @@
+{
+  "date": "2026-11-07",
+  "words": [
+    {
+      "id": "saga-pattern",
+      "term": "Saga Pattern",
+      "termZh": "Saga 模式",
+      "hook": "本地事务串起来，失败用补偿往回撤。",
+      "definition": "跨多个服务的长事务拆成一串本地事务：每步各自提交；若中途失败，按相反顺序执行事先写好的补偿事务，把已完成步骤的影响改回去。牺牲隔离性，换取不锁资源也能推进的业务一致性。",
+      "tags": {
+        "discipline": [
+          "分布式系统",
+          "数据库理论"
+        ],
+        "engineering": [
+          "数据一致性",
+          "消息",
+          "架构"
+        ],
+        "cognitive": [
+          "失败隔离",
+          "权衡思维"
+        ],
+        "scenario": [
+          "事件驱动设计",
+          "系统集成"
+        ],
+        "level": [
+          "模式"
+        ]
+      },
+      "background": "1987 年 Hector Garcia-Molina 与 Kenneth Salem 在 SIGMOD 提出 Saga：把长事务拆成可交错的短事务，失败时跑补偿。微服务普及后，跨库无法靠 2PC，Chris Richardson 等把它重新定位为跨服务一致性的主流模式。",
+      "problem": "每个服务各自管库时，业务动作常跨多个服务。分布式两阶段提交难落地、易阻塞；需要一种不锁全局资源、又能在失败时把半成品业务改回去的协调方式。",
+      "actors": [
+        "Hector Garcia-Molina、Kenneth Salem：1987 年提出 Saga",
+        "Chris Richardson：在微服务语境推广编排/编舞两种协调",
+        "Eventuate 等框架：落地编排式与编舞式 Saga"
+      ],
+      "evolution": [
+        "1987：Garcia-Molina & Salem 在 SIGMOD 发表 Sagas",
+        "2000s：长事务与补偿思想进入工作流与企业集成",
+        "2010s：微服务社区用 Saga 替代跨服务 2PC",
+        "此后：分化为编舞（事件驱动）与编排（中心协调器）两派"
+      ],
+      "compresses": [
+        "本地事务 + 补偿 = Saga",
+        "没有自动回滚，补偿要手写",
+        "编舞靠事件，编排靠协调器",
+        "牺牲隔离，换可推进",
+        "常与发件箱一起发消息"
+      ],
+      "scene": "报告导出要先占配额、再生成文件、再通知客户端。配额与文件分属不同服务：占额成功后生成失败，就必须走补偿退配额，而不是指望跨库事务；评审时把每步补偿写进状态机，和 Outbox 一起落地。",
+      "misconception": "以为 Saga 等于分布式事务或自动回滚。本地事务已提交，失败只能靠显式补偿；并发下也没有 ACID 隔离，脏读与中间态要靠设计对策。也别把编舞和编排混为一谈。",
+      "relations": {
+        "related": [
+          {
+            "term": "Outbox Pattern",
+            "termZh": "发件箱模式",
+            "note": "本地事务与发消息常靠它原子落地"
+          },
+          {
+            "term": "Circuit Breaker",
+            "termZh": "熔断器",
+            "note": "参与方故障时限制扩散，Saga 仍需补偿"
+          },
+          {
+            "term": "CAP Theorem",
+            "termZh": "CAP 定理",
+            "note": "跨服务一致常在分区下显式取舍"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Two-Phase Commit",
+            "termZh": "两阶段提交",
+            "note": "锁资源保原子，Saga 则提交后补偿"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Garcia-Molina & Salem: SAGAS (Princeton TR, 1987)",
+          "url": "https://www.cs.princeton.edu/techreports/1987/070.pdf"
+        },
+        {
+          "title": "Garcia-Molina & Salem: Sagas (ACM SIGMOD 1987)",
+          "url": "https://dl.acm.org/doi/10.1145/38714.38742"
+        },
+        {
+          "title": "Chris Richardson: Pattern Saga (microservices.io)",
+          "url": "https://microservices.io/patterns/data/saga"
+        }
+      ]
+    },
+    {
+      "id": "contract-testing",
+      "term": "Contract Testing",
+      "termZh": "契约测试",
+      "hook": "消费者写出期望，提供者照单验收。",
+      "definition": "把服务之间的接口约定变成可自动跑的测试：通常由消费者声明自己真正用到的请求与响应，提供者在构建流水线里对照这些契约做验证，从而在不启动整套联调环境的前提下发现破坏性变更。",
+      "tags": {
+        "discipline": [
+          "软件工程"
+        ],
+        "engineering": [
+          "测试",
+          "接口设计",
+          "持续交付"
+        ],
+        "cognitive": [
+          "边界思维"
+        ],
+        "scenario": [
+          "测试策略",
+          "接口设计",
+          "系统集成"
+        ],
+        "level": [
+          "实践"
+        ]
+      },
+      "background": "2006 年 Ian Robinson 在 Fowler 站点发表 Consumer-Driven Contracts，主张由消费者期望驱动提供者契约演进。2013 年 realestate.com.au 团队做出 Pact，把该模式落成跨语言工具，后由 DiUS / PactFlow 维护并扩展到 JVM 等生态。",
+      "problem": "微服务各自独立部署后，端到端联调又慢又脆；消费者侧的测试替身又容易与真实提供者脱节。需要一种成本介于单元测试与全链路之间、能在发布前发现接口破坏的办法。",
+      "actors": [
+        "Ian Robinson（ThoughtWorks）：提出消费者驱动契约",
+        "realestate.com.au / DiUS（Beth Skurrie 等）：做出 Pact",
+        "ThoughtWorks Technology Radar：持续推荐该实践"
+      ],
+      "evolution": [
+        "2006：Robinson 发表 Consumer-Driven Contracts",
+        "2013：Pact 在 realestate.com.au 诞生（Ruby）",
+        "2014 起：Pact JVM 与多语言实现、规范版本化",
+        "此后：契约测试成为微服务测试组合的标准一层"
+      ],
+      "compresses": [
+        "消费者声明真实用法",
+        "提供者 CI 跑契约验收",
+        "替身与真实不再漂移",
+        "独立部署仍可安心",
+        "不是端到端，是边界约定"
+      ],
+      "scene": "JCEF 客户端依赖报告服务的导出 API。与其每次改字段都跑整套 E2E，不如让客户端用 Pact 写出它真正用到的字段与状态码，报告服务在 Java CI 里跑契约验证；破坏性改动在合并前就被拦住。",
+      "misconception": "以为装了 Pact 就等于做了消费者驱动契约。关键是契约来自真实消费者用法并由提供者执行；提供者单方面写的“API 文档测试”不算。也别用它取代业务端到端——它验的是边界约定，不是完整用户旅程。",
+      "relations": {
+        "related": [
+          {
+            "term": "Test Pyramid",
+            "termZh": "测试金字塔",
+            "note": "契约测试补在单元与端到端之间"
+          },
+          {
+            "term": "Feature Toggle",
+            "termZh": "功能开关",
+            "note": "可与契约配合做兼容窗口发布"
+          },
+          {
+            "term": "Idempotency",
+            "termZh": "幂等",
+            "note": "接口语义稳定时常一起写进契约"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "End-to-End Only",
+            "termZh": "唯端到端测试",
+            "note": "全靠联调发现破坏，反馈又慢又脆"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Ian Robinson: Consumer-Driven Contracts (2006)",
+          "url": "https://martinfowler.com/articles/consumerDrivenContracts.html"
+        },
+        {
+          "title": "Pact Docs: History",
+          "url": "https://docs.pact.io/history"
+        },
+        {
+          "title": "ThoughtWorks Radar: Consumer-driven contract testing",
+          "url": "https://www.thoughtworks.com/radar/techniques/consumer-driven-contract-testing"
+        }
+      ]
+    },
+    {
+      "id": "inversion",
+      "term": "Inversion",
+      "termZh": "逆向思考",
+      "hook": "先问怎样必败，再把那些路堵死。",
+      "definition": "把问题反过来想：不问“怎样成功”，而问“怎样保证失败 / 怎样避免惨败”，再系统排除那些路径。源自数学家 Jacobi 的“Invert, always invert”，经 Charlie Munger 推广为决策心智模型。",
+      "tags": {
+        "discipline": [
+          "决策科学"
+        ],
+        "engineering": [
+          "风险分析",
+          "研发管理"
+        ],
+        "cognitive": [
+          "决策质量",
+          "风险预判"
+        ],
+        "scenario": [
+          "设计评审",
+          "战略规划"
+        ],
+        "level": [
+          "方法"
+        ]
+      },
+      "background": "19 世纪数学家 Carl Jacobi 常以“必须总是反过来想”攻克难题。Charlie Munger 把它移到投资与人生决策：收集坏判断的实例，用逆向避免愚蠢，比追求天才更稳。Farnam Street 等把它写成可复用的思维模型。",
+      "problem": "正向规划容易只堆“要做什么”，却漏掉最致命的失败路径。复杂决策里，避开明显蠢事往往比追加一个聪明点子更能改善结果。",
+      "actors": [
+        "Carl Gustav Jacob Jacobi：提出 invert, always invert",
+        "Charlie Munger：把逆向思考用于判断与投资",
+        "Shane Parrish / Farnam Street：整理并传播该心智模型"
+      ],
+      "evolution": [
+        "19 世纪：Jacobi 在数学中强调反过来求解",
+        "1995：Munger《人类误判心理学》明示用逆向求好判断",
+        "2010s：Farnam Street 等将其列为常用心智模型",
+        "工程界：与预演失败、事前验尸等实践合流"
+      ],
+      "compresses": [
+        "先想怎样必败",
+        "再排除那些路径",
+        "避蠢优于追天才",
+        "正反双向都要想",
+        "写成检查清单最好用"
+      ],
+      "scene": "B/S 转 C/S 方案评审时，先列“怎样让迁移必败”：一次性切流、库变更不向前兼容、JCEF 桥接无回滚、E2E 只在上线后跑。把这些路径逐条堵上，比再堆三条“亮点功能”更能保住交付。",
+      "misconception": "以为逆向思考就是唱反调或悲观。它不是否定目标，而是用失败路径当滤网；也不是预演失败的同义词——事前验尸是其工程化手法之一，逆向本身是更通用的思维方向。",
+      "relations": {
+        "related": [
+          {
+            "term": "Pre-mortem",
+            "termZh": "事前验尸",
+            "note": "把逆向思考做成团队评审仪式"
+          },
+          {
+            "term": "Chesterton's Fence",
+            "termZh": "切斯特顿的篱笆",
+            "note": "改之前先理解为何存在，同属谨慎思维"
+          },
+          {
+            "term": "Wargaming",
+            "termZh": "兵棋推演",
+            "note": "用对抗推演暴露失败路径"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Forward-Only Planning",
+            "termZh": "单向正向规划",
+            "note": "只堆成功步骤，不扫失败路径"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Farnam Street: Inversion and The Power of Avoiding Stupidity",
+          "url": "https://fs.blog/inversion/"
+        },
+        {
+          "title": "Charlie Munger: The Psychology of Human Misjudgment",
+          "url": "https://fs.blog/great-talks/psychology-human-misjudgment/"
+        },
+        {
+          "title": "MAA: Quotations in Context — Jacobi",
+          "url": "https://old.maa.org/press/periodicals/convergence/quotations-in-context-jacobi"
+        }
+      ]
+    }
+  ]
+}
