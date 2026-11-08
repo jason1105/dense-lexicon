@@ -1,0 +1,253 @@
+{
+  "date": "2026-11-08",
+  "words": [
+    {
+      "id": "change-data-capture",
+      "term": "Change Data Capture",
+      "termZh": "变更数据捕获",
+      "hook": "库里的改动，从日志里流出来。",
+      "definition": "持续识别并投递数据库中已提交的数据变更（插入、更新、删除），让下游近实时消费这些增量，而不必反复全量扫描源表。现代主流做法是读取事务日志（binlog / WAL），对源库侵入小，也能捕获删除。",
+      "tags": {
+        "discipline": [
+          "数据库理论"
+        ],
+        "engineering": [
+          "数据访问",
+          "系统集成"
+        ],
+        "cognitive": [
+          "不变量思维"
+        ],
+        "scenario": [
+          "系统集成",
+          "遗留系统改造"
+        ],
+        "level": [
+          "实践"
+        ]
+      },
+      "background": "数据仓库要把业务库的变化同步到分析库，早期靠时间戳、版本号、触发器或定期全量抽取，延迟高，也容易漏掉删除。人们后来意识到数据库自己的事务日志就是一份完整的变更流：LinkedIn 的 Databus、Kleppmann 对逻辑日志的阐述，以及 2016 年起步的 Debezium，让基于日志的 CDC 成为系统集成的主流做法。",
+      "problem": "下游要跟着源库走，又不能老是全表扫描，也不能在业务代码里到处双写。轮询会漏删除、加重源库负担；应用双写难以和本地事务原子对齐。需要一种对业务侵入小、又能按提交顺序完整捕获变更的办法。",
+      "actors": [
+        "数据仓库与 ETL 厂商：用时间戳、触发器等方式做早期 CDC",
+        "LinkedIn：2013 年开源 Databus，基于事务日志做低延迟 CDC",
+        "Martin Kleppmann：阐述逻辑日志如何把数据库“由内向外翻”",
+        "Red Hat / Debezium（2016 起）：把各库事务日志接到 Kafka"
+      ],
+      "evolution": [
+        "2000s：数仓 ETL 用时间戳、版本号、表触发器捕获变更",
+        "2013：LinkedIn 开源 Databus（内部自 2005 年起研发）",
+        "2015：Kleppmann 阐述逻辑日志是数据库内部的不可变事件流",
+        "2016：Debezium 起步，把 MySQL binlog、Postgres WAL 等接到 Kafka",
+        "此后：云厂商 DMS、Flink CDC 等把日志 CDC 做成托管能力"
+      ],
+      "compresses": [
+        "读事务日志，而不是扫表",
+        "插入、更新、删除都能捕获",
+        "按提交顺序投递给下游",
+        "替代轮询与应用双写",
+        "和发件箱是两条可靠出站路径"
+      ],
+      "scene": "报告模板或数据源配置改在 MySQL 里。与其让导出服务轮询、或在 Java 里同时写业务表和通知表，不如用 Debezium 读 binlog，把变更推到消息总线；C/S 客户端和只读投影跟着更新，迁移期也能把旧库变化同步到新端。",
+      "misconception": "以为 CDC 就是定时对比两张表，或和发件箱是一回事。基于日志的 CDC 由数据库提交记录驱动，能捕获删除且不改表结构；发件箱是应用在同一事务里另写事件表。CDC 也不是复制：它产出的是可供多个下游消费的变更事件。",
+      "relations": {
+        "related": [
+          {
+            "term": "Outbox Pattern",
+            "termZh": "发件箱模式",
+            "note": "同一事务里另写事件表，和 CDC 都是可靠出站"
+          },
+          {
+            "term": "Idempotency",
+            "termZh": "幂等",
+            "note": "下游按变更事件重放时必须幂等消费"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Full Table Extract",
+            "termZh": "全表抽取",
+            "note": "每次把整张表拷走，而不是只投递增量"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "LinkedIn: Open sourcing Databus (2013)",
+          "url": "https://engineering.linkedin.com/data-replication/open-sourcing-databus-linkedins-low-latency-change-data-capture-system"
+        },
+        {
+          "title": "Martin Kleppmann: Turning the database inside-out (2015)",
+          "url": "https://martin.kleppmann.com/2015/03/04/turning-the-database-inside-out.html"
+        },
+        {
+          "title": "Debezium Documentation: Features",
+          "url": "https://debezium.io/documentation/reference/stable/features.html"
+        }
+      ]
+    },
+    {
+      "id": "cross-site-request-forgery",
+      "term": "Cross-Site Request Forgery",
+      "termZh": "跨站请求伪造",
+      "hook": "浏览器自动带上 cookie，请求却不是你点的。",
+      "definition": "攻击者引诱已登录用户的浏览器，向目标站点发出用户并未知情的状态变更请求。浏览器会自动附带该站的 cookie 等凭证，服务器若只认“带了登录态”就会把伪造请求当成用户本人操作。",
+      "tags": {
+        "discipline": [
+          "信息安全",
+          "Web 技术"
+        ],
+        "engineering": [
+          "安全"
+        ],
+        "cognitive": [
+          "对抗性思维"
+        ],
+        "scenario": [
+          "安全评审",
+          "跨域集成"
+        ],
+        "level": [
+          "问题"
+        ]
+      },
+      "background": "浏览器为方便用户，访问某站时会自动带上该站 cookie。同源策略挡住的是跨源读取响应，并不阻止跨站发出带 cookie 的写请求。2001 年 Peter Watkins 在 Bugtraq 上将这类攻击命名为 CSRF；2008 年 Barth、Jackson 与 Mitchell 系统分析了登录 CSRF 等变体并推动 Origin 头；OWASP 将其写入防护指南，后来的框架多默认开启令牌防护。",
+      "problem": "服务端若只检查“请求是否带着有效会话”，就分不清这是用户在站点里点的，还是人在恶意页面、浏览器被顺手带去提交的。转账、改密码、删模板这类状态变更一旦被伪造，危害直接落在用户账号上。",
+      "actors": [
+        "Peter Watkins：2001 年 6 月在 Bugtraq 上把这类攻击命名为 CSRF",
+        "Adam Barth、Collin Jackson、John C. Mitchell：2008 年 CCS 论文分析防护",
+        "OWASP：维护 CSRF 词条与防护速查表，推动工程落地",
+        "浏览器厂商：随后支持 Origin 头与 SameSite cookie 属性"
+      ],
+      "evolution": [
+        "2001：Watkins 在 Bugtraq 上讨论并命名 Cross-Site Request Forgeries",
+        "2008：Barth 等在 CCS 发表《Robust Defenses for Cross-Site Request Forgery》",
+        "2013：CSRF 进入 OWASP Top 10；主流框架开始内置令牌防护",
+        "2016–2020：浏览器落地 SameSite cookie，默认减少跨站自动带 cookie",
+        "此后：Fetch Metadata（Sec-Fetch-Site）成为新的纵深防护信号"
+      ],
+      "compresses": [
+        "跨站发出的、带着你登录态的请求",
+        "同源策略不阻止发送，只限制读取",
+        "用 CSRF 令牌或 SameSite 证明意图",
+        "GET 不要做状态变更",
+        "存在 XSS 时，令牌防护也会失效"
+      ],
+      "scene": "报告服务的删除模板、导出任务仍走 Spring cookie 会话。若接口只认登录态、没有 CSRF 令牌，恶意页面就能借用户浏览器提交删除。JCEF 里的内嵌页面对本地 Java HTTP 接口同样如此：cookie 认证的状态变更接口必须校验令牌，或改用不会被浏览器自动携带的凭证。",
+      "misconception": "以为有了同源策略或只接受 POST 就不会被 CSRF。同源策略不拦跨站发送；POST 也可以被隐藏表单自动提交。也别把 CSRF 和 XSS 混为一谈：XSS 是注入脚本，CSRF 是盗用浏览器自动附带的登录态。存在 XSS 时，CSRF 令牌可被脚本读走。",
+      "relations": {
+        "related": [
+          {
+            "term": "Same-Origin Policy",
+            "termZh": "同源策略",
+            "note": "SOP 限制跨源读取，并不阻止跨站发送带 cookie 的写请求"
+          },
+          {
+            "term": "Cross-Site Scripting",
+            "termZh": "跨站脚本",
+            "note": "脚本能读走令牌，从而绕过 CSRF 防护"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Bearer Token Auth",
+            "termZh": "请求头承载令牌",
+            "note": "放在 Authorization 头里，浏览器不会跨站自动附带"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Peter Watkins: Cross-Site Request Forgeries (Bugtraq, 2001)",
+          "url": "https://seclists.org/bugtraq/2001/Jun/217"
+        },
+        {
+          "title": "Barth, Jackson, Mitchell: Robust Defenses for CSRF (CCS 2008)",
+          "url": "https://seclab.stanford.edu/websec/csrf/csrf.pdf"
+        },
+        {
+          "title": "OWASP: Cross Site Request Forgery (CSRF)",
+          "url": "https://owasp.org/www-community/attacks/csrf"
+        }
+      ]
+    },
+    {
+      "id": "retrieval-augmented-generation",
+      "term": "Retrieval-Augmented Generation",
+      "termZh": "检索增强生成",
+      "hook": "先把相关资料找来，再让模型写。",
+      "definition": "生成答案前，先从外部知识库检索与问题相关的文档，再把检索结果和问题一起送给生成模型。模型的参数记忆与可更换的外部记忆分工：事实放在可更新的库里，而不是只靠训练时记下的权重。",
+      "tags": {
+        "discipline": [
+          "人工智能"
+        ],
+        "engineering": [
+          "AI 工程"
+        ],
+        "cognitive": [
+          "信号与噪声",
+          "信息取舍"
+        ],
+        "scenario": [
+          "AI 辅助编码"
+        ],
+        "level": [
+          "模式"
+        ]
+      },
+      "background": "2020 年前后人们发现，只靠模型参数记住事实既难更新，也容易一本正经地胡说。Facebook AI Research 的 Lewis 等人在 NeurIPS 2020 提出 RAG：用稠密检索器从 Wikipedia 索引里取段落，再交给 BART 生成，把参数记忆和非参数记忆拼在一起。后来大模型应用把“先检索再写入提示词”做成最常见的工程形态。",
+      "problem": "纯参数模型的知识停在训练截止日，更新要重新训练，也难以给出出处。把整库塞进上下文既贵又噪。需要一种按问题临时取来相关资料、并可单独更新知识库的办法。",
+      "actors": [
+        "Patrick Lewis 等（FAIR / UCL / NYU）：2020 年提出 RAG 并在 NeurIPS 发表",
+        "Karpukhin 等：提出 Dense Passage Retrieval，成为原版 RAG 的检索器",
+        "Hugging Face：把 RAG 实现并入 Transformers，降低复现门槛"
+      ],
+      "evolution": [
+        "2020 初：REALM 等探索把检索接入语言模型预训练",
+        "2020：Lewis 等在 NeurIPS 发表 RAG，把检索接到生成式 seq2seq",
+        "2022 起：大模型应用把“先检索再写入提示”做成常规工程形态",
+        "此后：重排序、混合检索、GraphRAG 等成为常见分层扩展"
+      ],
+      "compresses": [
+        "先检索，再生成",
+        "外部库可单独更新",
+        "降低胡编，便于给出出处",
+        "检索质量决定生成质量",
+        "取来外部知识，而不是把整库塞进去"
+      ],
+      "scene": "用 AI 助手改报表公式或查 JCEF 桥接接口时，不要把整个设计文档和代码库塞进窗口。先按问题检索相关 API 说明和内部笔记，再让模型基于这些片段生成答案；文档更新时只需重建索引，而不用重训模型。",
+      "misconception": "以为 RAG 等于把搜索结果糊进提示词就完事，或和上下文工程是同一个词。原论文里的 RAG 是检索器与生成器可一起训练的架构；工程上的 RAG 只是其中一种用法。上下文工程管的是窗口里放什么、以什么结构放；RAG 解决的是外部知识从哪取来。",
+      "relations": {
+        "related": [
+          {
+            "term": "Context Engineering",
+            "termZh": "上下文工程",
+            "note": "管窗口里放什么；RAG 负责把外部知识取来"
+          },
+          {
+            "term": "Prompt Injection",
+            "termZh": "提示词注入",
+            "note": "检索进上下文的文档也可能携带恶意指令"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Parametric-Only Generation",
+            "termZh": "纯参数生成",
+            "note": "只靠模型权重里的记忆，不查阅外部库"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Lewis et al.: Retrieval-Augmented Generation (arXiv:2005.11401)",
+          "url": "https://arxiv.org/abs/2005.11401"
+        },
+        {
+          "title": "Lewis et al.: RAG for Knowledge-Intensive NLP Tasks (NeurIPS 2020)",
+          "url": "https://proceedings.neurips.cc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html"
+        }
+      ]
+    }
+  ]
+}
