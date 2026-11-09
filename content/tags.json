@@ -69,6 +69,11 @@
           "slug": "web-technology",
           "name": "Web 技术",
           "description": "浏览器、HTTP 与 Web 平台的技术和标准"
+        },
+        {
+          "slug": "economics",
+          "name": "经济学",
+          "description": "研究资源配置、激励与政策效果的学科"
         }
       ]
     },
