@@ -1,0 +1,246 @@
+{
+  "date": "2026-11-09",
+  "words": [
+    {
+      "id": "tail-latency",
+      "term": "Tail Latency",
+      "termZh": "尾延迟",
+      "hook": "平均很快，最慢那 1% 才是用户记住的。",
+      "definition": "响应时间分布最右端那一小部分慢请求的延迟，通常用 P99、P99.9 等高分位数衡量。规模越大、一次请求扇出越多，单个组件偶发的慢就越容易拖慢整体，尾部而不是平均值决定了用户体感。",
+      "tags": {
+        "discipline": [
+          "分布式系统"
+        ],
+        "engineering": [
+          "性能",
+          "可靠性"
+        ],
+        "cognitive": [
+          "信号与噪声",
+          "系统思维"
+        ],
+        "scenario": [
+          "性能排查",
+          "线上排障"
+        ],
+        "level": [
+          "问题"
+        ]
+      },
+      "background": "仓库级计算让一次查询要扇出到成百上千台服务器，任何一台因 GC、后台压缩、资源争用、排队而偶发变慢，都会拖住整个请求。2013 年 Google 的 Jeffrey Dean 与 Luiz André Barroso 在 CACM 发表《The Tail at Scale》，系统阐述了这种放大效应，并提出与其消灭波动、不如做“容忍尾部”的设计。",
+      "problem": "只看平均延迟会掩盖少数极慢请求，而在大扇出系统里，这些少数会变成多数：单机 1% 慢，扇出 100 台时约 63% 的用户请求都会变慢。需要一套度量和设计手段，让整体在部件不稳定时仍可预期地快。",
+      "actors": [
+        "Jeffrey Dean、Luiz André Barroso（Google）：2013 年发表《The Tail at Scale》",
+        "Google 搜索与 BigTable 团队：在生产中验证对冲请求、关联请求等手段",
+        "可观测与 RPC 生态：把 P99 监控、请求对冲做成通用能力"
+      ],
+      "evolution": [
+        "2009：Barroso 与 Hölzle 出版《The Datacenter as a Computer》，确立仓库级计算视角",
+        "2013：Dean 与 Barroso 在 CACM 发表《The Tail at Scale》",
+        "此后：SLO 普遍改用 P95、P99 等分位数，而不再只看平均值",
+        "此后：RPC 框架和服务网格陆续内置对冲请求、超时预算与重试策略"
+      ],
+      "compresses": [
+        "看分位数，不看平均值",
+        "扇出越多，尾部越被放大",
+        "GC、排队、后台任务制造长尾",
+        "对冲请求：慢了就向副本再发一份",
+        "容忍尾部，而不是消灭波动"
+      ],
+      "scene": "报告服务导出一张大报表要并行调十几个数据源接口。平均 50ms，但某个接口偶发 Full GC 卡 2 秒，整张报表就跟着卡 2 秒。排查时要看各接口的 P99 和 GC 日志，而不是平均耗时；可以给慢调用设超时预算，或对只读查询向副本发对冲请求。",
+      "misconception": "以为平均延迟达标就没问题，或以为加缓存、加机器就能消掉尾部。平均值会把长尾抹平；缓存只在工作集全部命中时才帮得上尾部。另一个误区是盲目重试：不加延迟和取消的对冲会成倍放大负载，反而让尾部更长。",
+      "relations": {
+        "related": [
+          {
+            "term": "Backpressure",
+            "termZh": "背压",
+            "note": "排队堆积是长尾的主要来源，背压控制队列深度"
+          },
+          {
+            "term": "Circuit Breaker",
+            "termZh": "熔断器",
+            "note": "持续变慢的依赖要隔离，避免拖长整体尾部"
+          },
+          {
+            "term": "Observability",
+            "termZh": "可观测性",
+            "note": "要靠分位数和分布直方图才能看见尾部"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Average Latency",
+            "termZh": "平均延迟",
+            "note": "只看均值，会把少数极慢请求抹平掉"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Dean, Barroso: The Tail at Scale (CACM, 2013)",
+          "url": "https://cacm.acm.org/research/the-tail-at-scale/"
+        },
+        {
+          "title": "Google Research: The Tail at Scale",
+          "url": "https://research.google/pubs/the-tail-at-scale/"
+        }
+      ]
+    },
+    {
+      "id": "leaky-abstraction",
+      "term": "Leaky Abstraction",
+      "termZh": "抽象泄漏",
+      "hook": "封装得再好，底层迟早会渗上来。",
+      "definition": "抽象本想让使用者不必关心底层细节，但在性能、故障或边界情况下，被隐藏的底层行为仍会“漏”出来，迫使使用者理解下面那一层。Joel Spolsky 将其概括为：所有非平凡的抽象，都在某种程度上是泄漏的。",
+      "tags": {
+        "discipline": [
+          "软件工程"
+        ],
+        "engineering": [
+          "架构",
+          "接口设计"
+        ],
+        "cognitive": [
+          "边界思维",
+          "隐性成本"
+        ],
+        "scenario": [
+          "设计评审",
+          "遗留系统改造"
+        ],
+        "level": [
+          "定律"
+        ]
+      },
+      "background": "软件靠层层抽象管理复杂度：TCP 把不可靠的 IP 包装成可靠流，SQL 把查询步骤藏起来，远程文件系统让远端文件看起来像本地文件。2002 年 Joel Spolsky 在博客中提出“抽象泄漏定律”，指出这些抽象在网络断开、查询变慢等时刻都会露出底层。",
+      "problem": "人们期望用上高层工具就不必懂底层，但抽象一漏，不懂下层的人就只能干瞪眼。这个词提醒设计者明确抽象的边界和失效方式，也提醒使用者：抽象省下的是干活时间，省不下学习时间。",
+      "actors": [
+        "Joel Spolsky：2002 年提出“抽象泄漏定律”",
+        "Gregor Kiczales 等：1990 年代初提出开放实现，正视抽象隐藏实现带来的问题",
+        "Hyrum Wright（Google）：总结出 Hyrum 定律，用户终会依赖所有可观察行为",
+        "Titus Winters（Google）：命名并推广 Hyrum 定律"
+      ],
+      "evolution": [
+        "1990s 初：Kiczales 等提出开放实现，讨论抽象隐藏实现细节的代价",
+        "2002：Spolsky 发表《The Law of Leaky Abstractions》",
+        "2010s：Hyrum Wright 在 Google 大规模迁移中总结出 Hyrum 定律",
+        "此后：ORM、RPC、跨平台 UI 框架的讨论常以抽象泄漏为分析框架"
+      ],
+      "compresses": [
+        "所有非平凡抽象都会泄漏",
+        "性能和故障最先漏出来",
+        "省干活时间，不省学习时间",
+        "要写明抽象的失效方式",
+        "用户会依赖未承诺的行为"
+      ],
+      "scene": "JCEF 把 Chromium 包成一个 Java 组件，看起来就是个 Swing 控件。但离屏渲染、焦点切换、多进程崩溃、Mac 与 Windows 的消息循环差异都会漏到 Java 层。迁移 B/S 报告到 C/S 时，要先摸清这些泄漏点并为它们写 E2E 用例，而不是只看封装 API。",
+      "misconception": "以为抽象泄漏说明抽象没用，或只要封装得更严就能堵住。抽象依然值得用，泄漏是它的代价而非失败；过度封装反而让问题更难定位。也别把它当成“接口设计得差”的借口：好的抽象会把可能泄漏的东西明确写进契约。",
+      "relations": {
+        "related": [
+          {
+            "term": "Hyrum's Law",
+            "termZh": "Hyrum 定律",
+            "note": "用户足够多时，所有可观察行为都会被依赖"
+          },
+          {
+            "term": "Anti-Corruption Layer",
+            "termZh": "防腐层",
+            "note": "主动隔离外部模型，控制泄漏进本域的范围"
+          },
+          {
+            "term": "N+1 Query Problem",
+            "termZh": "N+1 查询问题",
+            "note": "ORM 把查询藏起来，性能问题就从这里漏出"
+          }
+        ],
+        "opposite": []
+      },
+      "sources": [
+        {
+          "title": "Joel Spolsky: The Law of Leaky Abstractions (2002)",
+          "url": "https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/"
+        },
+        {
+          "title": "Hyrum Wright: Hyrum's Law",
+          "url": "https://www.hyrumslaw.com/"
+        }
+      ]
+    },
+    {
+      "id": "goodhart-s-law",
+      "term": "Goodhart's Law",
+      "termZh": "古德哈特定律",
+      "hook": "指标一旦变成目标，就不再是好指标。",
+      "definition": "一个原本能反映真实状况的指标，一旦被当作考核或控制目标，人们就会针对指标本身去优化，指标与它代表的真实目标之间的关系随之失效。原话是：任何被观察到的统计规律，一旦被施加控制压力，就会趋于瓦解。",
+      "tags": {
+        "discipline": [
+          "经济学",
+          "组织行为学"
+        ],
+        "engineering": [
+          "研发管理"
+        ],
+        "cognitive": [
+          "反馈闭环",
+          "决策质量"
+        ],
+        "scenario": [
+          "测试策略",
+          "战略规划"
+        ],
+        "level": [
+          "定律"
+        ]
+      },
+      "background": "1970 年代英国央行尝试以货币供应量作为调控目标，原本稳定的货币统计关系在被用于控制后却失灵。时任英格兰银行顾问的 Charles Goodhart 在 1975 年澳洲储备银行的会议论文中写下这一观察。1997 年人类学家 Marilyn Strathern 在讨论英国大学评估时，把它概括成今天流行的说法。",
+      "problem": "组织离不开指标来管理，但指标只是真实目标的代理。一旦把代理当目标来奖惩，人们就会去优化数字而非实质，数字好看了，真实状况却可能变差。这个词帮人在设定 KPI 时预判指标被博弈的方式。",
+      "actors": [
+        "Charles Goodhart（英格兰银行）：1975 年在货币管理论文中首次提出",
+        "澳洲储备银行：1975 年悉尼货币经济学会议主办方，论文收入会议文集",
+        "Marilyn Strathern：1997 年概括为“当一个指标变成目标”的通俗表述",
+        "Donald T. Campbell：独立提出类似的 Campbell 定律，针对社会政策评估"
+      ],
+      "evolution": [
+        "1975：Goodhart 在澳洲储备银行会议论文中提出原始表述",
+        "1976：Lucas 批判从宏观经济学角度提出相近观点",
+        "1979：Campbell 在社会项目评估中提出 Campbell 定律",
+        "1997：Strathern 在英国大学评估语境下给出流行表述",
+        "此后：软件研发中的覆盖率、代码行数、故事点等指标讨论常引用它"
+      ],
+      "compresses": [
+        "指标是代理，不是目标本身",
+        "考核压力会让人优化数字",
+        "数字好看，实质变差",
+        "用多个指标相互制衡",
+        "定期换掉被博弈的指标"
+      ],
+      "scene": "团队把单元测试覆盖率 80% 写进考核，很快就出现只调用不断言的测试，覆盖率上去了，报告组件的回归缺陷却没减少。更好的做法是把覆盖率当诊断信号而非考核目标，再配合 E2E 关键路径通过率、线上缺陷逃逸率一起看。",
+      "misconception": "以为古德哈特定律的结论是“不要用指标”。它针对的是把单一指标当成奖惩目标，而不是度量本身。也别把通俗说法当原话：“当一个指标变成目标”出自 Strathern 1997 年的概括，Goodhart 原文讲的是统计规律在控制压力下瓦解。",
+      "relations": {
+        "related": [
+          {
+            "term": "Campbell's Law",
+            "termZh": "坎贝尔定律",
+            "note": "社会决策越依赖量化指标，指标越易被扭曲"
+          },
+          {
+            "term": "Test Pyramid",
+            "termZh": "测试金字塔",
+            "note": "看测试结构与分布，比追单一覆盖率更不易被博弈"
+          }
+        ],
+        "opposite": []
+      },
+      "sources": [
+        {
+          "title": "RBA: Select Bibliography, Papers in Monetary Economics (Goodhart 1975)",
+          "url": "https://www.rba.gov.au/publications/rdp/1990/9013/conference-volumes.html"
+        },
+        {
+          "title": "Strathern: 'Improving ratings': audit in the British University system (1997)",
+          "url": "https://doi.org/10.1017/S1062798700002660"
+        }
+      ]
+    }
+  ]
+}
