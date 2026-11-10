@@ -74,6 +74,11 @@
           "slug": "economics",
           "name": "经济学",
           "description": "研究资源配置、激励与政策效果的学科"
+        },
+        {
+          "slug": "concurrent-computing",
+          "name": "并发计算",
+          "description": "研究多个计算同时进行时的顺序、可见性与正确性的学科"
         }
       ]
     },

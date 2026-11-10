@@ -1,0 +1,159 @@
+{
+  "date": "2026-11-10",
+  "words": [
+    {
+      "id": "happens-before",
+      "term": "Happens-Before",
+      "termZh": "先行发生",
+      "hook": "不是谁先执行，而是谁的写入保证被谁看见。",
+      "definition": "并发系统里两个操作之间的偏序关系：若 A 先行发生于 B，则 A 的结果对 B 可见且排在 B 之前。没有这条关系约束的两个冲突访问就构成数据竞争，结果可能被重排、缓存而“看不见”。",
+      "tags": {
+        "discipline": ["并发计算", "分布式系统"],
+        "engineering": ["可靠性", "数据一致性"],
+        "cognitive": ["不变量思维", "边界思维"],
+        "scenario": ["并发更新", "代码评审"],
+        "level": ["机制"]
+      },
+      "background": "1978 年 Leslie Lamport 借相对论“只有因果偏序、没有全局先后”的思路，在分布式系统中定义了 happens-before。之后多核 CPU 和 JIT 编译器大量重排指令，Java 早期内存模型含糊有漏洞，2004 年 JSR-133 以 happens-before 为核心重写了 Java 内存模型。",
+      "problem": "编译器、CPU 和缓存为了性能会重排读写，一个线程写了，另一个线程未必看得到、看到的顺序也未必一样。需要一套程序员可推理的规则：哪些同步动作建立可见性与顺序，只要遵守，就不必去想底层怎么重排。",
+      "actors": [
+        "Leslie Lamport：1978 年在 CACM 论文中定义 happens-before 与逻辑时钟",
+        "William Pugh、Jeremy Manson、Sarita Adve：主导重写 Java 内存模型",
+        "Doug Lea：JSR-133 专家组成员，java.util.concurrent 作者",
+        "Sun、IBM、HP 等：参与 JSR-133 专家组，落实到各 JVM 实现"
+      ],
+      "evolution": [
+        "1978：Lamport 发表《Time, Clocks, and the Ordering of Events in a Distributed System》",
+        "1999：Pugh 发表《Fixing the Java Memory Model》，指出原规范的缺陷",
+        "2004：JSR-133 定稿，随 Java 5 发布，JLS 第 17 章以 happens-before 定义内存模型",
+        "2011：C++11 内存模型同样以 happens-before 定义线程间可见性"
+      ],
+      "compresses": [
+        "可见性和顺序，不等于执行先后",
+        "解锁先于后续加锁",
+        "volatile 写先于后续读",
+        "start() 与 join() 建立边",
+        "无 happens-before 的冲突访问即数据竞争",
+        "传递性：A 先于 B、B 先于 C，则 A 先于 C"
+      ],
+      "scene": "JCEF 客户端里，后台线程加载完报表数据后设一个普通 boolean 标志，UI 线程轮询这个标志，偶尔一直读到 false 或读到半初始化的对象。把标志改为 volatile，或通过 SwingUtilities.invokeLater、CompletableFuture 交接数据，才能建立 happens-before。",
+      "misconception": "以为“代码里写在前面、时间上先执行”就一定被另一个线程看到，或以为 sleep 一下就能保证可见。Thread.sleep 没有同步语义；没有锁、volatile 或并发工具建立的边，时间上的先后毫无保证。",
+      "relations": {
+        "related": [
+          { "term": "Optimistic Locking", "termZh": "乐观锁", "note": "CAS 等原子操作同样通过内存语义建立可见性" },
+          { "term": "Idempotency", "termZh": "幂等性", "note": "顺序难保证时，靠幂等让重复与乱序无害" }
+        ],
+        "opposite": [
+          { "term": "Data Race", "termZh": "数据竞争", "note": "冲突访问之间缺少 happens-before 就是数据竞争" }
+        ]
+      },
+      "sources": [
+        { "title": "Lamport: Time, Clocks, and the Ordering of Events in a Distributed System (CACM, 1978)", "url": "https://www.microsoft.com/en-us/research/publication/time-clocks-ordering-events-distributed-system/" },
+        { "title": "JSR 133: Java Memory Model and Thread Specification Revision", "url": "https://jcp.org/en/jsr/detail?id=133" },
+        { "title": "The Java Language Specification, Chapter 17: Threads and Locks", "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html" }
+      ]
+    },
+    {
+      "id": "write-ahead-log",
+      "term": "Write-Ahead Log",
+      "termZh": "预写日志",
+      "hook": "先记账，再改账本，崩了照账重做。",
+      "definition": "任何对数据页的修改，都必须先把描述这次修改的日志记录顺序写入并刷到持久存储，之后才能改数据文件。崩溃后按日志重做已提交、回滚未完成的事务，从而同时得到持久性和较高的写入性能。",
+      "tags": {
+        "discipline": ["数据库理论"],
+        "engineering": ["可靠性", "性能"],
+        "cognitive": ["不变量思维", "权衡思维"],
+        "scenario": ["设计评审", "事故复盘"],
+        "level": ["机制"]
+      },
+      "background": "早期数据库要在断电、进程崩溃时不丢已提交事务，又不能每次提交都把分散的数据页随机刷盘。IBM 等在 1970、80 年代的事务系统中采用“先写日志”规则，1992 年 C. Mohan 等发表的 ARIES 成为 WAL 恢复算法的经典范式。",
+      "problem": "直接改数据页再刷盘，既慢（随机写多页）又不安全（写到一半就崩，页面处于中间态）。WAL 把提交成本变为一次顺序日志刷盘，并用日志在崩溃后把数据恢复到一致状态。",
+      "actors": [
+        "C. Mohan 等（IBM Almaden）：1992 年发表 ARIES 恢复算法",
+        "IBM DB2、IMS 与 Tandem：在工业系统中实践 WAL 恢复",
+        "PostgreSQL、MySQL InnoDB、SQLite：把 WAL 或 redo log 做成核心存储机制"
+      ],
+      "evolution": [
+        "1970 年代：IBM System R 等事务系统探索日志加影子页的恢复方式",
+        "1992：ARIES 发表于 ACM TODS，提出“重复历史”的 redo/undo 恢复",
+        "2001：PostgreSQL 7.1 引入 WAL",
+        "2010：SQLite 3.7.0 提供 WAL 模式",
+        "此后：WAL 被用于流复制、时间点恢复与变更数据捕获"
+      ],
+      "compresses": [
+        "日志先落盘，数据页后落盘",
+        "顺序写替代随机写",
+        "提交只需刷日志",
+        "崩溃后 redo 已提交、undo 未完成",
+        "检查点截断日志",
+        "复制与 PITR 都基于重放日志"
+      ],
+      "scene": "报告组件把用户编辑的报表模板存进本地 SQLite，客户端被强杀后偶发文件损坏或丢最近修改。开启 WAL 模式并选择合适的 synchronous 级别，或自己写应用层操作日志、先追加再落地，崩溃后即可重放恢复。",
+      "misconception": "以为有了 WAL 就不会丢数据。若为性能关掉提交时的 fsync，或磁盘缓存谎报已写入，最近的提交仍会丢失；WAL 保证的是“日志写到哪，就能恢复到哪”，而不是凭空的持久性。",
+      "relations": {
+        "related": [
+          { "term": "Change Data Capture", "termZh": "变更数据捕获", "note": "CDC 常通过读取数据库的 WAL 或 binlog 实现" },
+          { "term": "Outbox Pattern", "termZh": "发件箱模式", "note": "同样是先可靠记下意图，再异步执行" },
+          { "term": "Idempotency", "termZh": "幂等性", "note": "日志重放必须保证重复执行结果不变" }
+        ],
+        "opposite": [
+          { "term": "Shadow Paging", "termZh": "影子页", "note": "通过写新页再切指针实现原子更新，而非先写日志" }
+        ]
+      },
+      "sources": [
+        { "title": "Mohan et al.: ARIES (ACM TODS, 1992)", "url": "https://dl.acm.org/doi/10.1145/128765.128770" },
+        { "title": "PostgreSQL Documentation: Write-Ahead Logging (WAL)", "url": "https://www.postgresql.org/docs/current/wal-intro.html" }
+      ]
+    },
+    {
+      "id": "lindy-effect",
+      "term": "Lindy Effect",
+      "termZh": "林迪效应",
+      "hook": "活得越久的技术，越可能继续活下去。",
+      "definition": "对没有天然寿命上限的事物（技术、思想、书籍），已经存在的时间越长，预期剩余寿命也越长，大致与当前年龄成正比。数学上对应寿命服从帕累托（幂律）分布，可用于技术选型和判断哪些知识值得深学。",
+      "tags": {
+        "discipline": ["决策科学", "数学"],
+        "engineering": ["架构", "风险分析"],
+        "cognitive": ["决策质量", "信号与噪声"],
+        "scenario": ["依赖治理", "架构评审"],
+        "level": ["定律"]
+      },
+      "background": "说法起源于纽约百老汇的 Lindy 熟食店，喜剧演员在那里聊演出寿命。1964 年 Albert Goldman 在《The New Republic》写下“Lindy's Law”；1982 年 Mandelbrot 给出数学表述；2012 年 Taleb 在《反脆弱》中把它推广到一切“不易腐”的事物。",
+      "problem": "面对层出不穷的新框架、新工具，很难判断哪个能长期依赖。林迪效应给出一个粗糙但有效的先验：已经经受住多年淘汰的东西，比刚出现的热门更可能继续存在，降低选型押错的风险。",
+      "actors": [
+        "Albert Goldman：1964 年在《The New Republic》发表《Lindy's Law》",
+        "Benoit Mandelbrot：1982 年在《The Fractal Geometry of Nature》中给出数学版本",
+        "Nassim Nicholas Taleb：2012 年在《Antifragile》中正式命名并推广"
+      ],
+      "evolution": [
+        "1964：Goldman 记录百老汇关于演出寿命的“Lindy's Law”",
+        "1982：Mandelbrot 将其表述为剩余寿命与已存时长成正比",
+        "2012：Taleb 在《Antifragile》中推广到技术与思想",
+        "2017：Iddo Eliazar 在《Physica A》中给出严格的统计刻画"
+      ],
+      "compresses": [
+        "只适用于不易腐的事物",
+        "已存时长是剩余寿命的先验",
+        "幂律分布，而非正态分布",
+        "时间是最好的过滤器",
+        "新热点先打折扣"
+      ],
+      "scene": "评估报告组件的技术栈时，在“十多年的 Java + SQL + HTTP”与“刚火半年的新渲染框架”之间取舍：核心数据层和协议选久经考验的，新东西放在可替换的边缘层试用，并用防腐层隔离，押错也能撤。",
+      "misconception": "把它当成“老的一定好、新的一定差”。它只是概率先验，不保证个体：老技术也会被颠覆，且只适用于没有天然寿命上限的事物；对会老化的东西（硬件、人、某个版本的库）恰恰相反。",
+      "relations": {
+        "related": [
+          { "term": "Chesterton's Fence", "termZh": "切斯特顿栅栏", "note": "都主张对存在已久的东西先保持敬畏" },
+          { "term": "Technical Debt", "termZh": "技术债", "note": "押错短命技术会转化为迁移成本" },
+          { "term": "Anti-Corruption Layer", "termZh": "防腐层", "note": "用隔离层降低押错新技术的代价" }
+        ],
+        "opposite": [
+          { "term": "Hype Cycle", "termZh": "技术成熟度曲线", "note": "热度高峰往往高估新技术的寿命" }
+        ]
+      },
+      "sources": [
+        { "title": "Wikipedia: Lindy effect", "url": "https://en.wikipedia.org/wiki/Lindy_effect" },
+        { "title": "Eliazar: Lindy's Law (Physica A, 2017)", "url": "https://doi.org/10.1016/j.physa.2017.05.077" }
+      ]
+    }
+  ]
+}
