@@ -1,0 +1,162 @@
+{
+  "date": "2026-11-11",
+  "words": [
+    {
+      "id": "test-oracle",
+      "term": "Test Oracle",
+      "termZh": "测试预言",
+      "hook": "测试能跑起来不难，难的是知道结果对不对。",
+      "definition": "判断被测程序在给定输入下的输出或行为是否正确的机制，可以是期望值、规格、参考实现、不变量，也可以是人。没有可靠的预言，测试只能证明“程序跑完了”，不能证明“程序跑对了”。",
+      "tags": {
+        "discipline": ["软件工程"],
+        "engineering": ["测试"],
+        "cognitive": ["不变量思维", "信号与噪声"],
+        "scenario": ["测试策略", "CI 排障"],
+        "level": ["问题", "机制"]
+      },
+      "background": "早期测试研究默认“总有人能判断输出对错”。1982 年 Elaine Weyuker 发表《On Testing Non-Testable Programs》，指出科学计算等程序往往根本没有可用的预言，这一假设并不现实。此后测试自动化越普及，“谁来判对错”越成为瓶颈。",
+      "problem": "测试输入可以大量自动生成，但每条输入的期望结果要靠人写或人看，成本最高、最难自动化。需要一套办法在没有完整期望值时也能判定缺陷，例如用不变量、参考实现、前后版本对比或蜕变关系代替逐条断言。",
+      "actors": [
+        "Elaine Weyuker：1982 年提出“不可测程序”，审视预言假设",
+        "陈宗岳（T. Y. Chen）等：1998 年提出蜕变测试，缓解无预言问题",
+        "Earl Barr、Mark Harman 等（UCL、谢菲尔德大学）：2015 年发表预言问题综述",
+        "Kent Beck 等：xUnit 断言让显式期望值成为日常实践"
+      ],
+      "evolution": [
+        "1970 年代后期：测试文献开始用 oracle 指代判定输出正确性的机制",
+        "1982：Weyuker 发表《On Testing Non-Testable Programs》",
+        "1998：蜕变测试提出，用输入间的关系代替绝对期望值",
+        "2015：Barr 等在 IEEE TSE 发表《The Oracle Problem in Software Testing: A Survey》",
+        "2020 年代：快照测试、视觉回归和 LLM 生成测试再次放大预言问题"
+      ],
+      "compresses": [
+        "期望值从哪里来",
+        "显式断言与隐式预言（崩溃、异常）",
+        "参考实现与差分测试",
+        "蜕变关系",
+        "快照与基线对比",
+        "人是最后的预言"
+      ],
+      "scene": "报告组件的 E2E 测试能自动点完导出 PDF 流程，但只断言“文件存在”，排版错乱照样全绿。可改为对比渲染截图基线，并加不变量：页数随数据量单调、合计行等于明细之和。",
+      "misconception": "以为覆盖率高、用例多就等于测得充分。没有强预言的用例只会检查“不崩溃”，覆盖率 90% 的套件可能对错误结果完全无感；变异测试常能暴露这种弱断言。",
+      "relations": {
+        "related": [
+          { "term": "Flaky Test", "termZh": "不稳定测试", "note": "预言依赖时间、顺序等外部因素时就会时好时坏" },
+          { "term": "Contract Testing", "termZh": "契约测试", "note": "契约就是服务间交互的显式预言" },
+          { "term": "Test Pyramid", "termZh": "测试金字塔", "note": "越往上层，预言越难写、越昂贵" }
+        ],
+        "opposite": [
+          { "term": "Smoke Test", "termZh": "冒烟测试", "note": "只看能否跑通，几乎不判断结果对错" }
+        ]
+      },
+      "sources": [
+        { "title": "Weyuker: On Testing Non-Testable Programs (The Computer Journal, 1982)", "url": "https://doi.org/10.1093/comjnl/25.4.465" },
+        { "title": "Barr et al.: The Oracle Problem in Software Testing: A Survey (IEEE TSE, 2015)", "url": "https://discovery.ucl.ac.uk/id/eprint/1471263/1/06963470.pdf" }
+      ]
+    },
+    {
+      "id": "service-level-objective",
+      "term": "Service Level Objective",
+      "termZh": "服务等级目标",
+      "hook": "不追求 100%，而是说清楚多好算够好。",
+      "definition": "用服务等级指标（SLI）衡量的、面向用户的可靠性目标值，如“99% 请求在 300ms 内成功返回”。100% 减去 SLO 就是错误预算，用来决定是继续发新功能还是先修稳定性。",
+      "tags": {
+        "discipline": ["软件工程", "分布式系统"],
+        "engineering": ["可靠性", "可观测"],
+        "cognitive": ["权衡思维", "反馈闭环"],
+        "scenario": ["上线前", "事故复盘"],
+        "level": ["实践"]
+      },
+      "background": "2003 年 Ben Treynor Sloss 在 Google 组建 SRE 团队，用软件工程方式做运维。2016 年《Site Reliability Engineering》一书公开 SLI、SLO、SLA 与错误预算的框架，2018 年《The Site Reliability Workbook》给出落地方法，此后成为业界通用语言。",
+      "problem": "开发要快发版，运维要求稳定，双方没有共同标准只能靠争吵；“越稳越好”又会导致成本失控、不敢变更。SLO 把用户真正在意的体验量化成可测目标，让稳定性与迭代速度的取舍变成数据决策。",
+      "actors": [
+        "Google：首创 SRE 实践，公开 SLO 与错误预算方法",
+        "Ben Treynor Sloss：2003 年创建 Google SRE 团队",
+        "Chris Jones、John Wilkes、Niall Murphy：撰写 SRE 书中 SLO 章节",
+        "Prometheus、OpenTelemetry 社区：提供采集 SLI 的通用工具"
+      ],
+      "evolution": [
+        "1990 年代：电信与托管行业以 SLA 合同约定可用性与赔付",
+        "2003：Google 组建 SRE 团队，内部以 SLO 和错误预算管理发布",
+        "2016：O'Reilly 出版《Site Reliability Engineering》，公开 SLI/SLO/SLA 框架",
+        "2018：《The Site Reliability Workbook》给出实施 SLO 的步骤与示例"
+      ],
+      "compresses": [
+        "SLI、SLO、SLA 三层区分",
+        "错误预算 = 100% − SLO",
+        "百分位而非平均值",
+        "从用户视角选指标",
+        "预算耗尽就冻结发布",
+        "不要过度达标"
+      ],
+      "scene": "报表服务被抱怨“慢”，团队各说各话。定一条 SLO：四周滚动窗口内 95% 的报表查询 2 秒内返回、99.5% 成功；一次发版烧掉 40% 错误预算后，暂停新功能，先修慢查询。",
+      "misconception": "把 SLO 当成 SLA 或越高越好的 KPI。SLA 是带赔付的合同，SLO 是内部决策工具；定成 99.999% 只会让团队不敢变更，而且用户往往根本感知不到多出来的那个 9。",
+      "relations": {
+        "related": [
+          { "term": "Tail Latency", "termZh": "尾延迟", "note": "延迟 SLO 通常按 p99 等百分位来定义" },
+          { "term": "Observability", "termZh": "可观测性", "note": "没有可靠的遥测数据就算不出 SLI" },
+          { "term": "Blue-Green Deployment", "termZh": "蓝绿部署", "note": "低风险发布手段，帮助少烧错误预算" }
+        ],
+        "opposite": [
+          { "term": "Goodhart's Law", "termZh": "古德哈特定律", "note": "只盯指标不看用户体验，SLO 就会被刷数失效" }
+        ]
+      },
+      "sources": [
+        { "title": "Site Reliability Engineering, Chapter 4: Service Level Objectives (Google)", "url": "https://sre.google/sre-book/service-level-objectives/" },
+        { "title": "The Site Reliability Workbook, Chapter 2: Implementing SLOs (Google)", "url": "https://sre.google/workbook/implementing-slos/" }
+      ]
+    },
+    {
+      "id": "second-system-effect",
+      "term": "Second-System Effect",
+      "termZh": "第二系统效应",
+      "hook": "第一版克制，第二版把攒下的念头全塞进去。",
+      "definition": "Brooks 提出的规律：做完第一个系统后，设计者会把当初克制下来的想法、修饰和“下次再做”的功能一股脑放进第二个系统，导致它过度设计、臃肿延期，是一个人设计过的最危险的系统。",
+      "tags": {
+        "discipline": ["软件工程", "组织行为学"],
+        "engineering": ["研发管理", "系统迁移"],
+        "cognitive": ["认知偏差", "信息取舍"],
+        "scenario": ["遗留系统改造", "项目启动"],
+        "level": ["反模式"]
+      },
+      "background": "1960 年代 Fred Brooks 在 IBM 主管 System/360 与 OS/360 开发，亲历了庞大操作系统的延期与臃肿。1975 年他在《人月神话》第 5 章总结出这一效应，以 IBM 709 指令集和 OS/360 为例；1995 年纪念版又把 Windows NT 列为 1990 年代的例子。",
+      "problem": "解释为什么经验更多的团队在“重做一版”时反而更容易失败：第一版的约束让人克制，成功又带来过度自信，加上积压的功能愿望，第二版范围失控。给出对策：自律、给每项功能定成本，并明确用户群。",
+      "actors": [
+        "Fred Brooks：IBM OS/360 负责人，《人月神话》作者",
+        "IBM：System/360 与 OS/360 是该效应的原始案例",
+        "Netscape：重写浏览器致 6.0 延期近三年，被视为典型教训",
+        "Joel Spolsky：2000 年撰文警告从头重写是最严重的战略错误"
+      ],
+      "evolution": [
+        "1964：IBM 发布 System/360，OS/360 开发严重延期、规模膨胀",
+        "1975：Brooks 出版《人月神话》，第 5 章提出第二系统效应",
+        "1995：《人月神话》20 周年纪念版补充 Windows NT 为新例子",
+        "2000：Spolsky 发表《Things You Should Never Do, Part I》，以 Netscape 重写为例"
+      ],
+      "compresses": [
+        "第二版最危险",
+        "积压的功能愿望",
+        "成功带来过度自信",
+        "镀金与功能蔓延",
+        "精修已过时的技术",
+        "给功能定成本预算"
+      ],
+      "scene": "报告组件从 B/S 迁到 JCEF 的 C/S 客户端，团队想顺手做插件体系、可视化设计器和自研渲染引擎。先划定迁移版只做功能对等，新想法进 backlog，逐项评估成本再排期。",
+      "misconception": "以为“我们已经做过一遍，第二遍肯定更快更好”。经验确实有用，但第二版的主要风险恰恰来自这份自信和积压的愿望清单；重写之所以失败，往往是因为范围膨胀，而不是技术不够。",
+      "relations": {
+        "related": [
+          { "term": "Strangler Fig Pattern", "termZh": "绞杀者模式", "note": "渐进替换，避免大爆炸式重写第二系统" },
+          { "term": "Technical Debt", "termZh": "技术债", "note": "重写冲动常以“还债”为名，实则范围失控" },
+          { "term": "Chesterton's Fence", "termZh": "切斯特顿栅栏", "note": "推倒旧系统前先弄清那些丑代码为什么存在" }
+        ],
+        "opposite": [
+          { "term": "YAGNI", "termZh": "你不会需要它", "note": "只做当下需要的，正是镀金冲动的解药" }
+        ]
+      },
+      "sources": [
+        { "title": "Brooks: The Mythical Man-Month, Chapter 5: The Second-System Effect", "url": "https://www.oreilly.com/library/view/mythical-man-month-the/0201835959/ch05.xhtml" },
+        { "title": "Joel Spolsky: Things You Should Never Do, Part I (2000)", "url": "https://www.joelonsoftware.com/2000/04/06/things-you-should-never-do-part-i/" }
+      ]
+    }
+  ]
+}
