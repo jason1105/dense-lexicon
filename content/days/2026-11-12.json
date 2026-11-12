@@ -1,0 +1,167 @@
+{
+  "date": "2026-11-12",
+  "words": [
+    {
+      "id": "principle-of-least-privilege",
+      "term": "Principle of Least Privilege",
+      "termZh": "最小权限原则",
+      "hook": "只给完成这件事刚好够用的权限，多一分都是隐患。",
+      "definition": "系统中每个程序、进程或用户只应拥有完成其任务所必需的最小权限集合，且只在需要的时间段内持有。这样即使某个组件出错或被攻破，损害也被限制在它本就能触及的范围内。",
+      "tags": {
+        "discipline": ["信息安全"],
+        "engineering": ["安全", "架构"],
+        "cognitive": ["最小权限", "失败隔离"],
+        "scenario": ["安全评审", "设计评审"],
+        "level": ["原则"]
+      },
+      "background": "1960—70 年代分时系统让多个用户和程序共享同一台机器，MIT 的 Multics 项目开始系统研究保护机制。1975 年 Jerome Saltzer 与 Michael Schroeder 在《The Protection of Information in Computer Systems》中把最小权限列为八条安全设计原则之一，此后成为安全工程的基础共识。",
+      "problem": "程序总会有缺陷，账号总可能被盗用。如果每个组件都以全权身份运行，一个小漏洞就能变成全局失守。最小权限把“出事后能波及多远”提前限定住，同时缩小需要审计的代码和操作范围。",
+      "actors": [
+        "Jerome Saltzer、Michael Schroeder（MIT）：1975 年系统阐述最小权限等设计原则",
+        "MIT Multics 项目：分级保护环等机制的早期实践",
+        "Norm Hardy：1988 年提出“糊涂副手”问题，揭示权限被借用的风险",
+        "美国 NIST：在 SP 800-53 等标准中把最小权限列为访问控制要求",
+        "Oracle/OpenJDK：Java 安全管理器的权限模型，2021 年 JEP 411 将其弃用"
+      ],
+      "evolution": [
+        "1960 年代末：Multics 引入保护环，按特权级隔离代码",
+        "1975：Saltzer 与 Schroeder 发表经典论文，提出最小权限等八条原则",
+        "1988：Hardy 发表《The Confused Deputy》，推动基于能力的授权思路",
+        "1990 年代：Java 沙箱与安全管理器把权限细化到代码来源",
+        "2010 年代：云 IAM、容器非 root 运行、零信任让最小权限落到日常配置",
+        "2020 年代：JEP 411 弃用安全管理器，权限隔离转向进程与容器层"
+      ],
+      "compresses": [
+        "权限按任务而非按身份分配",
+        "爆炸半径控制",
+        "临时提权与及时回收",
+        "职责分离",
+        "默认拒绝",
+        "攻击面缩小"
+      ],
+      "scene": "JCEF 客户端给页面 JS 暴露 CefMessageRouter 桥接时，只开放报告组件需要的几个查询方法并校验来源 URL，而不是暴露通用的“执行任意 Java 方法”或读写任意文件，否则一次 XSS 就能操控整个桌面端。",
+      "misconception": "以为最小权限只是运维给账号少配几个角色。它同样是设计原则：接口暴露面、数据库账号、插件和 JS 桥接能力、服务间令牌范围都要按需收紧，而且权限会随时间膨胀，需要定期回收。",
+      "relations": {
+        "related": [
+          {"term": "Same-Origin Policy", "termZh": "同源策略", "note": "浏览器按来源隔离脚本权限，是最小权限的具体机制"},
+          {"term": "Defense in Depth", "termZh": "纵深防御", "note": "最小权限让每一层被突破后损失都有限"},
+          {"term": "Prompt Injection", "termZh": "提示注入", "note": "给智能体的工具权限越小，被注入后的危害越小"}
+        ],
+        "opposite": [
+          {"term": "Ambient Authority", "termZh": "环境权限", "note": "程序天然继承调用者全部权限，正是糊涂副手的根源"}
+        ]
+      },
+      "sources": [
+        {"title": "Saltzer & Schroeder: The Protection of Information in Computer Systems (Proc. IEEE, 1975)", "url": "https://web.mit.edu/Saltzer/www/publications/protection/"},
+        {"title": "OpenJDK JEP 411: Deprecate the Security Manager for Removal", "url": "https://openjdk.org/jeps/411"}
+      ]
+    },
+    {
+      "id": "liskov-substitution-principle",
+      "term": "Liskov Substitution Principle",
+      "termZh": "里氏替换原则",
+      "hook": "能用父类的地方，换成子类也不能出意外。",
+      "definition": "子类型对象必须能替换父类型对象使用，而调用方观察不到行为上的差异：前置条件不能更严，后置条件不能更弱，父类型的不变量必须保持。它把“继承”从代码复用拉回到行为契约。",
+      "tags": {
+        "discipline": ["软件工程"],
+        "engineering": ["架构", "接口设计"],
+        "cognitive": ["不变量思维", "边界思维"],
+        "scenario": ["代码评审", "设计评审"],
+        "level": ["原则"]
+      },
+      "background": "1980 年代面向对象语言流行，继承常被当作复用代码的捷径，导致子类悄悄改变父类语义。1987 年 Barbara Liskov 在 OOPSLA 主题演讲《Data Abstraction and Hierarchy》中提出可替换性要求，1994 年她与 Jeannette Wing 在 TOPLAS 论文中给出行为子类型的严格定义。",
+      "problem": "多态代码只认父类型契约，如果某个子类抛出意外异常、拒绝合法输入或破坏不变量，调用方就会在运行时随机出错，还得到处写 instanceof 特判。LSP 给出判断继承是否合理的标准：看行为，不看语法上能否编译。",
+      "actors": [
+        "Barbara Liskov（MIT）：1987 年提出可替换性要求，2008 年获图灵奖",
+        "Jeannette Wing（CMU）：1994 年与 Liskov 合作给出行为子类型形式化定义",
+        "Bertrand Meyer：契约式设计为前置/后置条件规则提供基础",
+        "Robert C. Martin：2000 年代把 LSP 纳入 SOLID 原则广泛传播"
+      ],
+      "evolution": [
+        "1987：Liskov 在 OOPSLA 主题演讲中提出子类型可替换性",
+        "1988：Meyer 在《面向对象软件构造》中系统阐述契约式设计",
+        "1994：Liskov 与 Wing 发表《A Behavioral Notion of Subtyping》",
+        "2000 年代：LSP 作为 SOLID 中的 L 成为面向对象设计常识",
+        "2010 年代：组合优于继承、接口隔离与密封类让违反 LSP 的设计更易避免"
+      ],
+      "compresses": [
+        "行为子类型而非语法子类型",
+        "前置条件不加强",
+        "后置条件不削弱",
+        "不变量保持",
+        "继承与组合的取舍",
+        "多态的安全前提"
+      ],
+      "scene": "Java 里 Collections.unmodifiableList 返回的 List 调用 add 会抛 UnsupportedOperationException，java.sql.Timestamp 继承 Date 却破坏 equals 对称性。报告组件若让只读数据源继承可写数据源，导出流程调用写方法就会在运行时炸掉。",
+      "misconception": "以为“子类重写了方法、能编译通过”就是合格继承。经典反例是正方形继承长方形：数学上成立，但单独设置宽度的调用方期望被打破。判断标准是调用方依赖的契约是否仍成立。",
+      "relations": {
+        "related": [
+          {"term": "Design by Contract", "termZh": "契约式设计", "note": "LSP 的前置、后置条件规则直接来自契约思想"},
+          {"term": "Leaky Abstraction", "termZh": "抽象泄漏", "note": "子类违反契约时，调用方被迫了解具体实现"},
+          {"term": "Contract Testing", "termZh": "契约测试", "note": "可对每个实现复用同一套父类型契约测试"}
+        ],
+        "opposite": [
+          {"term": "Refused Bequest", "termZh": "拒绝遗赠", "note": "子类不想要父类的行为，是违反 LSP 的典型坏味道"}
+        ]
+      },
+      "sources": [
+        {"title": "Liskov: Data Abstraction and Hierarchy (OOPSLA '87 Addendum keynote)", "url": "https://doi.org/10.1145/62138.62141"},
+        {"title": "Liskov & Wing: A Behavioral Notion of Subtyping (ACM TOPLAS, 1994)", "url": "https://www.cs.cmu.edu/~wing/publications/LiskovWing94.pdf"}
+      ]
+    },
+    {
+      "id": "chain-of-thought-prompting",
+      "term": "Chain-of-Thought Prompting",
+      "termZh": "思维链提示",
+      "hook": "让模型先写草稿再交答案，难题就答得更准。",
+      "definition": "在提示中引导大语言模型先生成一串中间推理步骤，再给出最终答案的方法。可以给出带推理过程的示例（少样本），也可以只加一句“让我们一步步思考”（零样本），能显著提升算术、逻辑和多步规划类任务的表现。",
+      "tags": {
+        "discipline": ["人工智能"],
+        "engineering": ["AI 工程"],
+        "cognitive": ["渐进思维", "信息取舍"],
+        "scenario": ["AI 辅助编码", "智能体设计"],
+        "level": ["方法"]
+      },
+      "background": "2020 年 GPT-3 展示了少样本提示能力，但模型在多步算术和逻辑题上仍很差，单纯扩大模型规模也不够。2022 年 Google 研究团队的 Jason Wei 等人发现，只要在示例里写出推理过程，足够大的模型就会模仿着逐步推理，准确率大幅提升。",
+      "problem": "直接要求模型输出答案时，它要在一步里完成所有中间计算，容易跳步出错，人也无法检查过程。思维链把复杂问题拆成可见的中间步骤，给模型更多“计算空间”，也让错误更容易被定位和纠正。",
+      "actors": [
+        "Jason Wei、Denny Zhou 等（Google Brain）：2022 年提出思维链提示",
+        "Takeshi Kojima 等（东京大学、Google）：2022 年提出零样本思维链“让我们一步步思考”",
+        "Xuezhi Wang 等（Google）：2022 年提出自洽性解码，多条推理链投票",
+        "OpenAI：2024 年 o1 推理模型把思维链训练进模型内部",
+        "DeepSeek：2025 年 R1 用强化学习训练长思维链并开源"
+      ],
+      "evolution": [
+        "2021：Nye 等提出“草稿纸”方法，让模型输出中间计算步骤",
+        "2022.01：Wei 等发表思维链提示论文，PaLM 540B 刷新 GSM8K 成绩",
+        "2022.05：零样本思维链提出，一句提示即可触发逐步推理",
+        "2022—2023：自洽性、思维树、ReAct 等变体把推理与投票、搜索、工具调用结合",
+        "2024—2025：推理模型把思维链内化为训练目标，提示技巧转向推理预算控制"
+      ],
+      "compresses": [
+        "中间步骤即计算空间",
+        "少样本与零样本触发",
+        "推理过程可检查",
+        "自洽性投票",
+        "推理与行动交替",
+        "延迟与成本的权衡"
+      ],
+      "scene": "让 AI 助手修复 JCEF 窗口偶发白屏时，先要求它列出线程模型、CEF 生命周期回调顺序和可疑点，再给补丁，比直接要代码更不容易只改症状；而做简单的 DTO 字段映射时就不必让它长篇推理，浪费 token 和时间。",
+      "misconception": "以为模型写出的推理过程就是它真实的决策依据。研究发现思维链可能是事后合理化，步骤看似通顺但结论仍可能错，关键结果仍需测试或其他验证手段把关；另外推理模型已内置思考，再强加步骤未必有益。",
+      "relations": {
+        "related": [
+          {"term": "Context Engineering", "termZh": "上下文工程", "note": "思维链是组织上下文、引导推理的一种手段"},
+          {"term": "Retrieval-Augmented Generation", "termZh": "检索增强生成", "note": "RAG 补事实，思维链补推理，常组合使用"},
+          {"term": "Test Oracle", "termZh": "测试预言", "note": "推理过程不能当正确性证明，仍需独立判定"}
+        ],
+        "opposite": [
+          {"term": "Direct Answer Prompting", "termZh": "直接作答提示", "note": "只要求输出最终答案，不展示中间步骤"}
+        ]
+      },
+      "sources": [
+        {"title": "Wei et al.: Chain-of-Thought Prompting Elicits Reasoning in Large Language Models (2022)", "url": "https://arxiv.org/abs/2201.11903"},
+        {"title": "Kojima et al.: Large Language Models are Zero-Shot Reasoners (2022)", "url": "https://arxiv.org/abs/2205.11916"}
+      ]
+    }
+  ]
+}
