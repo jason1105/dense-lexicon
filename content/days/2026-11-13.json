@@ -1,0 +1,160 @@
+{
+  "date": "2026-11-13",
+  "words": [
+    {
+      "id": "infrastructure-as-code",
+      "term": "Infrastructure as Code",
+      "termZh": "基础设施即代码",
+      "hook": "服务器不靠手点，靠代码描述、评审和回放。",
+      "definition": "用可执行的定义文件（脚本、声明式配置）描述服务器、网络和中间件等基础设施，并像应用代码一样纳入版本控制、代码评审、自动化测试和流水线发布。环境由代码重复生成，而不是靠人登录机器手工调整。",
+      "tags": {
+        "discipline": ["软件工程"],
+        "engineering": ["持续交付", "可靠性"],
+        "cognitive": ["可重复性", "反馈闭环"],
+        "scenario": ["上线前", "CI 排障"],
+        "level": ["实践"]
+      },
+      "background": "1990 年代运维靠手写 shell 脚本管理各种 Unix 变体，机器配置逐渐漂移。1993 年 Mark Burgess 在奥斯陆大学写出 CFEngine，用一份声明式文件描述全网主机的期望状态。2006 年后云计算让创建服务器变成一次 API 调用，基础设施数量和变化频率暴涨，“用代码管理基础设施”成为主流。",
+      "problem": "手工配置的“雪花服务器”彼此细微不同，出了问题难以复现，变更没有记录，重建一台环境要花几天甚至几周。IaC 让环境可重复创建、变更可审计可回滚，并能把测试和持续交付的纪律用到基础设施上。",
+      "actors": [
+        "Mark Burgess（奥斯陆大学）：1993 年创建 CFEngine，提出期望状态与收敛思想",
+        "Puppet、Chef、Ansible 社区：把配置管理做成主流工具",
+        "Amazon Web Services：2011 年推出 CloudFormation，用模板声明云资源",
+        "HashiCorp：2014 年发布 Terraform，跨云声明式编排",
+        "Kief Morris（ThoughtWorks）：2016 年出版《Infrastructure as Code》系统总结实践"
+      ],
+      "evolution": [
+        "1993：CFEngine 发布，用一份配置文件管理整个网络的 Unix 主机",
+        "2005—2012：Puppet、Chef、Ansible 相继出现，配置管理工具化",
+        "2011：AWS CloudFormation 推出，云资源可用模板声明",
+        "2014：Terraform 发布，Docker 普及，不可变基础设施兴起",
+        "2016：Kief Morris 出版专著，Martin Fowler 撰文定义 IaC 实践",
+        "2020 年代：GitOps、Pulumi 等让基础设施变更全面走 PR 与流水线"
+      ],
+      "compresses": [
+        "期望状态与收敛",
+        "声明式优于命令式",
+        "雪花服务器与配置漂移",
+        "不可变基础设施",
+        "基础设施变更走评审和流水线",
+        "环境可重建即可回滚"
+      ],
+      "scene": "报告组件的 E2E 测试跑在一台手工装好 JDK、JCEF 运行库和字体的 Windows 机器上，换机器就“我这能跑”。把构建与测试环境写成 Dockerfile 或 Ansible 脚本放进仓库，新机器几分钟拉起，环境改动也走 PR 评审。",
+      "misconception": "以为 IaC 就是把运维脚本存进 Git。关键在于定义文件是唯一真相：禁止登录机器临时改，改动要能重复执行（幂等）、有测试、走流水线；否则仓库里的代码和真实环境照样漂移。",
+      "relations": {
+        "related": [
+          {"term": "Idempotency", "termZh": "幂等性", "note": "IaC 脚本重复执行必须得到同一状态"},
+          {"term": "Blue-Green Deployment", "termZh": "蓝绿部署", "note": "环境可用代码快速复制，蓝绿切换才便宜"},
+          {"term": "Immutable Infrastructure", "termZh": "不可变基础设施", "note": "不修补旧机器，用新定义整体替换"}
+        ],
+        "opposite": [
+          {"term": "Snowflake Server", "termZh": "雪花服务器", "note": "靠手工调整形成、无法复制的独特机器"}
+        ]
+      },
+      "sources": [
+        {"title": "Martin Fowler: InfrastructureAsCode (bliki, 2016)", "url": "https://martinfowler.com/bliki/InfrastructureAsCode.html"},
+        {"title": "Mark Burgess: A Site Configuration Engine (USENIX Computing Systems, 1995)", "url": "https://atc.usenix.org/legacy/publications/compsystems/1995/sum_burgess.pdf"}
+      ]
+    },
+    {
+      "id": "thundering-herd",
+      "term": "Thundering Herd",
+      "termZh": "惊群效应",
+      "hook": "一声唤醒，全员冲向同一个资源。",
+      "definition": "大量等待者被同一事件同时唤醒或触发，一起争抢同一个资源，结果只有少数能成功，其余白白消耗 CPU、连接或数据库算力，甚至把下游压垮。典型形态有缓存同时失效导致的缓存击穿、服务恢复后客户端同时重连。",
+      "tags": {
+        "discipline": ["分布式系统", "并发计算"],
+        "engineering": ["性能", "可靠性"],
+        "cognitive": ["系统思维", "反馈闭环"],
+        "scenario": ["性能排查", "线上排障"],
+        "level": ["问题"]
+      },
+      "background": "这个说法最早流行于 Unix 内核：多个进程阻塞在同一个监听 socket 上，一个连接到来却唤醒全部进程，只有一个能 accept 成功。互联网时代它扩展到缓存层和分布式系统，热点缓存失效、服务重启后的集中重连都会引发同样的“集体冲锋”。",
+      "problem": "同时唤醒的大量请求重复做同一件昂贵的事，放大负载，越慢越堵，形成级联故障。认识惊群，就是要把“同时发生”打散：只让一个去做、其余等待结果，或者给时间加随机抖动。",
+      "actors": [
+        "Linux 内核社区：为 accept 与 epoll 引入独占唤醒，缓解进程惊群",
+        "Facebook：2013 年 NSDI 论文用 lease 机制抑制 memcache 惊群",
+        "Vattani 等（Goodreads/罗马大学）：2015 年提出概率提前过期算法",
+        "Google Guava、Caffeine 社区：缓存按 key 单线程加载，其余线程等待"
+      ],
+      "evolution": [
+        "1990 年代：Unix 多进程服务器中 accept 惊群问题被广泛讨论",
+        "2000 年代：Linux 内核引入独占等待等机制，Nginx 增加 accept_mutex",
+        "2013：Facebook 在《Scaling Memcache at Facebook》中用 lease 应对惊群",
+        "2015：VLDB 论文给出缓存踩踏的最优概率提前刷新算法",
+        "2010 年代至今：带抖动的指数退避成为客户端重连和重试的通用做法"
+      ],
+      "compresses": [
+        "缓存击穿与缓存踩踏",
+        "单飞请求合并",
+        "随机抖动打散时间",
+        "带抖动的指数退避",
+        "提前异步刷新",
+        "级联故障"
+      ],
+      "scene": "报告服务的热点报表缓存整点同时过期，几百个客户端一起 miss，去跑同一条重 SQL。改用 Caffeine 按 key 单飞加载并配 refreshAfterWrite，过期时间加随机抖动；C/S 客户端断线重连也用带抖动的指数退避。",
+      "misconception": "以为加机器、加连接池就能解决。惊群的根源是请求在时间上对齐，扩容只会让更多实例同时冲向数据库；要靠请求合并、抖动和限流把同步打散。",
+      "relations": {
+        "related": [
+          {"term": "Backpressure", "termZh": "背压", "note": "下游用背压限制涌入，惊群时尤为关键"},
+          {"term": "Circuit Breaker", "termZh": "熔断器", "note": "惊群压垮依赖时，熔断阻止故障继续扩散"},
+          {"term": "Tail Latency", "termZh": "尾延迟", "note": "惊群造成的排队会先体现在尾延迟上"}
+        ],
+        "opposite": []
+      },
+      "sources": [
+        {"title": "Nishtala et al.: Scaling Memcache at Facebook (NSDI 2013)", "url": "https://www.usenix.org/conference/nsdi13/technical-sessions/presentation/nishtala"},
+        {"title": "Vattani, Chierichetti, Lowenstein: Optimal Probabilistic Cache Stampede Prevention (VLDB 2015)", "url": "https://www.vldb.org/pvldb/vol8/p886-vattani.pdf"}
+      ]
+    },
+    {
+      "id": "law-of-triviality",
+      "term": "Law of Triviality",
+      "termZh": "帕金森琐碎定律",
+      "hook": "核电站两分钟通过，自行车棚吵一小时。",
+      "definition": "组织讨论某事的时间往往与其重要性成反比：复杂重大的议题因为难以理解而被草草通过，人人都看得懂的小事却引来大量争论。软件圈称之为“自行车棚效应”（bikeshedding）。",
+      "tags": {
+        "discipline": ["组织行为学", "决策科学"],
+        "engineering": ["研发管理"],
+        "cognitive": ["认知偏差", "信息取舍"],
+        "scenario": ["设计评审", "代码评审"],
+        "level": ["定律"]
+      },
+      "background": "1957 年英国历史学家 C. Northcote Parkinson 在讽刺管理学的著作《Parkinson's Law》中虚构了一场财务委员会会议：1000 万美元的核反应堆两分半钟通过，2350 美元的自行车棚却讨论了 45 分钟。1999 年 FreeBSD 开发者 Poul-Henning Kamp 借这个故事写了著名邮件，让 bikeshed 成为开源圈常用词。",
+      "problem": "它解释了为什么评审会上精力被错配：重大方案太复杂，大家默认“别人已经看过”；小事门槛低，每个人都想留下“指纹”。识别它，才能把有限的注意力放到真正有风险、不可逆的决策上。",
+      "actors": [
+        "C. Northcote Parkinson（英国）：1957 年提出琐碎定律",
+        "Poul-Henning Kamp（FreeBSD）：1999 年写下“自行车棚”邮件",
+        "FreeBSD 项目：起因是 sleep(1) 支持小数秒的漫长争论",
+        "Karl Fogel：在《Producing Open Source Software》中讨论自行车棚效应"
+      ],
+      "evolution": [
+        "1957：Parkinson 在《Parkinson's Law》中提出琐碎定律与自行车棚例子",
+        "1999：Kamp 在 FreeBSD 邮件列表发出“A bike shed (any colour will do)”",
+        "2000 年代：bikeshed 成为开源和工程团队描述无谓争论的通用词",
+        "2010 年代：代码风格交给格式化工具，减少评审中的琐碎争论"
+      ],
+      "compresses": [
+        "注意力与重要性错配",
+        "理解门槛决定参与度",
+        "评审要先看高风险点",
+        "可逆小事快速决定",
+        "用工具终结风格之争"
+      ],
+      "scene": "报告组件重构方案评审，半小时在争包名和按钮文案，JCEF 多进程模型、线程安全和回滚方案一句没问。可以先列出不可逆的高风险问题逐一过，命名和格式交给 Checkstyle、Spotless 和负责人拍板。",
+      "misconception": "以为讨论小事就是浪费，于是不许提细节。问题不在细节本身，而在注意力分配失衡；正确做法是按风险和可逆性排序议题，并让 Owner 对低风险小事快速拍板。",
+      "relations": {
+        "related": [
+          {"term": "Goodhart's Law", "termZh": "古德哈特定律", "note": "同属揭示组织行为偏差的经验定律"},
+          {"term": "Second-System Effect", "termZh": "第二系统效应", "note": "都是工程团队常见的决策失衡"},
+          {"term": "Parkinson's Law", "termZh": "帕金森定律", "note": "同一本书的主定律：工作会膨胀填满可用时间"}
+        ],
+        "opposite": []
+      },
+      "sources": [
+        {"title": "Poul-Henning Kamp: A bike shed (any colour will do) on greener grass (FreeBSD, 1999)", "url": "https://bikeshed.org/"},
+        {"title": "FreeBSD FAQ: Why should I care what color the bikeshed is?", "url": "https://docs.freebsd.org/en/books/faq/#bikeshed-painting"}
+      ]
+    }
+  ]
+}
