@@ -1,0 +1,163 @@
+{
+  "date": "2026-11-14",
+  "words": [
+    {
+      "id": "mutation-testing",
+      "term": "Mutation Testing",
+      "termZh": "变异测试",
+      "hook": "故意往代码里下毒，看测试能不能尝出来。",
+      "definition": "自动对被测代码做微小改动（如把 >= 改成 >、删掉一行调用、把返回值换成 null），每个改动版本称为变异体，再跑测试：测试失败即“杀死”变异体，仍然通过则说明测试没有真正检查这处逻辑。被杀死的比例称为变异得分。",
+      "tags": {
+        "discipline": ["软件工程"],
+        "engineering": ["测试"],
+        "cognitive": ["对抗性思维", "反馈闭环"],
+        "scenario": ["测试策略", "代码评审"],
+        "level": ["方法"]
+      },
+      "background": "1970 年代测试研究者发现，覆盖了代码不等于验证了代码。1971 年 Richard Lipton 在学生论文中提出变异思想，1978 年 DeMillo、Lipton、Sayward 在 IEEE Computer 发表论文，提出“合格程序员假设”和“耦合效应”，奠定了变异测试的理论基础。",
+      "problem": "行覆盖率只说明代码被执行过，不说明结果被断言过；没有断言的测试照样把覆盖率刷到 90%。变异测试用“人为制造的 bug 能否被发现”直接衡量测试套件的检错能力，找出形同虚设的测试。",
+      "actors": [
+        "Richard Lipton（耶鲁大学）：1971 年提出变异测试的最初想法",
+        "DeMillo、Lipton、Sayward：1978 年论文提出耦合效应",
+        "Jeff Offutt 等：Mothra 工具与耦合效应的实证研究",
+        "Henry Coles：开发 Java 变异测试工具 PIT（pitest）",
+        "Google：2018 年报告在代码评审中大规模使用变异测试"
+      ],
+      "evolution": [
+        "1971：Lipton 提出用人为植入错误评估测试的想法",
+        "1978：DeMillo 等发表《Hints on Test Data Selection》",
+        "1980 年代：Mothra 等研究型工具出现，计算成本是主要障碍",
+        "2010 年代：PIT 用字节码变异与增量分析，让 Java 项目能在日常使用",
+        "2018：Google 在 ICSE SEIP 发表变异测试在代码评审中的实践"
+      ],
+      "compresses": [
+        "覆盖率不等于有效性",
+        "变异体与变异得分",
+        "耦合效应",
+        "等价变异体问题",
+        "测试的测试",
+        "增量变异降低成本"
+      ],
+      "scene": "报告组件的分页计算类行覆盖率 90%，用 PIT 一跑，把 >= 改成 >、删掉页脚高度扣减的变异体全部存活：测试只调用不断言。补上边界值断言后，在 CI 里只对改动的类跑增量变异。",
+      "misconception": "以为要追求 100% 变异得分。部分变异体与原程序行为等价，永远杀不死；全量跑也很慢。实用做法是只对核心逻辑和本次改动跑变异，把存活变异体当作评审线索，而不是硬指标。",
+      "relations": {
+        "related": [
+          {"term": "Test Oracle", "termZh": "测试预言", "note": "变异体存活常因为测试缺少有效的预言"},
+          {"term": "Test Pyramid", "termZh": "测试金字塔", "note": "变异测试最适合金字塔底层的快速单元测试"},
+          {"term": "Goodhart's Law", "termZh": "古德哈特定律", "note": "覆盖率成为目标后失效，变异得分更难刷"}
+        ],
+        "opposite": []
+      },
+      "sources": [
+        {"title": "DeMillo, Lipton, Sayward: Hints on Test Data Selection: Help for the Practicing Programmer (IEEE Computer, 1978)", "url": "https://ieeexplore.ieee.org/document/1646911/"},
+        {"title": "Petrović, Ivanković: State of Mutation Testing at Google (ICSE SEIP 2018)", "url": "https://research.google/pubs/state-of-mutation-testing-at-google/"},
+        {"title": "PIT Mutation Testing", "url": "https://pitest.org/"}
+      ]
+    },
+    {
+      "id": "exactly-once-semantics",
+      "term": "Exactly-Once Semantics",
+      "termZh": "精确一次语义",
+      "hook": "消息可以送两次，效果只能生效一次。",
+      "definition": "在会失败和重试的分布式消息处理中，保证每条消息对最终结果的影响恰好一次：不丢、不重复计数。它通常不是网络层“只投递一次”，而是靠至少一次投递，加上幂等写入或把结果与消费位点放进同一事务来实现。",
+      "tags": {
+        "discipline": ["分布式系统"],
+        "engineering": ["消息", "数据一致性", "可靠性"],
+        "cognitive": ["权衡思维", "边界思维"],
+        "scenario": ["消息消费", "事件驱动设计"],
+        "level": ["属性"]
+      },
+      "background": "消息系统长期只提供“最多一次”和“至少一次”：确认丢失时，发送方无法分辨对方是否已处理，这与两将军问题同源。2015 年 Tyler Treat 撰文指出“精确一次投递”不可能；2017 年 Kafka 0.11 通过幂等生产者和事务，宣布在其处理链路内支持精确一次语义。",
+      "problem": "重试会造成重复，不重试会丢消息。对计费、交易、告警这类结果，重复一次就是错账或误报。精确一次语义要在不可靠网络上让“处理结果”不丢不重，并说清这个保证到哪个边界为止。",
+      "actors": [
+        "Tyler Treat：2015 年文章《You Cannot Have Exactly-Once Delivery》",
+        "Confluent 与 Apache Kafka 社区：KIP-98 引入幂等生产者与事务",
+        "Neha Narkhede（Confluent）：2017 年撰文解释 Kafka 的实现",
+        "Apache Flink 社区：用分布式快照与两阶段提交实现端到端精确一次"
+      ],
+      "evolution": [
+        "1975：两将军问题被提出，揭示不可靠信道上无法确认对方状态",
+        "2000 年代：消息中间件普遍只承诺至少一次，去重交给业务",
+        "2015：Flink 提出轻量异步快照，流处理开始提供精确一次状态",
+        "2017：Kafka 0.11 发布幂等生产者、事务与 Streams 精确一次",
+        "2020 年代：Kafka 改进事务扩展性，精确一次成为流处理常用配置"
+      ],
+      "compresses": [
+        "最多一次、至少一次、精确一次",
+        "投递语义与处理语义的区别",
+        "幂等消费与去重键",
+        "位点与结果原子提交",
+        "保证的边界只到系统内部",
+        "两将军问题"
+      ],
+      "scene": "交易监测框架从 Kafka 消费交易事件写告警表，处理完还没提交 offset 消费者就重启，同一笔交易告警两次。只开幂等生产者不够：要么用交易号做唯一键幂等写入，要么把 offset 和告警放进同一数据库事务提交。",
+      "misconception": "以为把 Kafka 配成 exactly_once 就万事大吉。它只覆盖 Kafka 内部的读—处理—写链路，一旦写外部数据库、调 HTTP 接口或发邮件，仍需要业务侧幂等或事务，否则照样重复。",
+      "relations": {
+        "related": [
+          {"term": "Idempotency", "termZh": "幂等性", "note": "至少一次加幂等，是工程上最常见的精确一次"},
+          {"term": "Outbox Pattern", "termZh": "发件箱模式", "note": "把业务写入与发消息放进同一事务"},
+          {"term": "Change Data Capture", "termZh": "变更数据捕获", "note": "CDC 管道下游同样要处理重复事件"}
+        ],
+        "opposite": [
+          {"term": "At-Most-Once Delivery", "termZh": "最多一次投递", "note": "不重试，宁可丢消息也不重复"}
+        ]
+      },
+      "sources": [
+        {"title": "Narkhede: Exactly-Once Semantics Are Possible: Here's How Kafka Does It (Confluent, 2017)", "url": "https://www.confluent.io/blog/exactly-once-semantics-are-possible-heres-how-apache-kafka-does-it/"},
+        {"title": "KIP-98: Exactly Once Delivery and Transactional Messaging (Apache Kafka)", "url": "https://cwiki.apache.org/confluence/display/KAFKA/KIP-98+-+Exactly+Once+Delivery+and+Transactional+Messaging"},
+        {"title": "Tyler Treat: You Cannot Have Exactly-Once Delivery (2015)", "url": "https://bravenewgeek.com/you-cannot-have-exactly-once-delivery/"}
+      ]
+    },
+    {
+      "id": "sunk-cost-fallacy",
+      "term": "Sunk Cost Fallacy",
+      "termZh": "沉没成本谬误",
+      "hook": "已经花掉的钱，不该替你做下一个决定。",
+      "definition": "因为已经投入了时间、金钱或精力，就倾向于继续投入一件前景不佳的事。理性决策只应比较从现在起各选项的未来成本和收益，已无法收回的投入（沉没成本）与选择无关。",
+      "tags": {
+        "discipline": ["认知心理学", "经济学", "决策科学"],
+        "engineering": ["研发管理", "系统迁移"],
+        "cognitive": ["认知偏差", "决策质量"],
+        "scenario": ["遗留系统改造", "架构评审"],
+        "level": ["问题"]
+      },
+      "background": "经济学早就认为沉没成本不应影响决策，但现实中人们常反其道而行。1976 年 Barry Staw 用实验揭示“承诺升级”，同年 Dawkins 用协和式飞机的例子命名“协和谬误”。1985 年 Arkes 与 Blumer 用剧院季票实验系统证明了沉没成本效应。",
+      "problem": "它解释了为什么失败的项目迟迟不停、错误的技术路线越走越远：放弃意味着承认浪费，于是继续加码。识别这一偏差，才能在关键节点只看未来，及时止损或转向。",
+      "actors": [
+        "Barry Staw（美国）：1976 年提出承诺升级研究",
+        "Richard Dawkins 与 T. R. Carlisle：1976 年在 Nature 提出“协和谬误”",
+        "Richard Thaler：1980 年把沉没成本效应纳入行为经济学",
+        "Hal Arkes 与 Catherine Blumer（俄亥俄大学）：1985 年剧院季票实验",
+        "英法两国政府：协和式超音速客机在亏损中持续投资的典型案例"
+      ],
+      "evolution": [
+        "1976：Staw 发表承诺升级实验，Dawkins 提出协和谬误",
+        "1979：Kahneman 与 Tversky 的前景理论为损失厌恶提供解释",
+        "1980：Thaler 在消费者选择理论中讨论沉没成本效应",
+        "1985：Arkes 与 Blumer 发表《The Psychology of Sunk Cost》",
+        "2000 年代起：敏捷与精益创业用短迭代和止损节点对抗这一偏差"
+      ],
+      "compresses": [
+        "只比较未来成本与收益",
+        "承诺升级",
+        "损失厌恶",
+        "止损点要事先设定",
+        "避免显得浪费的心理",
+        "转向需要新视角"
+      ],
+      "scene": "报告组件 B/S 转 C/S 时，自研打印渲染已投入半年仍卡在分页，团队说“做了这么多不能扔”。评审只问一个问题：从今天起，继续自研和用 JCEF 内嵌现有 Web 报告，哪条路未来成本更低、风险更小。",
+      "misconception": "以为避免沉没成本谬误就是遇到困难就放弃。已投入的工作如果留下了可复用的代码、知识或降低了剩余风险，这些是未来价值，应计入比较；要排除的只是“已经花了”本身。",
+      "relations": {
+        "related": [
+          {"term": "Inversion", "termZh": "逆向思维", "note": "先问怎样会失败，有助于设定止损条件"},
+          {"term": "Second-System Effect", "termZh": "第二系统效应", "note": "大投入的重写最容易陷入不肯止损"},
+          {"term": "Escalation of Commitment", "termZh": "承诺升级", "note": "沉没成本在组织层面的表现"}
+        ],
+        "opposite": []
+      },
+      "sources": [
+        {"title": "Arkes, Blumer: The Psychology of Sunk Cost (Organizational Behavior and Human Decision Processes, 1985)", "url": "https://doi.org/10.1016/0749-5978(85)90049-4"}
+      ]
+    }
+  ]
+}
