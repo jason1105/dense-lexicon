@@ -1,0 +1,169 @@
+{
+  "date": "2026-11-15",
+  "words": [
+    {
+      "id": "event-sourcing",
+      "term": "Event Sourcing",
+      "termZh": "事件溯源",
+      "hook": "不存现在是什么，只存发生过什么。",
+      "definition": "把系统状态的每一次变化记录为不可变的领域事件，按顺序追加到事件存储；当前状态不直接保存，而是从头（或从快照）重放事件得到。事件日志是唯一事实来源，可以重建任意历史时刻的状态。",
+      "tags": {
+        "discipline": ["软件工程", "数据库理论"],
+        "engineering": ["架构", "数据一致性"],
+        "cognitive": ["不变量思维", "可重复性"],
+        "scenario": ["事件驱动设计", "设计评审"],
+        "level": ["模式"]
+      },
+      "background": "会计账簿、银行流水早就只追加分录、不改余额。2005 年 Martin Fowler 在“企业应用架构模式”续篇系列中撰文描述 Event Sourcing；2010 年前后 Greg Young 把它与 DDD、CQRS 结合推广，后来创建了专用的事件数据库 EventStoreDB。",
+      "problem": "传统 CRUD 只保留最新值，覆盖写会丢掉“为什么变成这样”：无法审计、无法回放排查、难以从同一份历史派生新的读模型。事件溯源把变更本身作为一等数据，提供完整审计轨迹、时间旅行查询和事件驱动集成的基础。",
+      "actors": [
+        "Martin Fowler：2005 年撰文系统描述 Event Sourcing 模式",
+        "Greg Young：将事件溯源与 CQRS、DDD 结合推广，创建 EventStoreDB",
+        "Eric Evans：《领域驱动设计》提供聚合等建模语境",
+        "LinkedIn / Apache Kafka：“日志即数据”的基础设施让事件流普及",
+        "Axon Framework：Java 生态常用的 CQRS 与事件溯源框架"
+      ],
+      "evolution": [
+        "早期：复式记账只追加分录、不改历史，是事件溯源的原型",
+        "2005：Fowler 发表 Event Sourcing 文章",
+        "2010 前后：Greg Young 将其与 CQRS 一起推广",
+        "2010 年代：EventStoreDB、Axon 等专用存储和框架出现",
+        "2010 年代后期：与 Kafka、CDC 结合，成为事件驱动架构的常见方案"
+      ],
+      "compresses": [
+        "不可变事件日志",
+        "当前状态等于事件折叠",
+        "快照",
+        "投影与读模型",
+        "事件版本演进",
+        "时间旅行查询"
+      ],
+      "scene": "报告组件的模板被多人修改，客户问“上周五导出的报告为什么和今天不同”。若把模板变更存成 FieldAdded、FormulaChanged 等事件，就能重放到任意时刻重建模板并对比差异。",
+      "misconception": "以为事件溯源就是用了消息队列，或能随手加在任何 CRUD 模块上。它改变的是存储模型：事件结构要长期兼容、读模型最终一致、查询要靠投影，成本很高，只适合审计和历史价值大的核心领域。",
+      "relations": {
+        "related": [
+          {"term": "CQRS", "termZh": "命令查询职责分离", "note": "常搭配使用：写侧存事件，读侧用投影"},
+          {"term": "Write-Ahead Log", "termZh": "预写日志", "note": "同样以追加日志为事实来源，但面向崩溃恢复"},
+          {"term": "Change Data Capture", "termZh": "变更数据捕获", "note": "CDC 从数据库日志推导事件，事件溯源以事件为源头"}
+        ],
+        "opposite": [
+          {"term": "CRUD", "termZh": "增删改查", "note": "只保存当前状态，覆盖写会丢失历史"}
+        ]
+      },
+      "sources": [
+        {"title": "Martin Fowler: Event Sourcing (2005)", "url": "https://martinfowler.com/eaaDev/EventSourcing.html"},
+        {"title": "Martin Fowler: CQRS", "url": "https://martinfowler.com/bliki/CQRS.html"},
+        {"title": "Microsoft Azure Architecture Center: Event Sourcing pattern", "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/event-sourcing"}
+      ]
+    },
+    {
+      "id": "event-loop",
+      "term": "Event Loop",
+      "termZh": "事件循环",
+      "hook": "一个线程排队干活，谁卡住全家等。",
+      "definition": "单个线程不断从任务队列取出事件或回调并逐个执行完毕的调度机制。I/O 等耗时操作交给系统或其他线程异步完成，完成后再把回调放回队列。它让一个线程处理大量并发事件，前提是每个任务都足够短。",
+      "tags": {
+        "discipline": ["并发计算", "Web 技术"],
+        "engineering": ["性能", "前端"],
+        "cognitive": ["系统思维"],
+        "scenario": ["性能排查", "线上排障"],
+        "level": ["机制"]
+      },
+      "background": "GUI 系统从 1980 年代起就用消息循环分发键鼠事件，如 Mac 与 Windows 的消息循环、Java AWT/Swing 的事件分派线程（EDT）。浏览器 JavaScript 的单线程模型，以及 2009 年 Ryan Dahl 发布的 Node.js，让事件循环成为前后端的共同常识。",
+      "problem": "多线程直接操作界面或共享状态容易死锁和竞态；为每个连接开一个线程又消耗巨大。事件循环把状态变更串行化到一个线程以免加锁，再借助非阻塞 I/O，用少量线程支撑大量并发连接。",
+      "actors": [
+        "Apple、Microsoft：Mac 与 Windows 的 GUI 消息循环",
+        "Sun：Java AWT/Swing 规定界面操作在事件分派线程上执行",
+        "WHATWG：在 HTML 标准中定义浏览器事件循环与任务队列",
+        "Ryan Dahl：2009 年发布 Node.js，把事件循环带到服务端",
+        "Philip Roberts：2014 年 JSConf EU 演讲让事件循环广为人知"
+      ],
+      "evolution": [
+        "1980 年代：Mac、Windows 等 GUI 用消息循环分发输入事件",
+        "1990 年代：Java AWT/Swing 采用单一事件分派线程模型",
+        "1999：Dan Kegel 提出 C10K 问题，推动 epoll、kqueue 等事件驱动 I/O",
+        "2009：Node.js 把事件循环带到服务端 JavaScript",
+        "2010 年代：HTML 标准细化任务与微任务，Netty、Vert.x 在 Java 服务端普及"
+      ],
+      "compresses": [
+        "单线程串行化状态",
+        "非阻塞 I/O",
+        "任务与微任务",
+        "回调与 Promise",
+        "长任务即卡顿",
+        "跨线程投递任务"
+      ],
+      "scene": "报告组件嵌在 JCEF 里，Java 端在 Swing EDT 上同步生成大报表，界面冻结、页面也不响应。把计算移到 SwingWorker 或线程池，完成后用 SwingUtilities.invokeLater 回到 EDT 更新界面。",
+      "misconception": "以为异步就不会卡。事件循环里任何一个长任务（大 JSON 解析、同步 I/O、死循环）都会阻塞后面所有事件；异步只是把等待移了出去，CPU 密集计算仍要拆分或交给 Worker、后台线程。",
+      "relations": {
+        "related": [
+          {"term": "Backpressure", "termZh": "背压", "note": "事件产生快于处理时，需要背压控制队列长度"},
+          {"term": "Tail Latency", "termZh": "尾延迟", "note": "一个慢任务堵住队列，会拉高后续请求的尾延迟"},
+          {"term": "Happens-Before", "termZh": "先行发生", "note": "跨线程投递任务时要关注内存可见性"}
+        ],
+        "opposite": [
+          {"term": "Thread-per-Request", "termZh": "每请求一线程", "note": "用大量阻塞线程而非单线程循环应对并发"}
+        ]
+      },
+      "sources": [
+        {"title": "WHATWG HTML Standard: Event loops", "url": "https://html.spec.whatwg.org/multipage/webappapis.html"},
+        {"title": "Oracle Java Tutorials: The Event Dispatch Thread", "url": "https://docs.oracle.com/javase/tutorial/uiswing/concurrency/dispatch.html"},
+        {"title": "Node.js: The Node.js Event Loop", "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick"},
+        {"title": "Philip Roberts: What the heck is the event loop anyway? (JSConf EU 2014)", "url": "https://www.youtube.com/watch?v=8aGhZQkoFbQ"}
+      ]
+    },
+    {
+      "id": "canary-release",
+      "term": "Canary Release",
+      "termZh": "金丝雀发布",
+      "hook": "先放一只金丝雀下矿井，没事再全员下。",
+      "definition": "新版本先只部署给一小部分服务器或用户，对比新旧版本的错误率、延迟等指标；指标正常再逐步扩大比例直至全量，异常就立即把流量切回旧版本，以限制故障的影响范围。",
+      "tags": {
+        "discipline": ["软件工程"],
+        "engineering": ["持续交付", "可靠性"],
+        "cognitive": ["风险控制", "渐进思维", "反馈闭环"],
+        "scenario": ["上线前"],
+        "level": ["实践"]
+      },
+      "background": "名称来自煤矿工人带金丝雀下井探测有毒气体的做法。2000 年代大型互联网公司在持续部署中普遍分批上线；2014 年 Danilo Sato 在 Martin Fowler 网站撰文总结 Canary Release，2018 年 Google《SRE 工作手册》专章讨论金丝雀发布。",
+      "problem": "测试环境无法复现真实流量、数据和配置组合，有些缺陷只在生产出现；一次性全量发布会让所有用户同时受害。金丝雀发布用小流量在真实生产中验证，把“爆炸半径”控制在少数用户内，并为回滚争取时间。",
+      "actors": [
+        "Danilo Sato（ThoughtWorks）：2014 年撰文总结 Canary Release",
+        "Google SRE：在《SRE 工作手册》中系统化金丝雀评估",
+        "Netflix 与 Google：2018 年开源自动金丝雀分析工具 Kayenta",
+        "Kubernetes 生态：Argo Rollouts、Flagger 等支持渐进式交付"
+      ],
+      "evolution": [
+        "早期：煤矿用金丝雀预警有毒气体",
+        "2000 年代：互联网公司在生产中分批、分机房上线",
+        "2014：Danilo Sato 在 martinfowler.com 发表 CanaryRelease",
+        "2018：Google SRE 工作手册专章讨论；Netflix 与 Google 开源 Kayenta",
+        "2018 年后：渐进式交付（Progressive Delivery）概念流行"
+      ],
+      "compresses": [
+        "爆炸半径",
+        "小流量真实验证",
+        "新旧版本指标对比",
+        "自动回滚门槛",
+        "渐进式放量",
+        "用户分群"
+      ],
+      "scene": "报告组件从 B/S 改为基于 JCEF 的 C/S 客户端后，新版本先推给客户现场 5% 的终端，对比崩溃率、报告渲染耗时和内存占用，三天无异常再按 25%、100% 放量，有问题就让终端回退旧安装包。",
+      "misconception": "以为金丝雀就是“先给少数人用”。没有明确的对比指标和回滚门槛，它只是缓慢的全量发布；样本太小或观察太短也看不出问题。数据库结构变更还要新旧版本兼容，否则无法回滚。",
+      "relations": {
+        "related": [
+          {"term": "Blue-Green Deployment", "termZh": "蓝绿部署", "note": "蓝绿整体切换，金丝雀按比例逐步放量"},
+          {"term": "Feature Toggle", "termZh": "功能开关", "note": "开关可按用户放量，与金丝雀互补"},
+          {"term": "Service Level Objective", "termZh": "服务等级目标", "note": "SLO 可作为金丝雀放量与回滚的判定门槛"}
+        ],
+        "opposite": [
+          {"term": "Big Bang Release", "termZh": "一次性全量发布", "note": "所有用户同时切换到新版本，故障无缓冲"}
+        ]
+      },
+      "sources": [
+        {"title": "Danilo Sato: CanaryRelease (martinfowler.com, 2014)", "url": "https://martinfowler.com/bliki/CanaryRelease.html"},
+        {"title": "Google SRE Workbook: Canarying Releases", "url": "https://sre.google/workbook/canarying-releases/"}
+      ]
+    }
+  ]
+}
