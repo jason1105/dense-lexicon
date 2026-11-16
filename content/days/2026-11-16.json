@@ -1,0 +1,165 @@
+{
+  "date": "2026-11-16",
+  "words": [
+    {
+      "id": "bounded-context",
+      "term": "Bounded Context",
+      "termZh": "限界上下文",
+      "hook": "同一句话，出了这个房间意思就变了。",
+      "definition": "在领域驱动设计中，把大系统划分成若干明确边界；每个边界内部使用统一、自洽的领域模型和通用语言，边界之外同一术语可以有不同含义。上下文之间用映射显式翻译，而不是强行做一张全企业统一模型。",
+      "tags": {
+        "discipline": ["软件工程"],
+        "engineering": ["架构"],
+        "cognitive": ["边界思维"],
+        "scenario": ["架构评审", "团队划分"],
+        "level": ["模式"]
+      },
+      "background": "早期企业常被建议建一张覆盖整个业务的统一模型，但不同部门对“客户”“产品”等词的理解并不相同，硬统一成本很高。2003 年 Eric Evans 在《领域驱动设计》战略设计部分提出 Bounded Context：承认大规模统一不可行，改为在明确边界内保持模型一致。2014 年 Martin Fowler 撰文把它讲成 DDD 的核心模式。",
+      "problem": "大系统里同一个词在不同团队含义不同，若硬做成单一模型，对象会充满互相矛盾的属性和规则，沟通和集成都会出错。限界上下文让每个边界内语言自洽，跨边界则显式映射，而不是假装大家说的是同一回事。",
+      "actors": [
+        "Eric Evans：2003 年在《领域驱动设计》中提出限界上下文",
+        "Martin Fowler：2014 年撰文普及该模式",
+        "Vaughn Vernon：在《实现领域驱动设计》中强调上下文划分与映射",
+        "微服务社区：常把服务边界与限界上下文对齐"
+      ],
+      "evolution": [
+        "1990 年代：企业常追求覆盖全业务的统一数据或领域模型",
+        "2003：Evans 出版《领域驱动设计》，在战略设计部分提出 Bounded Context",
+        "2013：Vernon《实现领域驱动设计》开篇即强调上下文划分与映射",
+        "2014：Fowler 发表 Bounded Context 一文，使其成为常见架构词汇",
+        "2010 年代中期：微服务流行后，常被用来界定服务与团队边界"
+      ],
+      "compresses": [
+        "通用语言",
+        "上下文映射",
+        "模型只在边界内有效",
+        "多义概念的显式翻译",
+        "共享内核与防腐层",
+        "团队与模型对齐"
+      ],
+      "scene": "报告组件里的“模板”指版式和公式，交易监测里的“模板”指规则阈值组合。若硬塞进同一个对象，字段会互相污染。分成两个限界上下文，跨系统只通过明确的标识和映射交换必要数据。",
+      "misconception": "以为一个微服务就自动是一个限界上下文，或边界只是代码仓库的分割。真正的边界是语言和模型的一致性范围；服务可以小于或跨越上下文，同一概念在边界两侧含义不同时必须显式翻译。",
+      "relations": {
+        "related": [
+          {"term": "Anti-Corruption Layer", "termZh": "防腐层", "note": "在上下文边界上翻译外部模型，保护本上下文的语言"},
+          {"term": "Conway's Law", "termZh": "康威定律", "note": "团队沟通结构往往与上下文边界相互塑造"},
+          {"term": "Ubiquitous Language", "termZh": "通用语言", "note": "每个上下文内部使用统一术语，出界即可能变义"}
+        ],
+        "opposite": [
+          {"term": "Unified Enterprise Model", "termZh": "统一企业模型", "note": "试图用一张模型覆盖全公司，忽略语言差异"}
+        ]
+      },
+      "sources": [
+          {"title": "Eric Evans: Domain-Driven Design (Addison-Wesley, 2003)", "url": "https://www.informit.com/store/domain-driven-design-tackling-complexity-in-the-heart-9780321125217"},
+          {"title": "Martin Fowler: Bounded Context (2014)", "url": "https://martinfowler.com/bliki/BoundedContext.html"}
+      ]
+    },
+    {
+      "id": "defense-in-depth",
+      "term": "Defense in Depth",
+      "termZh": "纵深防御",
+      "hook": "不指望一堵墙挡住所有攻击。",
+      "definition": "一种信息安全策略：在多个层次、多个位置部署不同机制，并把人员、技术和运营结合起来，使得某一层被绕过或失效时，后续层仍能检测、限制或恢复。目标不是单点完美，而是提高攻击成本和被发现的概率。",
+      "tags": {
+        "discipline": ["信息安全"],
+        "engineering": ["安全"],
+        "cognitive": ["风险控制", "对抗性思维"],
+        "scenario": ["安全评审"],
+        "level": ["原则"]
+      },
+      "background": "纵深防御原是军事术语，指用多层阵地消耗进攻、避免一次突破即全面失守。2000 年前后，美国军方和安全局（NSA）将其引入信息保障：在人员、技术和运营上同时发力，并按“防护、检测、响应”部署。NIST、CNSS 等后来把它写入指南和术语表，成为安全架构的常用原则。",
+      "problem": "只靠边界防火墙或单一认证，一旦被突破，内部往往几乎无阻。攻击者会走多条路径，误操作和故障也会造成损失。纵深防御承认单点会失败，用异构的多层控制把突破限制在局部，并保留发现和恢复的手段。",
+      "actors": [
+        "美国国家安全局（NSA）：把纵深防御整理为信息保障实践策略",
+        "美国参谋长联席会议：2000 年发布《以纵深防御实现信息保障》",
+        "NIST / CNSS：将定义写入 SP 800 系列与 CNSSI 4009 术语表",
+        "IEC/ISA 62443：在工业控制系统安全中采用多层防护思路"
+      ],
+      "evolution": [
+        "早期：军事上用多层防线消耗进攻，避免一点突破即全局失守",
+        "2000：美军联合出版物提出以纵深防御实现信息保障",
+        "2000 年代：NSA 发表实践策略，强调人员、技术与运营并重",
+        "2010 年代：NIST SP 800-53、SP 800-30 等采纳并引用该定义",
+        "2010 年代后期：与零信任并列讨论，强调不能只守网络边界"
+      ],
+      "compresses": [
+        "多层异构控制",
+        "人员、技术与运营",
+        "防护、检测与响应",
+        "单点失败可预期",
+        "提高攻击成本",
+        "限制爆炸半径"
+      ],
+      "scene": "性能监控组件部署在客户现场时，不能只靠机房防火墙。客户端证书、接口鉴权、进程最小权限、配置签名、操作审计和异常告警要分层生效：外网被打通后，监控数据和管理接口仍不能被任意读取或篡改。",
+      "misconception": "以为堆叠越多产品就越安全，或“有了防火墙就等于纵深防御”。同质的多层会一起失效；没有检测和响应，只是把失败推迟。关键是异构、可验证，并且某一层失败后仍能发现。",
+      "relations": {
+        "related": [
+          {"term": "Principle of Least Privilege", "termZh": "最小权限原则", "note": "每一层都只授予完成任务所需的最小权限"},
+          {"term": "Same-Origin Policy", "termZh": "同源策略", "note": "浏览器层的隔离，是纵深防御中的一道关卡"},
+          {"term": "Zero Trust", "termZh": "零信任", "note": "不默认信任网络位置，常与多层控制一起使用"}
+        ],
+        "opposite": [
+          {"term": "Castle-and-Moat", "termZh": "城堡护城河", "note": "只加固边界，内部一旦进入几乎畅通无阻"}
+        ]
+      },
+      "sources": [
+          {"title": "NIST CSRC Glossary: defense-in-depth", "url": "https://csrc.nist.gov/glossary/term/defense_in_depth"},
+          {"title": "NIST SP 800-53 Rev. 5: Security and Privacy Controls", "url": "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final"}
+      ]
+    },
+    {
+      "id": "backend-for-frontend",
+      "term": "Backend for Frontend",
+      "termZh": "前端专用后端",
+      "hook": "一种前端，配一个专属的后端。",
+      "definition": "为每一种用户体验（如 Web、移动端或桌面客户端）提供专门的后端适配层，按该前端的页面结构、网络和发布节奏聚合、裁剪下游接口。避免用一个通用 API 同时迁就所有客户端，导致接口膨胀和发布互相阻塞。",
+      "tags": {
+        "discipline": ["软件工程", "Web 技术"],
+        "engineering": ["架构", "接口设计", "系统集成"],
+        "cognitive": ["边界思维", "权衡思维"],
+        "scenario": ["接口设计", "架构评审"],
+        "level": ["模式"]
+      },
+      "background": "Web 普及后，服务端往往只面向一种浏览器界面。移动应用兴起后，屏幕、电量和交互与桌面差异很大，共用一个通用 API 会不断打补丁，并变成多端发布的瓶颈。SoundCloud、REA 等采用“一种体验一个后端”的做法，Phil Calçado 称之为 Backend For Frontend。2015 年 Sam Newman 撰文将其总结为模式。",
+      "problem": "Web、移动端或桌面客户端需要的数据粒度、调用次数和发布节奏不同。一个通用 API 要么过胖、让弱网客户端吃不消，要么缺少某端特有能力，改一处还可能拖住所有前端。BFF 把面向体验的聚合放到专属后端，让下游服务保持通用，前端团队能独立演进接口。",
+      "actors": [
+        "Phil Calçado：在 SoundCloud 实践中命名 Backend For Frontend",
+        "Sam Newman：2015 年撰文系统总结该模式",
+        "REA Group：按客户端类型分别设置 BFF 的案例来源之一",
+        "ThoughtWorks：2015 年技术雷达将 BFF 列入 Trial",
+        "Microsoft Azure：在架构中心收录 Backends for Frontends 模式"
+      ],
+      "evolution": [
+        "2000 年代：Web 应用常用与页面紧耦合的单一服务端",
+        "2010 年代：移动应用普及，通用 API 难以同时服务多类客户端",
+        "2010 年代中期：SoundCloud、REA 采用一体验一后端，Calçado 定名 BFF",
+        "2015：Newman 发表模式文章，ThoughtWorks 技术雷达将其列入 Trial",
+        "此后：云厂商与微服务资料普遍收录，并常与 API 网关对照讨论"
+      ],
+      "compresses": [
+        "一体验一后端",
+        "按端聚合与裁剪",
+        "避免通用 API 膨胀",
+        "前端团队自主发布",
+        "与 API 网关分工",
+        "复用和下沉的边界"
+      ],
+      "scene": "报告组件同时提供浏览器和 JCEF 桌面客户端。Web 适合多次细粒度查询和在线预览，桌面端更需要一次拉取模板、数据与导出参数。若共用通用 API，桌面会频繁打接口，Web 又会被大包拖慢。为两端各做一个 BFF，分别聚合模板、数据和权限服务。",
+      "misconception": "以为 BFF 就是 API 网关，或所有客户端必须共用一个 BFF。网关处理认证、限流、路由等横切能力；BFF 处理某一类体验的数据和交互。两端需求已经分叉还硬共享，会重新变回那个臃肿的通用后端。",
+      "relations": {
+        "related": [
+          {"term": "Anti-Corruption Layer", "termZh": "防腐层", "note": "都在边界上做翻译，BFF 面向的是一类用户体验"},
+          {"term": "Conway's Law", "termZh": "康威定律", "note": "BFF 最好由对应前端团队拥有，以对齐发布节奏"},
+          {"term": "API Gateway", "termZh": "API 网关", "note": "网关管横切关注点，BFF 管特定前端的聚合与裁剪"}
+        ],
+        "opposite": [
+          {"term": "General-Purpose API", "termZh": "通用 API", "note": "用同一个后端迁就所有客户端，容易膨胀并互相阻塞"}
+        ]
+      },
+      "sources": [
+          {"title": "Sam Newman: Backends For Frontends (2015)", "url": "https://samnewman.io/patterns/architectural/bff/"},
+          {"title": "Microsoft Azure Architecture Center: Backends for Frontends pattern", "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/backends-for-frontends"}
+      ]
+    }
+  ]
+}
