@@ -1,0 +1,263 @@
+{
+  "date": "2026-11-17",
+  "words": [
+    {
+      "id": "characterization-test",
+      "term": "Characterization Test",
+      "termZh": "表征测试",
+      "hook": "先锁住它现在怎么做，再放心拍遗产代码。",
+      "definition": "一种为遗留代码编写的测试：不先断言代码“应该”怎样，而是先运行、观察并记录它当前的实际行为。这张行为快照成为重构或改动时的安全网；若发现与期望不符，再单独判断那是缺陷还是已被依赖的现状。",
+      "tags": {
+        "discipline": [
+          "软件工程"
+        ],
+        "engineering": [
+          "测试",
+          "系统迁移"
+        ],
+        "cognitive": [
+          "可重复性",
+          "渐进思维"
+        ],
+        "scenario": [
+          "遗留系统改造",
+          "测试策略"
+        ],
+        "level": [
+          "实践"
+        ]
+      },
+      "background": "测试驱动开发普及后，测试多用来核对“代码是否符合规格”。大量生产系统却没有规格，也几乎没有测试，改一处就可能牵动未知行为。2004 年 Michael Feathers 在《Working Effectively with Legacy Code》中提出表征测试：先刻画系统现在做什么，再安全地改。",
+      "problem": "面对缺少测试和完整规格的遗留代码，开发者不知道改动会碰掉哪些既有行为。表征测试先把实际行为固定下来，让重构、迁移和修缺陷有可重复的对照，而不是靠阅读和猜测。",
+      "actors": [
+        "Michael Feathers：2004 年在《Working Effectively with Legacy Code》中提出并系统阐述表征测试",
+        "Alberto Savoia：2007 年撰文介绍该方法，随后经 InfoQ 等渠道传播",
+        "Prentice Hall：2004 年 9 月出版该书，使这一做法进入遗留代码实践"
+      ],
+      "evolution": [
+        "1990 年代末：单元测试与 TDD 普及，测试主要用来核对预定规格",
+        "2004：Feathers 出版《Working Effectively with Legacy Code》，提出表征测试",
+        "2007：Savoia 撰文、InfoQ 报道，该方法在遗留系统改造中更为人知",
+        "2016：Feathers 发表 Characterization Testing，示范用失败断言反推实际行为"
+      ],
+      "compresses": [
+        "测试实际行为，而非期望规格",
+        "先观察，再把结果写成断言",
+        "为重构提供安全网",
+        "生产系统即规格",
+        "先锁定可疑行为，再判断是否缺陷"
+      ],
+      "scene": "把报告组件从浏览器迁到 JCEF 桌面端时，导出格式、分页和公式边界全靠旧系统多年积累的行为，文档对不齐。先用表征测试锁住现网输出，再改渲染引擎；结果一变，测试立刻指出差在哪。",
+      "misconception": "以为表征测试是把现状里的缺陷也当成正确规格，或可以替代验收测试。它只是先固定实际行为；确认是缺陷后应改测试、再改代码。它也不能代替说明“系统应该怎样”的规格测试。",
+      "relations": {
+        "related": [
+          {
+            "term": "Test Oracle",
+            "termZh": "测试预言",
+            "note": "表征测试用当前输出充当预言，用来锁定已知行为"
+          },
+          {
+            "term": "Mutation Testing",
+            "termZh": "变异测试",
+            "note": "可用来检查这张安全网是否真能抓住行为变化"
+          },
+          {
+            "term": "Strangler Fig Pattern",
+            "termZh": "绞杀者模式",
+            "note": "逐步替换遗留系统时，常用表征测试保住旧行为"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Specification Test",
+            "termZh": "规格测试",
+            "note": "按预定期望检查，而不是先记录系统的当前行为"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Michael C. Feathers: Working Effectively with Legacy Code (Prentice Hall, 2004)",
+          "url": "https://www.informit.com/store/working-effectively-with-legacy-code-9780131177055"
+        },
+        {
+          "title": "Michael Feathers: Characterization Testing (2016)",
+          "url": "https://michaelfeathers.silvrback.com/characterization-testing"
+        }
+      ]
+    },
+    {
+      "id": "little-s-law",
+      "term": "Little's Law",
+      "termZh": "利特尔法则",
+      "hook": "在途量，等于到达率乘以停留时间。",
+      "definition": "排队论中的定理：在稳态且均值有限时，系统中的平均个数 L 等于平均到达率 λ 乘以平均停留时间 W，即 L = λW。它几乎不依赖到达或服务的具体分布，把并发、吞吐和延迟三条性能指标锁在同一个等式里。",
+      "tags": {
+        "discipline": [
+          "数学"
+        ],
+        "engineering": [
+          "性能",
+          "可观测"
+        ],
+        "cognitive": [
+          "系统思维"
+        ],
+        "scenario": [
+          "性能排查",
+          "线上排障"
+        ],
+        "level": [
+          "定律"
+        ]
+      },
+      "background": "20 世纪中期，排队论已在电话和运营中使用 L、λ、W 的经验关系，但一般条件下的严格证明仍缺。1961 年，当时在 Case Institute of Technology 的 John D. C. Little 于 Operations Research 发表证明。此后它进入运营管理、计算机体系结构与软件性能分析，2011 年 Little 撰文回顾五十年。",
+      "problem": "性能讨论常把并发、吞吐和延迟分开看，数字对不上也难以察觉。利特尔法则给出三者必须满足的关系：已知其中两个，就能求出或校验第三个，用来发现计量错误、排队堆积和容量瓶颈。",
+      "actors": [
+        "John D. C. Little：1961 年证明 L = λW，后于 MIT 长期任教并在 2011 年撰文回顾",
+        "Case Institute of Technology：论文发表时 Little 所在的机构（今凯斯西储大学）",
+        "Operations Research 期刊：1961 年发表原文，2011 年刊出五十周年回顾"
+      ],
+      "evolution": [
+        "1950 年代：排队论在电话与运营中使用 L、λ、W 的经验关系，一般证明仍不完整",
+        "1961：Little 在 Operations Research 发表 L = λW 的严格证明",
+        "此后：出现更一般的样本路径证明，并被用于运营管理与计算机性能分析",
+        "2011：Little 发表五十周年回顾，讨论运营管理与计算机体系结构中的应用"
+      ],
+      "compresses": [
+        "L = λW",
+        "并发 = 吞吐 × 延迟",
+        "不依赖具体到达分布",
+        "用两个量校验第三个",
+        "稳态平均值，不是瞬时快照"
+      ],
+      "scene": "性能监控看报告导出接口：平均响应 2 秒、每秒 30 次请求，则系统里大约同时有 60 个请求在处理。若线程池只有 20，多半在排队；若测得在途远不是 60，说明 QPS 或耗时的统计口径不一致。",
+      "misconception": "以为只在单队列、泊松到达时成立，或用某一秒的瞬时队列长度去套公式。它在很宽的稳态条件下成立，说的是一段时间的平均值。系统持续过载、达不到稳态时，不能直接用它预测还能再加多少流量。",
+      "relations": {
+        "related": [
+          {
+            "term": "Tail Latency",
+            "termZh": "尾延迟",
+            "note": "平均延迟可以满足法则，但尾部延迟仍可能很差"
+          },
+          {
+            "term": "Service Level Objective",
+            "termZh": "服务等级目标",
+            "note": "可用法则把目标延迟反推允许的并发与到达率"
+          },
+          {
+            "term": "Backpressure",
+            "termZh": "背压",
+            "note": "在途量升高时限制到达，避免系统离开可预测的稳态"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Instantaneous Snapshot",
+            "termZh": "瞬时快照",
+            "note": "法则约束的是区间平均值，不是某一瞬间的队列长度"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "John D. C. Little: A Proof for the Queuing Formula: L = λW (Operations Research, 1961)",
+          "url": "https://pubsonline.informs.org/doi/10.1287/opre.9.3.383"
+        },
+        {
+          "title": "John D. C. Little: Little's Law as Viewed on Its 50th Anniversary (2011)",
+          "url": "https://pubsonline.informs.org/doi/10.1287/opre.1110.0940"
+        }
+      ]
+    },
+    {
+      "id": "tool-use",
+      "term": "Tool Use",
+      "termZh": "工具调用",
+      "hook": "模型不会的，交给外部工具来做。",
+      "definition": "让大语言模型在生成文本之外，按需调用搜索、计算器、数据库或业务 API 等外部工具，再把返回结果纳入后续推理。模型负责决定是否调用、调用哪个、传入什么参数；真正的执行发生在模型之外，用来补上计算、事实和操作能力。",
+      "tags": {
+        "discipline": [
+          "人工智能"
+        ],
+        "engineering": [
+          "AI 工程"
+        ],
+        "cognitive": [
+          "反馈闭环",
+          "信息取舍"
+        ],
+        "scenario": [
+          "智能体设计",
+          "AI 辅助编码"
+        ],
+        "level": [
+          "机制"
+        ]
+      },
+      "background": "大模型擅长语言和推理，但算术、查新事实和操作外部系统并不可靠。早期工作让模型浏览网页或在环境中行动，推理与行动却常被分开研究。2022 年 ReAct 把二者交错进行；2023 年 Toolformer 证明模型可自学何时调用 API；同年 OpenAI 把函数调用做成 API 能力，工具调用成为智能体的常规机制。",
+      "problem": "只靠参数里的知识，模型会算错、过时或虚构事实，也无法查询内部系统或执行操作。工具调用把不可靠的内部猜测换成可验证的外部结果，使模型能连到真实数据和业务动作。",
+      "actors": [
+        "Shunyu Yao 等（普林斯顿 / Google）：2022 年提出 ReAct，交错进行推理与工具行动",
+        "Timo Schick 等（Meta）：2023 年发表 Toolformer，让模型自学调用 API",
+        "OpenAI：2023 年 6 月在 Chat Completions API 中发布函数调用"
+      ],
+      "evolution": [
+        "2021：WebGPT 等工作让模型借助浏览工具回答需要外部事实的问题",
+        "2022：Yao 等发表 ReAct，在推理轨迹中交错调用外部工具并观察结果",
+        "2023-02：Schick 等发表 Toolformer，用自监督方式学习何时调用何种 API",
+        "2023-06：OpenAI 发布函数调用，模型返回结构化参数，由程序执行工具",
+        "此后：各家模型与智能体框架把工具调用做成标准能力"
+      ],
+      "compresses": [
+        "模型决定是否以及如何调用",
+        "工具在模型外执行",
+        "用外部结果约束后续生成",
+        "补上计算、事实与操作",
+        "函数调用是其工程形态"
+      ],
+      "scene": "交易监测助手要查某笔申报的历史规则命中，不能靠模型“记得”库里的数据。把它接到查询 API：模型生成查询参数，服务执行并返回记录，模型再据此解释，避免把过时或虚构的命中次数写进报告。",
+      "misconception": "以为模型会自己执行函数，或只要打开工具调用就会更准。API 只返回函数名和参数，执行和权限在你的代码里。工具返回值会进入上下文，不可信数据可能造成提示注入；涉及写操作应让人确认。",
+      "relations": {
+        "related": [
+          {
+            "term": "Retrieval-Augmented Generation",
+            "termZh": "检索增强生成",
+            "note": "都引入外部信息；RAG 侧重检索文档，工具调用可执行任意 API"
+          },
+          {
+            "term": "Chain-of-Thought Prompting",
+            "termZh": "思维链提示",
+            "note": "ReAct 在思维链中插入行动与观察，用工具结果继续推理"
+          },
+          {
+            "term": "Prompt Injection",
+            "termZh": "提示词注入",
+            "note": "工具返回的不可信内容可能改写模型的后续指令"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Closed-Book Generation",
+            "termZh": "闭卷生成",
+            "note": "只靠模型参数作答，不查询或调用外部工具"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Shunyu Yao et al.: ReAct: Synergizing Reasoning and Acting in Language Models (2022)",
+          "url": "https://arxiv.org/abs/2210.03629"
+        },
+        {
+          "title": "Timo Schick et al.: Toolformer: Language Models Can Teach Themselves to Use Tools (2023)",
+          "url": "https://arxiv.org/abs/2302.04761"
+        },
+        {
+          "title": "OpenAI: Function calling and other API updates (2023)",
+          "url": "https://openai.com/index/function-calling-and-other-api-updates/"
+        }
+      ]
+    }
+  ]
+}
