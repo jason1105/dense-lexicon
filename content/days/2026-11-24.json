@@ -1,0 +1,255 @@
+{
+  "date": "2026-11-24",
+  "words": [
+    {
+      "id": "bulkhead",
+      "term": "Bulkhead",
+      "termZh": "隔离舱",
+      "hook": "一个舱进水，不该整艘船沉掉。",
+      "definition": "一种稳定性模式：把线程池、连接池、进程或机器等执行能力隔成独立舱室，使一个舱的阻塞、过载或故障不能抽干其他舱的资源。损害被限制在局部，系统其余部分仍能继续工作。",
+      "tags": {
+        "discipline": [
+          "分布式系统",
+          "软件工程"
+        ],
+        "engineering": [
+          "可靠性",
+          "架构"
+        ],
+        "cognitive": [
+          "失败隔离",
+          "风险控制"
+        ],
+        "scenario": [
+          "架构评审",
+          "线上排障"
+        ],
+        "level": [
+          "模式"
+        ]
+      },
+      "background": "船体用防水隔舱限制破损扩散。软件里，线程、连接和下游配额却常被所有功能共享，一处阻塞就会抽干全局资源。2007 年 Michael Nygard 在《Release It!》中把这一航海原则写成稳定性模式，用来遏制故障蔓延。",
+      "problem": "共用同一线程池或连接池时，一个慢依赖或一次大查询就能占满全部资源，使原本健康的功能一起不可用。隔离舱把配额拆开，让故障停在舱内，而不是顺着共享池传遍全系统。",
+      "actors": [
+        "Michael T. Nygard：2007 年在《Release It!》中把船体隔舱原理写成软件稳定性模式",
+        "Netflix：2012 年开源 Hystrix，用独立线程池做依赖隔离，使该模式在 Java 中普及",
+        "Pragmatic Bookshelf：出版《Release It!》（2007 初版，2018 再版）"
+      ],
+      "evolution": [
+        "航海时代：船体用防水隔舱，一舱进水也不至于整船沉没",
+        "2007：Nygard 在《Release It!》中把隔离舱列为软件稳定性模式",
+        "2012：Netflix 开源 Hystrix，用独立线程池隔离依赖，该模式在 Java 服务中普及",
+        "2018：《Release It!》再版；舱壁限流库与容器资源配额，都成为常用的隔离手段"
+      ],
+      "compresses": [
+        "按功能划分独立的资源配额",
+        "故障应停在舱内，不能抽干全局",
+        "线程池、连接池、进程都可作舱壁",
+        "保部分可用，而不是追求永不故障"
+      ],
+      "scene": "现场性能监控一边采集指标，一边对外提供查询和导出。若共用一个线程池，一次大盘导出把池打满，采集心跳也会被堵住，整机看起来像挂了。给采集、查询、导出分池，导出再慢，采集还能继续。",
+      "misconception": "以为多实例部署就等于隔离舱。若这些实例仍共享同一线程池、连接池或同一下游配额，故障照样穿透。隔离舱也不能阻止故障发生，它只限制损害范围，让其余功能还能工作。",
+      "relations": {
+        "related": [
+          {
+            "term": "Circuit Breaker",
+            "termZh": "熔断器",
+            "note": "熔断决定何时停止调用，隔离舱决定故障能消耗哪些资源"
+          },
+          {
+            "term": "Backpressure",
+            "termZh": "背压",
+            "note": "背压调节流入速度，隔离舱则限制故障可占用的容量"
+          },
+          {
+            "term": "Thundering Herd",
+            "termZh": "惊群效应",
+            "note": "隔离舱能把惊群限制在单个舱内，避免拖垮全部功能"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Shared Thread Pool",
+            "termZh": "共享线程池",
+            "note": "所有功能抢同一池，一处阻塞就会抽干全局资源"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Michael T. Nygard: Release It! Second Edition (Pragmatic Bookshelf, 2018)",
+          "url": "https://pragprog.com/titles/mnee2/release-it-second-edition/"
+        },
+        {
+          "title": "Netflix Hystrix Wiki: How it Works",
+          "url": "https://github.com/Netflix/Hystrix/wiki/How-it-Works"
+        }
+      ]
+    },
+    {
+      "id": "multiversion-concurrency-control",
+      "term": "Multiversion Concurrency Control",
+      "termZh": "多版本并发控制",
+      "hook": "读一份快照，写一份新版本，彼此不挡道。",
+      "definition": "一种并发控制机制：更新不覆盖原行，而是写入新版本并保留旧版本。读取事务看到某个时刻的一致快照，因此读通常不必阻塞写，写也不必阻塞读；写写冲突仍按隔离级别检测和处理。",
+      "tags": {
+        "discipline": [
+          "数据库理论",
+          "并发计算"
+        ],
+        "engineering": [
+          "数据一致性",
+          "数据访问"
+        ],
+        "cognitive": [
+          "不变量思维",
+          "权衡思维"
+        ],
+        "scenario": [
+          "并发更新",
+          "性能排查"
+        ],
+        "level": [
+          "机制"
+        ]
+      },
+      "background": "早期数据库多用锁来保证一致性：读要挡写，写也要挡读，长查询在繁忙系统上很容易把业务更新拖住。1978 年 David Reed 在 MIT 博士论文中提出另一条路：把可修改对象看成不可变版本的序列，用版本与伪时间来同步，而不是靠互斥。",
+      "problem": "高并发下既要让长查询读到一致数据，又不能让它挡住正在发生的更新。MVCC 用快照满足读的一致性，用新版本承载写，使读写尽量互不阻塞，同时仍能检测写写冲突。",
+      "actors": [
+        "David P. Reed：1978 年在 MIT 论文中提出用多版本与伪时间同步共享数据",
+        "Jim Starkey：1980 年代在 JRD 与 InterBase 中把 MVCC 做成商用数据库机制",
+        "PostgreSQL 社区：用快照隔离把“读不阻塞写”做成广泛使用的实现"
+      ],
+      "evolution": [
+        "1978：Reed 完成 MIT-LCS-TR-205，提出用不可变版本和伪时间代替互斥锁",
+        "1980s：Starkey 在 JRD 与 InterBase（1986）中将多版本并发做成商用实现",
+        "1990s–2000s：PostgreSQL、Oracle、InnoDB 等广泛采用，读不阻塞写成为默认预期",
+        "此后：快照隔离成为主流默认；可串行化快照隔离进一步补上该模型下的异常"
+      ],
+      "compresses": [
+        "写新版本，不覆盖正在被读的旧行",
+        "读看到过去某个时刻的一致快照",
+        "读不阻塞写，写不阻塞读",
+        "写写仍可能冲突，长事务会堆积旧版本"
+      ],
+      "scene": "出日报时，报表组件要扫描当天大量成交记录，交易库同时还在写入。若靠行锁，长查询会堵住入账。数据库用 MVCC 给报表一个启动时的快照，读不挡写，报表也不会读到改到一半的行。",
+      "misconception": "以为 MVCC 就是没有锁、也不会有冲突。写同一行仍会冲突；读写虽不互相阻塞，长事务会保留大量旧版本，导致表膨胀、查询变慢。它解决的是读写互不阻塞，不是取消一切并发代价。",
+      "relations": {
+        "related": [
+          {
+            "term": "Optimistic Locking",
+            "termZh": "乐观锁",
+            "note": "应用层用版本号检测冲突，数据库则用行版本实现类似思路"
+          },
+          {
+            "term": "Write-Ahead Log",
+            "termZh": "预写日志",
+            "note": "WAL 保证版本变更可恢复，与 MVCC 共同支撑事务"
+          },
+          {
+            "term": "Happens-Before",
+            "termZh": "先行发生",
+            "note": "快照决定哪些版本对一次读取可见，是调度上的先后关系"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Two-Phase Locking",
+            "termZh": "两阶段锁",
+            "note": "靠锁互斥保证一致性，读和写更容易互相阻塞"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "David P. Reed: Naming and Synchronization in a Decentralized Computer System (MIT-LCS-TR-205, 1978)",
+          "url": "https://dspace.mit.edu/handle/1721.1/16279"
+        },
+        {
+          "title": "PostgreSQL Documentation: 13.1 Introduction (MVCC)",
+          "url": "https://www.postgresql.org/docs/current/mvcc-intro.html"
+        }
+      ]
+    },
+    {
+      "id": "brooks-s-law",
+      "term": "Brooks's Law",
+      "termZh": "布鲁克斯定律",
+      "hook": "给已经延期的项目加人，只会让它更晚。",
+      "definition": "布鲁克斯定律指出：向一个已经延期的软件项目增加人力，只会使它更晚完成。新人需要培训，工作需要重新切分，沟通路径随人数近似平方增长，短期内增加的协作成本常常大于多出来的人手。",
+      "tags": {
+        "discipline": [
+          "组织行为学",
+          "软件工程"
+        ],
+        "engineering": [
+          "研发管理"
+        ],
+        "cognitive": [
+          "系统思维",
+          "隐性成本"
+        ],
+        "scenario": [
+          "团队划分",
+          "遗留系统改造"
+        ],
+        "level": [
+          "定律"
+        ]
+      },
+      "background": "1960 年代，Frederick Brooks 在 IBM 主持 OS/360，亲眼见到进度落后就加人的惯例。1975 年他在《The Mythical Man-Month》中写出这一定律，并指出“人月”把人力和时间当成可互换的单位，这在需要大量沟通的软件工作中并不成立。",
+      "problem": "软件任务往往难以任意并行，且依赖共享理解。进度一旦落后，管理者的本能是加人。但培训、交接和沟通开销会立刻上升，真正可投入的生产力来得更晚，于是延期往往被进一步放大。",
+      "actors": [
+        "Frederick P. Brooks Jr.：主持 IBM OS/360，1975 年在《人月神话》中提出该定律",
+        "IBM：1960 年代的 OS/360 项目为这一定律提供了经验来源",
+        "Addison-Wesley：1975 年出版《The Mythical Man-Month》，1995 年出周年纪念版"
+      ],
+      "evolution": [
+        "1960s：Brooks 主持 IBM OS/360，大型项目靠加人赶工的问题充分暴露",
+        "1975：《The Mythical Man-Month》出版，提出“加人只会让延期项目更晚”",
+        "1995：周年纪念版发行，Brooks 重申这一定律依然成立",
+        "此后：成为软件项目管理的基本警戒，常与沟通成本、团队规模一起被讨论"
+      ],
+      "compresses": [
+        "人月不是可任意互换的单位",
+        "新人带来培训和沟通成本",
+        "沟通路径随人数近似平方增长",
+        "对已延期且难切分的项目，加人往往更晚"
+      ],
+      "scene": "B/S 转 C/S 的桌面壳已经落后于计划，有人提议再抽两人来赶 JCEF 嵌入和登录态。新人要先搞懂旧 Firefox 方案和现场环境，老人得停下讲解，沟通路径一下子变密，交付常常不提前，反而更晚。",
+      "misconception": "以为任何时候加人都会更慢，或人越少越好。定律针对的是已经延期、任务难以切分、需要大量沟通的项目。项目早期、工作边界清晰且可并行时，有计划地加人仍然有用。",
+      "relations": {
+        "related": [
+          {
+            "term": "Conway's Law",
+            "termZh": "康威定律",
+            "note": "加人会改变沟通结构，系统形态往往跟着一起变"
+          },
+          {
+            "term": "Second-System Effect",
+            "termZh": "第二系统效应",
+            "note": "都是大型软件项目里对规模和投入的常见误判"
+          },
+          {
+            "term": "Technical Debt",
+            "termZh": "技术债",
+            "note": "靠加人突击赶工，往往同时堆下更多债务"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Embarrassingly Parallel",
+            "termZh": "易并行任务",
+            "note": "几乎无需协作的工作，加人可以近似线性缩短工期"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Frederick P. Brooks Jr.: The Mythical Man-Month (Addison-Wesley, 1975; Anniversary Edition, 1995)",
+          "url": "https://www.pearson.com/en-us/subject-catalog/p/mythical-man-month-the-essays-on-software-engineering-anniversary-edition/P200000000149/9780132119160"
+        }
+      ]
+    }
+  ]
+}
