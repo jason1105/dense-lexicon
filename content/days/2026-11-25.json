@@ -1,0 +1,256 @@
+{
+  "date": "2026-11-25",
+  "words": [
+    {
+      "id": "cross-origin-resource-sharing",
+      "term": "Cross-Origin Resource Sharing",
+      "termZh": "跨源资源共享",
+      "hook": "跨域不是默认允许，得对方显式点头。",
+      "definition": "浏览器在同源策略之下，允许服务器通过 HTTP 响应头（如 Access-Control-Allow-Origin）显式授权其他源读取其响应的机制。对非简单请求，浏览器会先发 OPTIONS 预检，确认方法、头部和凭证策略都被允许后，才发出实际请求。",
+      "tags": {
+        "discipline": [
+          "信息安全",
+          "Web 技术"
+        ],
+        "engineering": [
+          "安全",
+          "前端"
+        ],
+        "cognitive": [
+          "边界思维",
+          "最小权限"
+        ],
+        "scenario": [
+          "跨域集成",
+          "安全评审"
+        ],
+        "level": [
+          "机制"
+        ]
+      },
+      "background": "1990 年代中期 Netscape 引入同源策略，页面默认不能读取其他源的响应，这挡住了跨站读数据，也挡住了正当的跨站点 API 集成。早期只能靠 JSONP 或反向代理绕过。W3C 从 2005 年的 Access Control 笔记起步，2009 年更名为 CORS，2014 年成为推荐标准。",
+      "problem": "同源策略过严时，合法的跨源 AJAX 或 fetch 会被浏览器拦截；完全放开又会把用户数据暴露给任意第三方页面。CORS 让资源拥有者按来源、方法、头部和是否携带凭证做选择性授权。",
+      "actors": [
+        "Anne van Kesteren：CORS 规范主编，2000 年代于 Opera 期间开始起草该机制",
+        "W3C WebApps 与 WebAppSec 工作组：2014 年 1 月将 CORS 发布为推荐标准",
+        "WHATWG：2020 年起由 Fetch 标准接管 CORS 协议，成为现行定义",
+        "Netscape：1990 年代提出同源策略，构成 CORS 所要有限放松的默认边界"
+      ],
+      "evolution": [
+        "1995 前后：Netscape 引入同源策略，页面默认不能读取其他源的响应",
+        "2005：W3C 发布 Access Control 笔记，开始规范跨源读访问的授权方式",
+        "2009：工作草稿更名为 Cross-Origin Resource Sharing（CORS）",
+        "2014-01：W3C 将 CORS 发布为推荐标准，编辑为 Anne van Kesteren",
+        "2020-06：W3C 退役独立 CORS 规范，改由 WHATWG Fetch 标准定义该协议"
+      ],
+      "compresses": [
+        "服务端用响应头授权跨源读取",
+        "预检请求先确认方法和头部",
+        "凭证模式不能与通配源一起用",
+        "* 不是对所有请求的万能放行",
+        "由浏览器执行，由服务器声明策略"
+      ],
+      "scene": "把原来跑在浏览器里的报告页嵌进 JavaFX + JCEF 桌面壳后，页面源变成了 localhost 或自定义协议，而后端 API 仍是原来的站点。接口调用被当成跨源拦截。要在服务端为桌面壳的 Origin 配好 CORS，并分清带 cookie 的凭证请求不能用 *。",
+      "misconception": "以为加上 Access-Control-Allow-Origin: * 就等于安全，或以为 CORS 能替代服务端鉴权。CORS 只约束浏览器中的跨源读；非浏览器客户端、服务端对服务端调用都不受它保护，认证授权仍要在接口上单独做。",
+      "relations": {
+        "related": [
+          {
+            "term": "Same-Origin Policy",
+            "termZh": "同源策略",
+            "note": "CORS 是在同源策略之上开出的显式、按源授权例外"
+          },
+          {
+            "term": "Cross-Site Request Forgery",
+            "termZh": "跨站请求伪造",
+            "note": "带凭证的跨源请求仍可能被第三方站点借浏览器发起"
+          },
+          {
+            "term": "Defense in Depth",
+            "termZh": "纵深防御",
+            "note": "CORS 只是浏览器侧一道门，不能代替接口鉴权"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "JSONP",
+            "termZh": "JSON 填充",
+            "note": "用 script 标签绕过同源限制，缺少服务端按源的显式授权"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "W3C: Cross-Origin Resource Sharing (Recommendation, 16 January 2014)",
+          "url": "https://www.w3.org/TR/2014/REC-cors-20140116/"
+        },
+        {
+          "title": "WHATWG: Fetch Standard — HTTP CORS protocol",
+          "url": "https://fetch.spec.whatwg.org/#http-cors-protocol"
+        }
+      ]
+    },
+    {
+      "id": "amdahl-s-law",
+      "term": "Amdahl's Law",
+      "termZh": "阿姆达尔定律",
+      "hook": "串行那一截，决定了加速的天花板。",
+      "definition": "在问题规模固定时，并行化能带来的加速比上限由不可并行的串行比例决定：若串行比例为 s，使用 N 个处理器的加速比不超过 1/(s+(1-s)/N)，因此当 N 趋向无穷时，加速比趋近于 1/s。",
+      "tags": {
+        "discipline": [
+          "数学",
+          "软件工程"
+        ],
+        "engineering": [
+          "性能"
+        ],
+        "cognitive": [
+          "权衡思维",
+          "系统思维"
+        ],
+        "scenario": [
+          "性能排查",
+          "设计评审"
+        ],
+        "level": [
+          "定律"
+        ]
+      },
+      "background": "1960 年代，计算机体系结构在争论是继续提升单机，还是把多台机器连起来做大规模计算。1967 年，当时在 IBM 的 Gene Amdahl 在 AFIPS 春季联合计算机会议上指出：即使并行部分理想加速，残存的串行工作仍会给整体加速比加上硬上限。",
+      "problem": "人们容易按处理器数量线性外推加速效果，忽略总有一部分工作必须串行。该定律把串行比例变成可计算的约束，用来判断加核、加线程或拆分流水线到底还值不值得。",
+      "actors": [
+        "Gene M. Amdahl：1967 年在 AFIPS 会议上提出该定律，当时任职于 IBM",
+        "John L. Gustafson：1988 年提出问题规模随处理器扩展时的加速比模型",
+        "Mark D. Hill 与 Michael R. Marty：2008 年把该定律扩展到多核芯片设计"
+      ],
+      "evolution": [
+        "1967：Amdahl 在 AFIPS 春季会议上发表论文，给出固定问题规模下的加速比上限",
+        "1988：Gustafson 在 CACM 发表 Reevaluating Amdahl's Law，强调扩大问题规模",
+        "2008：Hill 与 Marty 发表 Amdahl's Law in the Multicore Era，分析多核权衡"
+      ],
+      "compresses": [
+        "加速比受串行比例限制",
+        "处理器再多，上限也只是 1/s",
+        "先优化串行路径，再堆并行度",
+        "固定工作量与可扩展工作量不同"
+      ],
+      "scene": "性能监控里看到报表导出把 8 核打满，但端到端只快了一点。剖析后发现 JSON 组装、权限校验和写文件是串行的，只有查询是并行的。按阿姆达尔定律，先把串行段缩短或流水化，再加线程才有意义。",
+      "misconception": "以为加机器或加线程就近似线性变快，或以为这条定律已经过时。Gustafson 定律并没有否定它，只是改了“问题规模固定”这一前提；只要存在不可缩小的串行路径，上限就还在。",
+      "relations": {
+        "related": [
+          {
+            "term": "Little's Law",
+            "termZh": "利特尔法则",
+            "note": "同是把性能指标锁进一个简洁关系，用来约束优化方向"
+          },
+          {
+            "term": "Tail Latency",
+            "termZh": "尾延迟",
+            "note": "并行拆分后，最慢的那截串行或长尾仍会拖住整体"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Gustafson's Law",
+            "termZh": "古斯塔夫森定律",
+            "note": "问题规模随处理器增加时，加速比可以接近线性"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Gene M. Amdahl: Validity of the Single Processor Approach to Achieving Large Scale Computing Capabilities (AFIPS, 1967)",
+          "url": "https://dl.acm.org/doi/10.1145/1465482.1465560"
+        },
+        {
+          "title": "John L. Gustafson: Reevaluating Amdahl's Law (Communications of the ACM, 1988)",
+          "url": "https://dl.acm.org/doi/10.1145/42411.42415"
+        }
+      ]
+    },
+    {
+      "id": "parallel-change",
+      "term": "Parallel Change",
+      "termZh": "并行变更",
+      "hook": "先加新的，再删旧的，别一次换轨。",
+      "definition": "一种安全实施不向后兼容接口变更的模式，也称扩展-收缩：先扩展接口使新旧两种形态并存，再把调用方逐步迁到新形态，最后收缩掉旧形态。这样在迁移的任何时刻系统都可以发布。",
+      "tags": {
+        "discipline": [
+          "软件工程"
+        ],
+        "engineering": [
+          "系统迁移",
+          "接口设计",
+          "持续交付"
+        ],
+        "cognitive": [
+          "渐进思维",
+          "风险控制"
+        ],
+        "scenario": [
+          "遗留系统改造",
+          "接口设计"
+        ],
+        "level": [
+          "模式"
+        ]
+      },
+      "background": "当接口已有多个调用方，尤其是无法同步发版的外部系统时，一次改签名并改完所有用法很容易造成长时间不可发布。数据库重构里早已采用新旧模式并存的过渡期做法。2014 年 Danilo Sato 在 Martin Fowler 网站把这一做法归纳为并行变更，并拆成扩展、迁移、收缩三阶段。",
+      "problem": "破坏性变更若要求所有调用方同时切换，风险会集中爆发，发布窗口也被锁死。并行变更把一次切断拆成可增量发布的三步，让旧调用方在迁移期内继续工作。",
+      "actors": [
+        "Danilo Sato：2014 年在 Martin Fowler 网站撰文，将模式归纳为扩展、迁移、收缩",
+        "Scott Ambler 与 Pramod Sadalage：2006 年在《重构数据库》中描述新旧模式并存的过渡期",
+        "Martin Fowler：在其 bliki 发表并传播该模式，强调面向已发布接口的安全变更"
+      ],
+      "evolution": [
+        "2006：Ambler 与 Sadalage 出版《Refactoring Databases》，提出过渡期并行支持新旧结构",
+        "2014-05：Danilo Sato 在 Fowler bliki 发表 Parallel Change，明确三阶段做法",
+        "2014 起：在持续交付中被用来改 API、事件字段和库方法，而不中断发布"
+      ],
+      "compresses": [
+        "扩展、迁移、再收缩",
+        "新旧接口并存一段时间",
+        "迁移期随时可发布",
+        "先双写或委托，再删除旧路径",
+        "兼容窗口，而不是一次切断"
+      ],
+      "scene": "报告组件对现场的导出接口要从扁平字段改成嵌套结构，但旧桌面客户端和新的 JCEF 壳会共存几个版本。先让接口同时返回旧字段和新字段，等所有客户端都改读新结构后，再在后续版本里删掉旧字段。",
+      "misconception": "以为并行变更就是长期维护两套互不相干的实现，或可以永远不收缩。迁移期应尽量让旧接口委托给新实现，并设下线期限；只扩展不收缩，会留下永久的兼容包袱。",
+      "relations": {
+        "related": [
+          {
+            "term": "Strangler Fig Pattern",
+            "termZh": "绞杀者模式",
+            "note": "绞杀者是系统级逐步替换，并行变更针对接口本身"
+          },
+          {
+            "term": "Feature Toggle",
+            "termZh": "功能开关",
+            "note": "可用开关控制调用方在新旧路径之间的迁移节奏"
+          },
+          {
+            "term": "Blue-Green Deployment",
+            "termZh": "蓝绿部署",
+            "note": "两者都靠并存降低切换风险，对象分别是接口与整套环境"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Big Bang Release",
+            "termZh": "大爆炸发布",
+            "note": "一次切断旧接口并同时改完所有调用方，发布窗口被锁死"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Danilo Sato: Parallel Change (Martin Fowler's bliki, 13 May 2014)",
+          "url": "https://martinfowler.com/bliki/ParallelChange.html"
+        },
+        {
+          "title": "Scott W. Ambler and Pramod J. Sadalage: Refactoring Databases (Addison-Wesley, 2006)",
+          "url": "https://www.informit.com/store/refactoring-databases-evolutionary-database-design-9780321293534"
+        }
+      ]
+    }
+  ]
+}
