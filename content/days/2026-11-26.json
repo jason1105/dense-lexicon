@@ -1,0 +1,266 @@
+{
+  "date": "2026-11-26",
+  "words": [
+    {
+      "id": "command-query-responsibility-segregation",
+      "term": "Command Query Responsibility Segregation",
+      "termZh": "命令查询职责分离",
+      "hook": "读写用两套模型，不必互相迁就。",
+      "definition": "把系统的写入（命令）和读取（查询）拆成两套模型，甚至两套服务与存储：命令侧按业务规则更新状态，查询侧按展示需要提供只读模型。两侧可通过事件等方式同步，查询允许短暂落后于写入。",
+      "tags": {
+        "discipline": [
+          "软件工程",
+          "数据库理论"
+        ],
+        "engineering": [
+          "架构",
+          "数据一致性"
+        ],
+        "cognitive": [
+          "边界思维",
+          "权衡思维"
+        ],
+        "scenario": [
+          "架构评审",
+          "事件驱动设计"
+        ],
+        "level": [
+          "模式"
+        ]
+      },
+      "background": "Bertrand Meyer 在《Object-Oriented Software Construction》里提出命令查询分离（CQS）：一个方法要么改变状态，要么返回值，不要两者兼做。2000 年代末，复杂业务系统里同一套领域模型既要支撑写入校验，又要支撑多种查询与报表，往往被拖得很臃肿。Greg Young 把这一分离从方法级提升到对象与架构级，并命名为 CQRS。",
+      "problem": "同一套模型同时负责写入规则和多样化查询时，校验、事务与报表需求互相牵扯：查询要拼很多表，写入模型却被查询字段污染；读写的扩展方式、一致性要求和团队分工也很难分开优化。",
+      "actors": [
+        "Bertrand Meyer：提出命令查询分离（CQS），为 CQRS 提供方法级前提",
+        "Greg Young：把分离提升到架构级并命名为 CQRS，撰写 CQRS Documents",
+        "Udi Dahan：2009 年发表 Clarified CQRS，澄清该模式与事件溯源的关系",
+        "Martin Fowler：2011 年撰文介绍 CQRS，并提醒多数系统不必上这套复杂度"
+      ],
+      "evolution": [
+        "1988：Meyer 在 OOSC 第一版中提出命令查询分离，方法不应既改状态又返回值",
+        "2005-12：Fowler 撰文介绍 CQS，并讨论栈 pop 这类常见例外",
+        "2009-12：Udi Dahan 发表 Clarified CQRS，梳理与事件溯源等模式的边界",
+        "2010-11：Greg Young 发布 CQRS Documents，系统阐述命令侧与查询侧分离",
+        "2011-07：Fowler 发表 CQRS 一文，强调多数系统引入它会增加风险与复杂度"
+      ],
+      "compresses": [
+        "写入模型与查询模型可以不同",
+        "查询不必走同一套领域校验",
+        "两侧常靠事件同步，允许短暂延迟",
+        "不等于必须同时上事件溯源",
+        "小系统硬拆往往得不偿失"
+      ],
+      "scene": "交易监测或报告组件里，写入侧要按业务规则记账；领导看的报表却要按时间、品种、维度聚合，和写入模型差得很远。若硬让同一套实体既服务交易指令又服务报表，报表要么把领域模型撑胖，要么把查询拖慢。命令侧专心落库，查询侧用只读表或视图出报告，两侧用事件或 CDC 同步。",
+      "misconception": "以为采用 CQRS 就必须搭配事件溯源，或一切系统都该把读写库拆开。CQRS 只要求读写模型分离，事件溯源只是可选的持久化方式。Fowler 也提醒，多数 CRUD 系统引入它会增加同步与复杂度，收益不够就不要上。",
+      "relations": {
+        "related": [
+          {
+            "term": "Event Sourcing",
+            "termZh": "事件溯源",
+            "note": "查询侧常订阅命令侧产生的事件来重建读模型"
+          },
+          {
+            "term": "Change Data Capture",
+            "termZh": "变更数据捕获",
+            "note": "另一种把写入库的变化同步到查询模型的手段"
+          },
+          {
+            "term": "Bounded Context",
+            "termZh": "限界上下文",
+            "note": "读写分离也是在划边界，避免一个模型包打天下"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "CRUD",
+            "termZh": "增删改查",
+            "note": "同一套记录模型既负责更新也负责读取"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Greg Young: CQRS Documents (November 2010)",
+          "url": "https://cqrs.files.wordpress.com/2010/11/cqrs_documents.pdf"
+        },
+        {
+          "title": "Udi Dahan: Clarified CQRS (9 December 2009)",
+          "url": "https://udidahan.com/2009/12/09/clarified-cqrs/"
+        },
+        {
+          "title": "Martin Fowler: CQRS (14 July 2011)",
+          "url": "https://martinfowler.com/bliki/CQRS.html"
+        }
+      ]
+    },
+    {
+      "id": "property-based-testing",
+      "term": "Property-Based Testing",
+      "termZh": "基于性质的测试",
+      "hook": "别只写例子，先写那条必须永远成立的性质。",
+      "definition": "不先手写个别输入例子，而是先陈述软件应始终成立的性质（不变量），再由工具随机生成大量输入去试图证伪。失败时通常会把输入缩小成更小的反例，便于定位。它补的是示例测试覆盖不到的边角组合。",
+      "tags": {
+        "discipline": [
+          "软件工程"
+        ],
+        "engineering": [
+          "测试"
+        ],
+        "cognitive": [
+          "不变量思维",
+          "可重复性"
+        ],
+        "scenario": [
+          "测试策略"
+        ],
+        "level": [
+          "方法"
+        ]
+      },
+      "background": "2000 年，Chalmers 的 Koen Claessen 与 John Hughes 在 ICFP 发表 QuickCheck，为 Haskell 提供用性质描述、随机生成数据并自动检验的库。此后这一思路从函数式社区走向工业：2006 年 Hughes 参与创办 Quviq，把 QuickCheck 做成 Erlang 商业工具，用于通信与汽车等行业。Java 生态后来出现 junit-quickcheck、jqwik 等实现。",
+      "problem": "示例测试只覆盖作者想到的几个输入，组合空间一大就容易漏掉边界。回归用例越写越长，却仍难保证“对任意合法输入都成立”的不变量。需要一种能系统探索输入空间、并把失败收缩成小反例的方法。",
+      "actors": [
+        "Koen Claessen：与 Hughes 共同发明 QuickCheck，第一作者发表 ICFP 2000 论文",
+        "John Hughes：QuickCheck 共同发明人，2006 年参与创办 Quviq 将方法推向工业",
+        "Quviq：提供 Erlang 商业版 QuickCheck，应用于沃尔沃等工业项目",
+        "Johannes Link：发布 Java 的 jqwik，推动该技术进入 JUnit 生态"
+      ],
+      "evolution": [
+        "2000-09：Claessen 与 Hughes 在 ICFP 发表 QuickCheck 论文，奠定随机性质测试",
+        "2002：二人将方法扩展到对单子与有状态程序的测试",
+        "2006：Hughes 参与创办 Quviq，推出面向 Erlang 的商业 QuickCheck",
+        "2016：Hughes 发表工业实践综述，介绍沃尔沃 AUTOSAR 与 Klarna 等案例",
+        "2018：Java 社区出现 jqwik 等库，可在 JUnit 中直接写性质测试"
+      ],
+      "compresses": [
+        "先写不变量，再随机生成输入",
+        "失败时把反例缩小到更好懂",
+        "补的是例子没想到的组合",
+        "生成器质量决定找缺陷的效率",
+        "不是要取代所有示例测试"
+      ],
+      "scene": "报告组件对电量或交易明细做聚合、四舍五入和权限过滤时，手写几个样例很难穷尽组合。可以用性质描述：任意合法明细经聚合后，各分组合计应等于过滤后的总和，且舍入误差在规定范围内。用 jqwik 生成随机明细，一旦失败再把输入缩小成最小反例。",
+      "misconception": "以为随机测试就是无目的地砸输入，或可以完全替代示例测试。性质测试依赖你写出正确的不变量和生成器；例子测试仍适合说明典型用法和回归特定缺陷。随机也不等于不可复现，失败用例会被缩小并固定下来。",
+      "relations": {
+        "related": [
+          {
+            "term": "Test Oracle",
+            "termZh": "测试预言",
+            "note": "性质本身就是一种判断输出对错的预言"
+          },
+          {
+            "term": "Mutation Testing",
+            "termZh": "变异测试",
+            "note": "可用来检验这些性质是不是真能抓住缺陷"
+          },
+          {
+            "term": "Test Pyramid",
+            "termZh": "测试金字塔",
+            "note": "性质测试多放在单测或组件测，不替代少量端到端例子"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Example-Based Testing",
+            "termZh": "示例测试",
+            "note": "只覆盖作者事先想好的若干组输入"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Claessen & Hughes: QuickCheck: A Lightweight Tool for Random Testing of Haskell Programs (ICFP 2000)",
+          "url": "https://dl.acm.org/doi/10.1145/351240.351266"
+        },
+        {
+          "title": "John Hughes: Experiences with QuickCheck: Testing the Hard Stuff and Staying Sane (2016)",
+          "url": "https://www.cs.tufts.edu/~nr/cs257/archive/john-hughes/quviq-testing.pdf"
+        }
+      ]
+    },
+    {
+      "id": "hyrum-s-law",
+      "term": "Hyrum's Law",
+      "termZh": "海勒姆定律",
+      "hook": "文档没写的行为，用的人多了也会被依赖。",
+      "definition": "只要一个 API 的用户足够多，就不只是文档里承诺的契约会被依赖：所有可被观察到的行为，包括未文档化的细节、性能特征甚至缺陷，都会被某个人依赖。因此看似内部实现的改动，也可能大面积破坏调用方。",
+      "tags": {
+        "discipline": [
+          "软件工程"
+        ],
+        "engineering": [
+          "接口设计",
+          "架构"
+        ],
+        "cognitive": [
+          "隐性成本",
+          "系统思维"
+        ],
+        "scenario": [
+          "接口设计",
+          "遗留系统改造"
+        ],
+        "level": [
+          "定律"
+        ]
+      },
+      "background": "Hyrum Wright 在 Google 维护核心 C++ 库、做大规模代码变迁时发现：即使只改看似私有的实现细节，远处也会有系统因此失败。同事 Titus Winters 把这一观察命名为 Hyrum's Law，并在访谈中向社区介绍。2020 年两人与 Tom Manshreck 合著的《Software Engineering at Google》把它作为长期维护软件的基本约束来讨论。",
+      "problem": "接口提供方以为只要遵守文档契约就可以自由改实现；实际在足够多的用户下，未写明的返回顺序、耗时、错误文案甚至既有缺陷都会被依赖。结果是一次“合法的内部优化”也能造成大面积破坏，变更成本被严重低估。",
+      "actors": [
+        "Hyrum Wright：在 Google 维护核心库时提出这一观察，后参与合著相关著作",
+        "Titus Winters：将其命名为 Hyrum's Law 并向业界传播，同为该书作者",
+        "Google：在超大规模代码库中反复遇到对隐式行为的依赖"
+      ],
+      "evolution": [
+        "2012 起：Wright 在 Google 做大规模库变更，观察到未文档化行为同样会被依赖",
+        "2016-09：Winters 在 CppCast 访谈中以 Hyrum's Law 命名并公开讨论这一观察",
+        "2020：《Software Engineering at Google》首章把它作为长期维护的基本约束"
+      ],
+      "compresses": [
+        "可观察行为都会被谁依赖",
+        "实现细节用的人多了就变成接口",
+        "要兼容的往往包括既有缺陷",
+        "文档写清能减少、但不能消灭它",
+        "用户足够多时，接口会蒸发成实现本身"
+      ],
+      "scene": "把报告组件的查询接口，或桌面壳里的 JCEF 桥从旧 Web 接口迁到新 API 时，调用方可能已经依赖了字段顺序、默认排序、错误文案，甚至某个本不该出现的空值。只对照文档改实现，仍可能把现场定制或旧页面打坏。需要先盘点实际调用，或在变更里刻意保持这些可观察行为。",
+      "misconception": "以为把契约写进文档或加个版本号，调用方就不会依赖实现细节。这一定律说的是：用户足够多时，依赖会蔓延到一切可观察行为。文档和版本有用，但还需要减少可被依赖的意外表面，例如打乱不稳定的遍历顺序。",
+      "relations": {
+        "related": [
+          {
+            "term": "Leaky Abstraction",
+            "termZh": "抽象泄漏",
+            "note": "抽象泄漏让内部细节被看见，进而被依赖"
+          },
+          {
+            "term": "Parallel Change",
+            "termZh": "并行变更",
+            "note": "面对隐式依赖，常要先扩展再收缩，而不是直接替换"
+          },
+          {
+            "term": "Chesterton's Fence",
+            "termZh": "切斯特顿的篱笆",
+            "note": "先弄清一个奇怪行为为何存在，再决定能否改"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Documented Contract",
+            "termZh": "显式契约",
+            "note": "只保证文档写明的行为——用户足够多时往往不成立"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Hyrum Wright: Hyrum's Law",
+          "url": "https://www.hyrumslaw.com/"
+        },
+        {
+          "title": "Winters, Manshreck, and Wright: Software Engineering at Google, Chapter 1 (2020)",
+          "url": "https://abseil.io/resources/swe-book/html/ch01.html"
+        }
+      ]
+    }
+  ]
+}
