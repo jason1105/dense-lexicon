@@ -1,0 +1,251 @@
+{
+  "date": "2026-11-27",
+  "words": [
+    {
+      "id": "consistent-hashing",
+      "term": "Consistent Hashing",
+      "termZh": "一致性哈希",
+      "hook": "加减节点，只应搬走该走的那一份。",
+      "definition": "一种把键映射到节点的哈希方法：当节点加入或退出时，只需重映射与变动节点相关的那些键，其余键保持原映射，从而避免普通取模哈希在扩缩容时几乎全量重分配。",
+      "tags": {
+        "discipline": [
+          "分布式系统"
+        ],
+        "engineering": [
+          "架构",
+          "性能"
+        ],
+        "cognitive": [
+          "权衡思维"
+        ],
+        "scenario": [
+          "架构评审",
+          "性能排查"
+        ],
+        "level": [
+          "机制"
+        ]
+      },
+      "background": "1990 年代后期，热门网页会把单台服务器打成热点，缓存集群也经常扩缩容。若用「键对节点数取模」，节点数一变，几乎所有键都要换位置，缓存大批失效。Karger、Leighton、Lewin 等人在 MIT 提出一致性哈希，随后把它用进了 Akamai 的内容分发网络。",
+      "problem": "分布式缓存或分片在增减节点时，若大量键被重新映射，就会引发缓存雪崩和数据迁移风暴；客户端看到的节点列表稍不一致时，路由也会各指各的。",
+      "actors": [
+        "David Karger：与同事在 STOC 1997 提出一致性哈希",
+        "Tom Leighton、Daniel Lewin：论文作者，1998 年共同创立 Akamai 并将其用于 CDN",
+        "Amazon：2007 年 Dynamo 论文用虚拟节点把该方法引入工业键值存储",
+        "Last.fm：2007 年发布 Ketama，供 memcached 客户端使用",
+        "John Lamping、Eric Veach：2014 年提出无需查找表的 jump consistent hash"
+      ],
+      "evolution": [
+        "1997-05：Karger 等人在 STOC 发表论文，提出一致性哈希以缓解 Web 热点",
+        "1998-08：Leighton 与 Lewin 创立 Akamai，将其用于全球内容分发",
+        "2001：Stoica 等人在 SIGCOMM 发表 Chord，用一致性哈希组织分布式哈希表",
+        "2007-04：Last.fm 发布 Ketama，供 memcached 客户端做一致性哈希",
+        "2007-10：Amazon Dynamo 论文用虚拟节点改进负载均衡",
+        "2014-06：Google 的 Lamping 与 Veach 提出无需查找表的 jump consistent hash"
+      ],
+      "compresses": [
+        "节点与键同放在哈希环上",
+        "键沿环顺时针找到最近节点",
+        "加减节点只移动相邻区间的键",
+        "虚拟节点用来摊平负载",
+        "不是“哈希结果永远不变”"
+      ],
+      "scene": "性能监控或报告服务若用「哈希取模」把查询缓存分到一组 Java 节点，新加一台机器会让几乎全部 key 换节点，缓存瞬间被打空，还可能引发惊群。一致性哈希只迁移新节点该接的那一段，旧缓存大多还能用。",
+      "misconception": "以为一致性哈希保证每个键永远留在同一节点，或负载自然绝对均匀。节点加入或离开时仍会带走自己的那部分键；要摊平负载，通常还要加虚拟节点或改用后续算法。",
+      "relations": {
+        "related": [
+          {
+            "term": "Thundering Herd",
+            "termZh": "惊群效应",
+            "note": "全量重映射让缓存同时失效，请求会一起打向后端"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Modulo Hashing",
+            "termZh": "取模哈希",
+            "note": "节点数一变，几乎所有键都要换位置"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Karger et al.: Consistent Hashing and Random Trees (STOC 1997)",
+          "url": "https://www.akamai.com/site/en/documents/research-paper/consistent-hashing-and-random-trees-distributed-caching-protocols-for-relieving-hot-spots-on-the-world-wide-web-technical-publication.pdf"
+        },
+        {
+          "title": "DeCandia et al.: Dynamo: Amazon's Highly Available Key-value Store (SOSP 2007)",
+          "url": "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf"
+        },
+        {
+          "title": "Lamping and Veach: A Fast, Minimal Memory, Consistent Hash Algorithm (2014)",
+          "url": "https://arxiv.org/abs/1406.2294"
+        }
+      ]
+    },
+    {
+      "id": "in-context-learning",
+      "term": "In-Context Learning",
+      "termZh": "上下文学习",
+      "hook": "不改权重，只看提示里的例子，模型就能上手。",
+      "definition": "在不更新模型权重的前提下，只靠提示中的说明和示例，让语言模型在一次推理里适应新任务。按示例数量，通常分为零样本、单样本和少样本。",
+      "tags": {
+        "discipline": [
+          "人工智能"
+        ],
+        "engineering": [
+          "AI 工程"
+        ],
+        "cognitive": [
+          "信息取舍"
+        ],
+        "scenario": [
+          "AI 辅助编码"
+        ],
+        "level": [
+          "属性"
+        ]
+      },
+      "background": "2018 至 2019 年，BERT、GPT-2 等模型主要靠微调适应新任务，每次换任务都要准备数据和改权重。2020 年 OpenAI 的 GPT-3 论文表明，模型足够大时，只需把任务说明和少量示例写进提示就能完成新任务，并将这一现象称为 in-context learning。",
+      "problem": "为每个新任务收集标注并微调模型，成本高、周期长，也很难在编码助手或对话里即时切换任务。",
+      "actors": [
+        "Tom Brown 等：GPT-3 论文主要作者，系统描述并验证了 in-context learning",
+        "OpenAI：训练并发布 GPT-3，展示不更新权重也能完成新任务的少样本能力",
+        "Alec Radford 等：2019 年 GPT-2 论文表明预训练模型可零样本迁移到多种任务"
+      ],
+      "evolution": [
+        "2019-02：GPT-2 论文展示预训练语言模型可零样本完成多种任务",
+        "2020-05：Brown 等人发布 GPT-3 论文，将提示中的学习命名为 in-context learning",
+        "2020-12：该文在 NeurIPS 2020 发表",
+        "2022：思维链等提示技术表明，改进示例形式能增强上下文中的推理"
+      ],
+      "compresses": [
+        "推理时适应任务，不更新权重",
+        "零样本、单样本、少样本是同一谱系",
+        "上下文窗口相当于临时「训练集」",
+        "示例格式往往和答案同样重要",
+        "与微调、检索增强不是同一件事"
+      ],
+      "scene": "在 Cursor 里让助手给报告组件补一段查询或写 Playwright 用例时，不必微调模型。把一条已有的查询方法和一条好的测试示例放进对话，它更能跟上项目的命名和分层；上下文一清，这些「学会」的习惯也就没了。",
+      "misconception": "以为上下文学习会改模型参数，或聊天里教过一次就永久记住。它只发生在当前上下文窗口里，窗口外的内容并不会变成权重。也不同于先检索再生成：检索只是在给窗口送材料。",
+      "relations": {
+        "related": [
+          {
+            "term": "Context Engineering",
+            "termZh": "上下文工程",
+            "note": "决定把哪些说明和示例放进上下文窗口"
+          },
+          {
+            "term": "Chain-of-Thought Prompting",
+            "termZh": "思维链提示",
+            "note": "用推理步骤作为上下文中的示例形式"
+          },
+          {
+            "term": "Retrieval-Augmented Generation",
+            "termZh": "检索增强生成",
+            "note": "先检索材料，再放入上下文供模型使用"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Fine-Tuning",
+            "termZh": "微调",
+            "note": "用任务数据更新模型权重，来适应新任务"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Brown et al.: Language Models are Few-Shot Learners (arXiv:2005.14165)",
+          "url": "https://arxiv.org/abs/2005.14165"
+        },
+        {
+          "title": "Radford et al.: Language Models are Unsupervised Multitask Learners (2019)",
+          "url": "https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf"
+        }
+      ]
+    },
+    {
+      "id": "gall-s-law",
+      "term": "Gall's Law",
+      "termZh": "盖尔定律",
+      "hook": "能运转的复杂系统，都是从能运转的简单系统长出来的。",
+      "definition": "能工作的复杂系统，几乎总是从能工作的简单系统演化而来；从零设计的复杂系统往往无法工作，也不能靠打补丁变好。要先做出一个能运转的简单系统，再逐步演化。",
+      "tags": {
+        "discipline": [
+          "决策科学",
+          "软件工程"
+        ],
+        "engineering": [
+          "研发管理",
+          "架构"
+        ],
+        "cognitive": [
+          "系统思维",
+          "渐进思维"
+        ],
+        "scenario": [
+          "战略规划",
+          "遗留系统改造"
+        ],
+        "level": [
+          "定律"
+        ]
+      },
+      "background": "1970 年代，系统论进入管理与工程讨论，许多精心设计的大系统一上线就不工作。儿科医生 John Gall 在 1975 年的《General Systemantics》中写下这条观察：能运转的复杂系统，都是从能运转的简单系统演化来的。后来软件界称之为 Gall's Law。",
+      "problem": "团队常想一次性设计出功能齐全的复杂系统，例如全新架构加全量替换。这样的系统往往无法真正运转，局部修补也救不回来，时间和信心都被耗掉。",
+      "actors": [
+        "John Gall：儿科医生，在《General Systemantics》中提出该观察",
+        "General Systemantics Press：1975 年于安阿伯出版该书初版",
+        "Quadrangle / New York Times Book Co.：1977 年出版《Systemantics》普及版"
+      ],
+      "evolution": [
+        "1975：Gall 出版《General Systemantics》，写下复杂系统由简单系统演化而来",
+        "1977：纽约时报旗下 Quadrangle 出版《Systemantics: How Systems Work and Especially How They Fail》",
+        "2002：第三版《The Systems Bible》出版，继续阐述系统如何失效",
+        "此后：软件界称其为 Gall's Law，用来指导演进式设计与系统替换"
+      ],
+      "compresses": [
+        "先有能工作的简单系统",
+        "复杂系统是演化出来的，不是一次设计出来的",
+        "从零设计的复杂系统往往无法工作",
+        "打补丁救不活从未工作过的复杂系统",
+        "与绞杀者、演进式交付同一方向"
+      ],
+      "scene": "把旧的 B/S 系统一次换成带 JCEF 的 JavaFX 桌面壳，还要一次迁完报告、登录和现场全部功能，很容易做出一个无法稳定工作的大系统。应先做一个能打开现有页面、完成一两条核心路径的薄壳，跑通后再逐步演化。",
+      "misconception": "以为这条定律禁止建设复杂系统，或任何规划都是浪费。它反对的是从零一次设计出从未工作过的复杂整体；目标仍然可以复杂，但要由已经工作的简单系统逐步长出来。",
+      "relations": {
+        "related": [
+          {
+            "term": "Strangler Fig Pattern",
+            "termZh": "绞杀者无花果模式",
+            "note": "用可工作的新路径逐步替换旧系统，而不是一次推倒"
+          },
+          {
+            "term": "Second-System Effect",
+            "termZh": "第二系统效应",
+            "note": "重做时把理想功能一次塞进全新系统，正好踩中这一定律"
+          },
+          {
+            "term": "Chesterton's Fence",
+            "termZh": "切斯特顿的篱笆",
+            "note": "先理解现有简单系统为何能工作，再决定如何演化"
+          }
+        ],
+        "opposite": [
+          {
+            "term": "Big Bang Rewrite",
+            "termZh": "大爆炸式重写",
+            "note": "从零一次设计并替换整个复杂系统"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Gall, John: Systemantics: How Systems Work and Especially How They Fail (1977)",
+          "url": "https://archive.org/details/systemanticshows00gall"
+        }
+      ]
+    }
+  ]
+}
